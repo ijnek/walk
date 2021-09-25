@@ -15,12 +15,12 @@
 #include "walk/walk_node.hpp"
 
 using namespace std::chrono_literals;
+using namespace std::placeholders;
 
 WalkNode::WalkNode()
 : Node("WalkNode"),
   walk(
-    std::bind(&WalkNode::notifyGoalAchieved, this),
-    std::bind(&WalkNode::sendIKCommand, this, std::placeholders::_1))
+    std::bind(&WalkNode::send_ik_command, this, _1))
 {
   float max_forward = this->declare_parameter("max_forward", 0.3);
   float max_left = this->declare_parameter("max_left", 0.2);
@@ -50,75 +50,81 @@ WalkNode::WalkNode()
     max_forward_change, max_left_change, max_turn_change);
 
   timer_ = this->create_wall_timer(
-    20ms, std::bind(&WalkNode::timerCallback, this));
+    20ms, std::bind(&WalkNode::timer_callback, this));
+
+  sub_target = this->create_subscription<geometry_msgs::msg::Twist>(
+    "target", 10, std::bind(&WalkNode::target_callback, this, _1));
 
   pub_ik_command = create_publisher<nao_ik_interfaces::msg::IKCommand>("motion/ik_command", 1);
 
-  this->action_server_ = rclcpp_action::create_server<walk_interfaces::action::Walk>(
-    this,
-    "walk",
-    [this](const rclcpp_action::GoalUUID &, std::shared_ptr<const WalkGoal> goal)
-    {
-      geometry_msgs::msg::Twist target = goal->target;
-      RCLCPP_INFO(
-        get_logger(), "Recevied WalkGoal with target linear:[%g, %g, %g], angular:[%g, %g, %g]",
-        target.linear.x, target.linear.y, target.linear.z,
-        target.angular.x, target.angular.y, target.angular.z);
-      // Accept all goals
-      walk.walk(target);
-      return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
-    },
-    [this](const std::shared_ptr<WalkGoalHandle>)
-    {
-      RCLCPP_INFO(get_logger(), "Received request to cancel goal");
-      // Accept all cancel requests
-      walk.abort();
-      return rclcpp_action::CancelResponse::ACCEPT;
-    },
-    std::bind(&WalkNode::handleAccepted, this, std::placeholders::_1));
+  service_abort = create_service<std_srvs::srv::Empty>(
+    "abort", std::bind(&WalkNode::abort, this, _1, _2));
+
+  // this->action_server_crouch_ = rclcpp_action::create_server<walk_interfaces::action::Crouch>(
+  //   this,
+  //   "walk",
+  //   [this](const rclcpp_action::GoalUUID &, std::shared_ptr<const CrouchGoal> goal)
+  //   {
+  //     geometry_msgs::msg::Twist target = goal->target;
+  //     RCLCPP_INFO(
+  //       get_logger(), "Recevied CrouchGoal with target linear:[%g, %g, %g], angular:[%g, %g, %g]",
+  //       target.linear.x, target.linear.y, target.linear.z,
+  //       target.angular.x, target.angular.y, target.angular.z);
+  //     // Accept all goals
+  //     walk.walk(target);
+  //     return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+  //   },
+  //   [this](const std::shared_ptr<CrouchGoalHandle>)
+  //   {
+  //     RCLCPP_INFO(get_logger(), "Received request to cancel goal");
+  //     // Accept all cancel requests
+  //     walk.abort();
+  //     return rclcpp_action::CancelResponse::ACCEPT;
+  //   },
+  //   std::bind(&WalkNode::handle_accepted, this, _1));
 }
 
-void WalkNode::sendIKCommand(nao_ik_interfaces::msg::IKCommand ik_command)
+void WalkNode::abort(
+  const std::shared_ptr<std_srvs::srv::Empty::Request>,
+  std::shared_ptr<std_srvs::srv::Empty::Response>)
 {
+  RCLCPP_DEBUG(get_logger(), "abort() called, aborting walk.");
+  walk.abort();
+}
+
+void WalkNode::send_ik_command(nao_ik_interfaces::msg::IKCommand ik_command)
+{
+  RCLCPP_DEBUG(get_logger(), "send_ik_command() called");
   pub_ik_command->publish(ik_command);
 }
 
-void WalkNode::handleAccepted(
-  const std::shared_ptr<WalkGoalHandle> goal_handle)
+// void WalkNode::handle_accepted(
+//   const std::shared_ptr<CrouchGoalHandle> goal_handle)
+// {
+//   RCLCPP_DEBUG(get_logger(), "handle_accepted");
+//   // Abort any existing goal
+//   if (walk_goal_handle_) {
+//     RCLCPP_INFO(
+//       get_logger(),
+//       "Crouch goal received before a previous goal finished. Aborting previous goal");
+//     auto result = std::make_shared<walk_interfaces::action::Crouch::Result>();
+//     walk_goal_handle_->abort(result);
+//   }
+//   walk_goal_handle_ = goal_handle;
+//   walk.walk(goal_handle->get_goal()->target);
+// }
+
+void WalkNode::timer_callback()
 {
-  RCLCPP_DEBUG(get_logger(), "handleAccepted");
-  // Abort any existing goal
-  if (walk_goal_handle_) {
-    RCLCPP_INFO(
-      get_logger(),
-      "Walk goal received before a previous goal finished. Aborting previous goal");
-    auto result = std::make_shared<walk_interfaces::action::Walk::Result>();
-    walk_goal_handle_->abort(result);
-  }
-  walk_goal_handle_ = goal_handle;
-  walk.walk(goal_handle->get_goal()->target);
+  RCLCPP_DEBUG(get_logger(), "timer_callback()");
+  walk.generateCommand();
 }
 
-void WalkNode::notifyGoalAchieved()
+void WalkNode::target_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
 {
-  auto result = std::make_shared<walk_interfaces::action::Walk::Result>();
-  walk_goal_handle_->succeed(result);
-  walk_goal_handle_ = nullptr;
-}
-
-void WalkNode::timerCallback()
-{
-  RCLCPP_DEBUG(get_logger(), "timerCallback()");
-  if (walk_goal_handle_) {
-    RCLCPP_DEBUG(get_logger(), "Found walk_goal_handle, executing walk.");
-    if (walk_goal_handle_->is_canceling()) {
-      RCLCPP_INFO(
-        get_logger(), "Goal Cancelled");
-      auto result = std::make_shared<walk_interfaces::action::Walk::Result>();
-      walk_goal_handle_->canceled(result);
-      walk_goal_handle_ = nullptr;
-    } else {
-      walk.generateCommand();
-    }
-  }
+  RCLCPP_DEBUG(
+    get_logger(), "target_callback() called with twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
+    msg->linear.x, msg->linear.y, msg->linear.z,
+    msg->angular.x, msg->angular.y, msg->angular.z);
+  walk.walk(*msg);
 }

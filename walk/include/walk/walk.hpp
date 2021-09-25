@@ -26,8 +26,7 @@ class Walk
 {
 public:
   Walk(
-    std::function<void(void)> notifyGoalAchieved,
-    std::function<void(nao_ik_interfaces::msg::IKCommand)> sendIKCommand);
+    std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command);
   void setParams(
     float maxForward,  // max forward velocity (m/s)
     float maxLeft,  // max side velocity (m/s)
@@ -45,8 +44,7 @@ public:
   void crouch();
 
 private:
-  std::function<void(void)> notifyGoalAchieved;
-  std::function<void(nao_ik_interfaces::msg::IKCommand)> sendIKCommand;
+  std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command;
 
   enum WalkOption
   {

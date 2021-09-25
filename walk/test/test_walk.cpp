@@ -20,44 +20,36 @@ class TestWalk : public ::testing::Test
 protected:
   TestWalk()
   : walk(
-      std::bind(&TestWalk::notifyGoalAchieved, this),
-      std::bind(&TestWalk::sendIKCommand, this, std::placeholders::_1))
+      std::bind(&TestWalk::send_ik_command, this, std::placeholders::_1))
   {
   }
 
   void SetUp()
   {
-    sendIKCommandCalled = false;
-    notifyGoalAchievedCalled = false;
+    send_ik_commandCalled = false;
   }
 
 public:
-  void sendIKCommand(nao_ik_interfaces::msg::IKCommand)
+  void send_ik_command(nao_ik_interfaces::msg::IKCommand)
   {
-    sendIKCommandCalled = true;
+    send_ik_commandCalled = true;
   }
 
-  void notifyGoalAchieved()
-  {
-    notifyGoalAchievedCalled = true;
-  }
-
-  bool sendIKCommandCalled;
-  bool notifyGoalAchievedCalled;
+  bool send_ik_commandCalled;
   Walk walk;
 };
 
 TEST_F(TestWalk, TestNotDuringWalk)
 {
   walk.generateCommand();
-  ASSERT_FALSE(sendIKCommandCalled);
+  ASSERT_FALSE(send_ik_commandCalled);
 }
 
 TEST_F(TestWalk, TestCrouch)
 {
   walk.crouch();
   walk.generateCommand();
-  ASSERT_TRUE(sendIKCommandCalled);
+  ASSERT_TRUE(send_ik_commandCalled);
 }
 
 TEST_F(TestWalk, TestWalk)
@@ -65,7 +57,7 @@ TEST_F(TestWalk, TestWalk)
   geometry_msgs::msg::Twist target;
   walk.walk(target);
   walk.generateCommand();
-  ASSERT_TRUE(sendIKCommandCalled);
+  ASSERT_TRUE(send_ik_commandCalled);
 }
 
 TEST_F(TestWalk, TestCrouchToAbort)
@@ -74,7 +66,7 @@ TEST_F(TestWalk, TestCrouchToAbort)
   walk.crouch();
   walk.abort();
   walk.generateCommand();
-  ASSERT_FALSE(sendIKCommandCalled);
+  ASSERT_FALSE(send_ik_commandCalled);
 }
 
 TEST_F(TestWalk, TestWalkToAbort)
@@ -83,5 +75,5 @@ TEST_F(TestWalk, TestWalkToAbort)
   walk.walk(target);
   walk.abort();
   walk.generateCommand();
-  ASSERT_FALSE(sendIKCommandCalled);
+  ASSERT_FALSE(send_ik_commandCalled);
 }

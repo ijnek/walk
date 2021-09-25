@@ -11,6 +11,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(walk_interfaces REQUIRED)
 find_package(nao_ik_interfaces REQUIRED)
+find_package(std_srvs REQUIRED)
 
 # Include hpp files
 include_directories(
@@ -28,7 +29,8 @@ ament_target_dependencies(walk_lib
   rclcpp
   rclcpp_action
   walk_interfaces
-  nao_ik_interfaces)
+  nao_ik_interfaces
+  std_srvs)
 
 # Build walk executable
 add_executable(walk

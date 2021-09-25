@@ -26,10 +26,8 @@
 #include "walk/maths_functions.hpp"
 
 Walk::Walk(
-  std::function<void(void)> notifyGoalAchieved,
-  std::function<void(nao_ik_interfaces::msg::IKCommand)> sendIKCommand)
-: notifyGoalAchieved(notifyGoalAchieved),
-  sendIKCommand(sendIKCommand),
+  std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command)
+: send_ik_command(send_ik_command),
   logger(rclcpp::get_logger("Walk"))
 {
 }
@@ -82,12 +80,6 @@ void Walk::generateCommand()
       currStep.forward, currStep.left, currStep.turn, currStep.legLift);
   }
 
-  if (target.linear.x != 0.0 || target.linear.y != 0.0 || target.angular.z != 0.0) {
-    walkOption = WALK;
-  } else {
-    walkOption = CROUCH;
-    t = 0;
-  }
   RCLCPP_DEBUG(logger, "Executing walkOption: %s", walkOptionToString.at(walkOption));
 
   // TODO (ijnek): Hardcoded dt for now, should figure out what to do this.
@@ -178,17 +170,6 @@ void Walk::generateCommand()
     }
   }
 
-  // Report if we've achieved any goals
-  if (targetWalkOption == CROUCH) {
-    if (currTwist == geometry_msgs::msg::Twist{}) { // if zero
-      notifyGoalAchieved();
-    }
-  } else if (targetWalkOption == WALK) {
-    if (currTwist == target) {
-      notifyGoalAchieved();
-    }
-  }
-
   nao_ik_interfaces::msg::IKCommand command;
   command.left_ankle.position.x = forwardL;
   command.left_ankle.position.y = leftL + 0.050;
@@ -206,7 +187,7 @@ void Walk::generateCommand()
     command.right_ankle.position.y,
     command.right_ankle.position.z);
 
-  sendIKCommand(command);
+  send_ik_command(command);
 }
 
 void Walk::abort()

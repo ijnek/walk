@@ -17,34 +17,55 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
-#include "walk_interfaces/action/walk.hpp"
+#include "walk_interfaces/action/crouch.hpp"
+#include "walk_interfaces/action/stand.hpp"
 #include "nao_ik_interfaces/msg/ik_command.hpp"
 #include "walk/walk.hpp"
+#include "std_srvs/srv/empty.hpp"
 
 class WalkNode : public rclcpp::Node
 {
 public:
-  using WalkGoal = walk_interfaces::action::Walk::Goal;
-  using WalkGoalHandle = rclcpp_action::ServerGoalHandle<walk_interfaces::action::Walk>;
+  using WalkGoal = walk_interfaces::action::Crouch::Goal;
+  using CrouchGoalHandle = rclcpp_action::ServerGoalHandle<walk_interfaces::action::Crouch>;
 
   WalkNode();
 
 private:
   Walk walk;
-  
+
   // TODO (ijnek): Replace this timer with an input signal
   rclcpp::TimerBase::SharedPtr timer_;
 
+  // Twist is a subscription
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_target;
+
+  // Abort is a service
+  rclcpp::Service<std_srvs::srv::Empty>::SharedPtr service_abort;
+
+  // Crouch and Stand are actions
+  // rclcpp_action::Server<walk_interfaces::action::Crouch>::SharedPtr action_server_crouch_;
+  // rclcpp_action::Server<walk_interfaces::action::Stand>::SharedPtr action_server_stand_;
+
   rclcpp::Publisher<nao_ik_interfaces::msg::IKCommand>::SharedPtr pub_ik_command;
-  rclcpp_action::Server<walk_interfaces::action::Walk>::SharedPtr action_server_;
+  // rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist_;
+  // rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_for_next_step_;
 
-  std::shared_ptr<WalkGoalHandle> walk_goal_handle_;
+  // std::shared_ptr<CrouchGoalHandle> crouch_goal_handle_;
 
-  void timerCallback();
-  void sendIKCommand(nao_ik_interfaces::msg::IKCommand ik_command);
-  void handleAccepted(
-    const std::shared_ptr<WalkGoalHandle> goal_handle);
-  void notifyGoalAchieved();
+  void timer_callback();
+
+  // TODO(ijnek): Try and figure out how to get rid of these parameters, as they're not used.
+  void abort(
+    const std::shared_ptr<std_srvs::srv::Empty::Request>,
+    std::shared_ptr<std_srvs::srv::Empty::Response>);
+
+  void send_ik_command(nao_ik_interfaces::msg::IKCommand ik_command);
+  // void handle_accepted(
+  //   const std::shared_ptr<CrouchGoalHandle> crouch_goal_handle);
+
+  void target_callback(const geometry_msgs::msg::Twist::SharedPtr msg);
+
 };
 
 #endif  // WALK__WALK_NODE_HPP_

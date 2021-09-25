@@ -1,4 +1,0 @@
-geometry_msgs/Twist target
----
----
-geometry_msgs/Twist current
