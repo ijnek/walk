@@ -20,13 +20,15 @@ class TestWalk : public ::testing::Test
 protected:
   TestWalk()
   : walk(
-      std::bind(&TestWalk::send_ik_command, this, std::placeholders::_1))
+      std::bind(&TestWalk::send_ik_command, this, std::placeholders::_1),
+      std::bind(&TestWalk::report_current_twist, this, std::placeholders::_1))
   {
   }
 
   void SetUp()
   {
     send_ik_commandCalled = false;
+    report_current_twistCalled = false;
   }
 
 public:
@@ -35,7 +37,13 @@ public:
     send_ik_commandCalled = true;
   }
 
+  void report_current_twist(geometry_msgs::msg::Twist)
+  {
+    report_current_twistCalled = true;
+  }
+
   bool send_ik_commandCalled;
+  bool report_current_twistCalled;
   Walk walk;
 };
 
@@ -43,6 +51,7 @@ TEST_F(TestWalk, TestNotDuringWalk)
 {
   walk.generateCommand();
   ASSERT_FALSE(send_ik_commandCalled);
+  ASSERT_FALSE(report_current_twistCalled);
 }
 
 TEST_F(TestWalk, TestCrouch)
@@ -50,6 +59,7 @@ TEST_F(TestWalk, TestCrouch)
   walk.crouch();
   walk.generateCommand();
   ASSERT_TRUE(send_ik_commandCalled);
+  ASSERT_TRUE(report_current_twistCalled);
 }
 
 TEST_F(TestWalk, TestWalk)
@@ -58,6 +68,7 @@ TEST_F(TestWalk, TestWalk)
   walk.walk(target);
   walk.generateCommand();
   ASSERT_TRUE(send_ik_commandCalled);
+  ASSERT_TRUE(report_current_twistCalled);
 }
 
 TEST_F(TestWalk, TestCrouchToAbort)
@@ -67,6 +78,7 @@ TEST_F(TestWalk, TestCrouchToAbort)
   walk.abort();
   walk.generateCommand();
   ASSERT_FALSE(send_ik_commandCalled);
+  ASSERT_FALSE(report_current_twistCalled);
 }
 
 TEST_F(TestWalk, TestWalkToAbort)
@@ -76,4 +88,5 @@ TEST_F(TestWalk, TestWalkToAbort)
   walk.abort();
   walk.generateCommand();
   ASSERT_FALSE(send_ik_commandCalled);
+  ASSERT_FALSE(report_current_twistCalled);
 }

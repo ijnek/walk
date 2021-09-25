@@ -25,7 +25,7 @@ TEST(TestStepCalculator, TestForward)
   target.linear.x = 0.3;
   auto curr1 = sc.calculateNext(initial, target);
   EXPECT_NEAR(curr1.linear.x, 0.1, 0.001);
-  
+
   auto curr2 = sc.calculateNext(curr1, target);
   EXPECT_NEAR(curr2.linear.x, 0.2, 0.001);
 
@@ -43,7 +43,7 @@ TEST(TestStepCalculator, TestLeft)
   target.linear.y = 0.3;
   auto curr1 = sc.calculateNext(initial, target);
   EXPECT_NEAR(curr1.linear.y, 0.1, 0.001);
-  
+
   auto curr2 = sc.calculateNext(curr1, target);
   EXPECT_NEAR(curr2.linear.y, 0.2, 0.001);
 

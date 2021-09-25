@@ -28,8 +28,10 @@
 #include "tf2_geometry_msgs/tf2_geometry_msgs.h"
 
 Walk::Walk(
-  std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command)
+  std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command,
+  std::function<void(geometry_msgs::msg::Twist)> report_current_twist)
 : send_ik_command(send_ik_command),
+  report_current_twist(report_current_twist),
   logger(rclcpp::get_logger("Walk"))
 {
 }
@@ -84,7 +86,7 @@ void Walk::generateCommand()
 
   RCLCPP_DEBUG(logger, "Executing walkOption: %s", walkOptionToString.at(walkOption));
 
-  // TODO (ijnek): Hardcoded dt for now, should figure out what to do this.
+  // TODO(ijnek): Hardcoded dt for now, should figure out what to do this.
   double dt = 0.02;
 
   t += dt;
@@ -94,7 +96,8 @@ void Walk::generateCommand()
 
   if (walkOption == WALK) {
     // 5.1 Calculate the height to lift each swing foot
-    float maxFootHeight = footLiftAmp + abs(currStep.forward) * 0.01 + abs(currStep.left) * 0.03;  // ideally footLiftAmp should be smaller when the walk starts
+    // TODO(ijnek): ideally footLiftAmp should be smaller when the walk starts
+    float maxFootHeight = footLiftAmp + abs(currStep.forward) * 0.01 + abs(currStep.left) * 0.03;
     float varfootHeight = maxFootHeight * parabolicReturnMod(t / period);
     // 5.2 When walking in an arc, the outside foot needs to travel further
     //     than the inside one - void
@@ -177,6 +180,8 @@ void Walk::generateCommand()
   send_ik_command(
     generate_ik_command(
       forwardL, forwardR, leftL, leftR, foothL, foothR, turnRL));
+
+  report_current_twist(currTwist);
 }
 
 void Walk::abort()

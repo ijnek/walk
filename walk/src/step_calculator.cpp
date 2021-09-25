@@ -44,7 +44,7 @@ geometry_msgs::msg::Twist StepCalculator::calculateNext(
     logger, "current twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
     current.linear.x, current.linear.y, current.linear.z,
     current.angular.x, current.angular.y, current.angular.z);
-  
+
   RCLCPP_DEBUG(
     logger, " target twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
     target.linear.x, target.linear.y, target.linear.z,

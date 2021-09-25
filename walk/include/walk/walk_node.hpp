@@ -15,6 +15,7 @@
 #ifndef WALK__WALK_NODE_HPP_
 #define WALK__WALK_NODE_HPP_
 
+#include <memory>
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "walk_interfaces/action/crouch.hpp"
@@ -34,7 +35,7 @@ public:
 private:
   Walk walk;
 
-  // TODO (ijnek): Replace this timer with an input signal
+  // TODO(ijnek): Replace this timer with an input signal
   rclcpp::TimerBase::SharedPtr timer_;
 
   // Twist is a subscription
@@ -48,7 +49,7 @@ private:
   // rclcpp_action::Server<walk_interfaces::action::Stand>::SharedPtr action_server_stand_;
 
   rclcpp::Publisher<nao_ik_interfaces::msg::IKCommand>::SharedPtr pub_ik_command;
-  // rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist_;
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist;
   // rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_for_next_step_;
 
   // std::shared_ptr<CrouchGoalHandle> crouch_goal_handle_;
@@ -61,11 +62,11 @@ private:
     std::shared_ptr<std_srvs::srv::Empty::Response>);
 
   void send_ik_command(nao_ik_interfaces::msg::IKCommand ik_command);
+  void report_current_twist(geometry_msgs::msg::Twist current_twist);
   // void handle_accepted(
   //   const std::shared_ptr<CrouchGoalHandle> crouch_goal_handle);
 
   void target_callback(const geometry_msgs::msg::Twist::SharedPtr msg);
-
 };
 
 #endif  // WALK__WALK_NODE_HPP_

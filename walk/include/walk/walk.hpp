@@ -15,6 +15,7 @@
 #ifndef WALK__WALK_HPP_
 #define WALK__WALK_HPP_
 
+#include <map>
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "nao_ik_interfaces/msg/ik_command.hpp"
@@ -26,7 +27,8 @@ class Walk
 {
 public:
   Walk(
-    std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command);
+    std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command,
+    std::function<void(geometry_msgs::msg::Twist)> report_current_twist);
   void setParams(
     float maxForward,  // max forward velocity (m/s)
     float maxLeft,  // max side velocity (m/s)
@@ -45,6 +47,7 @@ public:
 
 private:
   std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command;
+  std::function<void(geometry_msgs::msg::Twist)> report_current_twist;
 
   enum WalkOption
   {

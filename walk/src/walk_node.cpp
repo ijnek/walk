@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
 #include "walk/walk_node.hpp"
 
 using namespace std::chrono_literals;
@@ -20,7 +21,8 @@ using namespace std::placeholders;
 WalkNode::WalkNode()
 : Node("WalkNode"),
   walk(
-    std::bind(&WalkNode::send_ik_command, this, _1))
+    std::bind(&WalkNode::send_ik_command, this, _1),
+    std::bind(&WalkNode::report_current_twist, this, _1))
 {
   float max_forward = this->declare_parameter("max_forward", 0.3);
   float max_left = this->declare_parameter("max_left", 0.2);
@@ -57,6 +59,8 @@ WalkNode::WalkNode()
 
   pub_ik_command = create_publisher<nao_ik_interfaces::msg::IKCommand>("motion/ik_command", 1);
 
+  pub_current_twist = create_publisher<geometry_msgs::msg::Twist>("motion/current_twist", 1);
+
   service_abort = create_service<std_srvs::srv::Empty>(
     "abort", std::bind(&WalkNode::abort, this, _1, _2));
 
@@ -67,7 +71,7 @@ WalkNode::WalkNode()
   //   {
   //     geometry_msgs::msg::Twist target = goal->target;
   //     RCLCPP_INFO(
-  //       get_logger(), "Recevied CrouchGoal with target linear:[%g, %g, %g], angular:[%g, %g, %g]",
+  //   get_logger(), "Recevied CrouchGoal with target linear:[%g, %g, %g], angular:[%g, %g, %g]",
   //       target.linear.x, target.linear.y, target.linear.z,
   //       target.angular.x, target.angular.y, target.angular.z);
   //     // Accept all goals
@@ -97,6 +101,13 @@ void WalkNode::send_ik_command(nao_ik_interfaces::msg::IKCommand ik_command)
   RCLCPP_DEBUG(get_logger(), "send_ik_command() called");
   pub_ik_command->publish(ik_command);
 }
+
+void WalkNode::report_current_twist(geometry_msgs::msg::Twist current_twist)
+{
+  RCLCPP_DEBUG(get_logger(), "report_current_twist() called");
+  pub_current_twist->publish(current_twist);
+}
+
 
 // void WalkNode::handle_accepted(
 //   const std::shared_ptr<CrouchGoalHandle> goal_handle)

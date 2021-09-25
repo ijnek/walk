@@ -21,9 +21,9 @@
 
 class StepCalculator
 {
-
 public:
-  StepCalculator() : logger(rclcpp::get_logger("StepCalculator")){}
+  StepCalculator()
+  : logger(rclcpp::get_logger("StepCalculator")) {}
 
   geometry_msgs::msg::Twist calculateNext(
     const geometry_msgs::msg::Twist & current,
@@ -52,12 +52,11 @@ private:
   void ellipsoidClamp(geometry_msgs::msg::Twist & target);
   void limitChange(
     geometry_msgs::msg::Twist & target,
-    const geometry_msgs::msg::Twist & current);    
+    const geometry_msgs::msg::Twist & current);
 
   float evaluateWalkVolume(float x, float y, float z);
 
   rclcpp::Logger logger;
-
 };  // namespace StepCalculator
 
 #endif  // WALK__STEP_CALCULATOR_HPP_
