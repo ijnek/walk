@@ -59,3 +59,10 @@ Start teleop to control the robot:
 ```
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=target
 ```
+
+### Additional Instructions
+
+To abort the walk immediately:
+```
+ros2 service call /abort std_srvs/srv/Empty
+```
