@@ -29,9 +29,11 @@
 
 Walk::Walk(
   std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command,
-  std::function<void(geometry_msgs::msg::Twist)> report_current_twist)
+  std::function<void(geometry_msgs::msg::Twist)> report_current_twist,
+  std::function<void(std_msgs::msg::Bool)> report_ready_to_step)
 : send_ik_command(send_ik_command),
   report_current_twist(report_current_twist),
+  report_ready_to_step(report_ready_to_step),
   logger(rclcpp::get_logger("Walk"))
 {
 }
@@ -175,13 +177,22 @@ void Walk::generateCommand()
 
       RCLCPP_DEBUG(logger, "Swing Foot has changed to: %s", isLeftPhase ? "Left" : "Right");
     }
+  } else if (walkOption == CROUCH) {
+    t = 0;
   }
 
+  // Send IK Command
   send_ik_command(
     generate_ik_command(
       forwardL, forwardR, leftL, leftR, foothL, foothR, turnRL));
 
+  // Report current twist
   report_current_twist(currTwist);
+
+  // Report ready_to_step
+  std_msgs::msg::Bool ready_to_step;
+  ready_to_step.data = (t == 0);
+  report_ready_to_step(ready_to_step);
 }
 
 void Walk::abort()

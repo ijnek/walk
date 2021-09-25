@@ -18,6 +18,7 @@
 #include <map>
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
+#include "std_msgs/msg/bool.hpp"
 #include "nao_ik_interfaces/msg/ik_command.hpp"
 #include "walk/step_variable.hpp"
 #include "walk/step_calculator.hpp"
@@ -28,7 +29,8 @@ class Walk
 public:
   Walk(
     std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command,
-    std::function<void(geometry_msgs::msg::Twist)> report_current_twist);
+    std::function<void(geometry_msgs::msg::Twist)> report_current_twist,
+    std::function<void(std_msgs::msg::Bool)> report_ready_to_step);
   void setParams(
     float maxForward,  // max forward velocity (m/s)
     float maxLeft,  // max side velocity (m/s)
@@ -48,6 +50,7 @@ public:
 private:
   std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command;
   std::function<void(geometry_msgs::msg::Twist)> report_current_twist;
+  std::function<void(std_msgs::msg::Bool)> report_ready_to_step;
 
   enum WalkOption
   {

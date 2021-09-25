@@ -21,14 +21,20 @@ protected:
   TestWalk()
   : walk(
       std::bind(&TestWalk::send_ik_command, this, std::placeholders::_1),
-      std::bind(&TestWalk::report_current_twist, this, std::placeholders::_1))
+      std::bind(&TestWalk::report_current_twist, this, std::placeholders::_1),
+      std::bind(&TestWalk::report_ready_to_step, this, std::placeholders::_1))
   {
+    // Walk params are zero by default, so this funcion must be called!
+    // For this test case, the values used are taken from the default of a NAO walk.
+    walk.setParams(0.3, 0.2, 2.0, 1.0, 0.012, 0.25, -0.18, 0.06, 0.1, 1.0);
   }
 
   void SetUp()
   {
     send_ik_commandCalled = false;
     report_current_twistCalled = false;
+    report_ready_to_stepCalled = false;
+    ready_to_stepVal = false;
   }
 
 public:
@@ -42,24 +48,35 @@ public:
     report_current_twistCalled = true;
   }
 
+  void report_ready_to_step(std_msgs::msg::Bool ready_to_step)
+  {
+    report_ready_to_stepCalled = true;
+    ready_to_stepVal = ready_to_step.data;
+  }
+
   bool send_ik_commandCalled;
   bool report_current_twistCalled;
+  bool report_ready_to_stepCalled;
+  bool ready_to_stepVal;
   Walk walk;
 };
 
 TEST_F(TestWalk, TestNotDuringWalk)
 {
   walk.generateCommand();
-  ASSERT_FALSE(send_ik_commandCalled);
-  ASSERT_FALSE(report_current_twistCalled);
+  EXPECT_FALSE(send_ik_commandCalled);
+  EXPECT_FALSE(report_current_twistCalled);
+  EXPECT_FALSE(ready_to_stepVal);
 }
 
 TEST_F(TestWalk, TestCrouch)
 {
   walk.crouch();
   walk.generateCommand();
-  ASSERT_TRUE(send_ik_commandCalled);
-  ASSERT_TRUE(report_current_twistCalled);
+  EXPECT_TRUE(send_ik_commandCalled);
+  EXPECT_TRUE(report_current_twistCalled);
+  EXPECT_TRUE(report_ready_to_stepCalled);
+  EXPECT_TRUE(ready_to_stepVal);
 }
 
 TEST_F(TestWalk, TestWalk)
@@ -67,8 +84,10 @@ TEST_F(TestWalk, TestWalk)
   geometry_msgs::msg::Twist target;
   walk.walk(target);
   walk.generateCommand();
-  ASSERT_TRUE(send_ik_commandCalled);
-  ASSERT_TRUE(report_current_twistCalled);
+  EXPECT_TRUE(send_ik_commandCalled);
+  EXPECT_TRUE(report_current_twistCalled);
+  EXPECT_TRUE(report_ready_to_stepCalled);
+  EXPECT_FALSE(ready_to_stepVal);
 }
 
 TEST_F(TestWalk, TestCrouchToAbort)
@@ -77,8 +96,10 @@ TEST_F(TestWalk, TestCrouchToAbort)
   walk.crouch();
   walk.abort();
   walk.generateCommand();
-  ASSERT_FALSE(send_ik_commandCalled);
-  ASSERT_FALSE(report_current_twistCalled);
+  EXPECT_FALSE(send_ik_commandCalled);
+  EXPECT_FALSE(report_current_twistCalled);
+  EXPECT_FALSE(report_ready_to_stepCalled);
+  EXPECT_FALSE(ready_to_stepVal);
 }
 
 TEST_F(TestWalk, TestWalkToAbort)
@@ -87,6 +108,8 @@ TEST_F(TestWalk, TestWalkToAbort)
   walk.walk(target);
   walk.abort();
   walk.generateCommand();
-  ASSERT_FALSE(send_ik_commandCalled);
-  ASSERT_FALSE(report_current_twistCalled);
+  EXPECT_FALSE(send_ik_commandCalled);
+  EXPECT_FALSE(report_current_twistCalled);
+  EXPECT_FALSE(report_ready_to_stepCalled);
+  EXPECT_FALSE(ready_to_stepVal);
 }

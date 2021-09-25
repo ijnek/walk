@@ -22,7 +22,8 @@ WalkNode::WalkNode()
 : Node("WalkNode"),
   walk(
     std::bind(&WalkNode::send_ik_command, this, _1),
-    std::bind(&WalkNode::report_current_twist, this, _1))
+    std::bind(&WalkNode::report_current_twist, this, _1),
+    std::bind(&WalkNode::report_ready_to_step, this, _1))
 {
   float max_forward = this->declare_parameter("max_forward", 0.3);
   float max_left = this->declare_parameter("max_left", 0.2);
@@ -58,8 +59,8 @@ WalkNode::WalkNode()
     "target", 10, std::bind(&WalkNode::target_callback, this, _1));
 
   pub_ik_command = create_publisher<nao_ik_interfaces::msg::IKCommand>("motion/ik_command", 1);
-
-  pub_current_twist = create_publisher<geometry_msgs::msg::Twist>("motion/current_twist", 1);
+  pub_current_twist = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
+  pub_ready_to_step = create_publisher<std_msgs::msg::Bool>("walk/ready_to_step", 1);
 
   service_abort = create_service<std_srvs::srv::Empty>(
     "abort", std::bind(&WalkNode::abort, this, _1, _2));
@@ -106,6 +107,12 @@ void WalkNode::report_current_twist(geometry_msgs::msg::Twist current_twist)
 {
   RCLCPP_DEBUG(get_logger(), "report_current_twist() called");
   pub_current_twist->publish(current_twist);
+}
+
+void WalkNode::report_ready_to_step(std_msgs::msg::Bool ready_to_step)
+{
+  RCLCPP_DEBUG(get_logger(), "report_ready_to_step() called");
+  pub_ready_to_step->publish(ready_to_step);
 }
 
 

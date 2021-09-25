@@ -50,7 +50,7 @@ private:
 
   rclcpp::Publisher<nao_ik_interfaces::msg::IKCommand>::SharedPtr pub_ik_command;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist;
-  // rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_for_next_step_;
+  rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_to_step;
 
   // std::shared_ptr<CrouchGoalHandle> crouch_goal_handle_;
 
@@ -63,6 +63,7 @@ private:
 
   void send_ik_command(nao_ik_interfaces::msg::IKCommand ik_command);
   void report_current_twist(geometry_msgs::msg::Twist current_twist);
+  void report_ready_to_step(std_msgs::msg::Bool ready_to_step);
   // void handle_accepted(
   //   const std::shared_ptr<CrouchGoalHandle> crouch_goal_handle);
 
