@@ -24,6 +24,8 @@
 
 #include "walk/walk.hpp"
 #include "walk/maths_functions.hpp"
+#include "tf2/LinearMath/Quaternion.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
 
 Walk::Walk(
   std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command)
@@ -118,10 +120,10 @@ void Walk::generateCommand()
         // 5.3.5L turn (note, we achieve correct turn by splitting turn foot placement unevely over
         //        two steps, but 1.6 + 0.4 = 2 and adds up to two steps worth of turn)
         if (currStep.turn < 0) {
-          turnRL = turnRL0 + (-1.6 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
-        } else {
           // turn back to restore previous turn angle
-          turnRL = turnRL0 + (-0.4 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
+          turnRL = turnRL0 + (0.4 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
+        } else {
+          turnRL = turnRL0 + (1.6 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
         }
       }
       // 5.3.6L determine how high to lift the swing foot off the ground
@@ -148,10 +150,10 @@ void Walk::generateCommand()
         }
         // 5.3.5R turn
         if (currStep.turn < 0) {
-          // turn back to restore previous turn angle
-          turnRL = turnRL0 + (0.4 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
+          turnRL = turnRL0 + (-1.6 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
         } else {
-          turnRL = turnRL0 + (1.6 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
+          // turn back to restore previous turn angle
+          turnRL = turnRL0 + (-0.4 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
         }
         // 5.3.6R Foot height
       }
@@ -167,27 +169,14 @@ void Walk::generateCommand()
       leftR0 = leftR;
       isLeftPhase = !isLeftPhase;
       t = 0;
+
+      RCLCPP_DEBUG(logger, "Swing Foot has changed to: %s", isLeftPhase ? "Left" : "Right");
     }
   }
 
-  nao_ik_interfaces::msg::IKCommand command;
-  command.left_ankle.position.x = forwardL;
-  command.left_ankle.position.y = leftL + 0.050;
-  command.left_ankle.position.z = ankleZ + foothL;
-  command.right_ankle.position.x = forwardR;
-  command.right_ankle.position.y = leftR - 0.050;
-  command.right_ankle.position.z = ankleZ + foothR;
-
-  RCLCPP_DEBUG(
-    logger, "Sending IKCommand: %f, %f, %f, %f, %f, %f",
-    command.left_ankle.position.x,
-    command.left_ankle.position.y,
-    command.left_ankle.position.z,
-    command.right_ankle.position.x,
-    command.right_ankle.position.y,
-    command.right_ankle.position.z);
-
-  send_ik_command(command);
+  send_ik_command(
+    generate_ik_command(
+      forwardL, forwardR, leftL, leftR, foothL, foothR, turnRL));
 }
 
 void Walk::abort()
@@ -208,4 +197,60 @@ void Walk::walk(const geometry_msgs::msg::Twist & target)
   duringWalk = true;
   targetWalkOption = WALK;
   this->target = target;
+}
+
+
+nao_ik_interfaces::msg::IKCommand Walk::generate_ik_command(
+  float forwardL, float forwardR, float leftL,
+  float leftR, float foothL, float foothR, float turnRL)
+{
+  // Evaluate position and angle of both feet
+  float left_ankle_pos_x = forwardL;
+  float left_ankle_pos_y = leftL + 0.050;
+  float left_ankle_pos_z = ankleZ + foothL;
+  float left_ankle_ang_x = 0;
+  float left_ankle_ang_y = 0;
+  float left_ankle_ang_z = turnRL;
+
+  float right_ankle_pos_x = forwardR;
+  float right_ankle_pos_y = leftR - 0.050;
+  float right_ankle_pos_z = ankleZ + foothR;
+  float right_ankle_ang_x = 0;
+  float right_ankle_ang_y = 0;
+  float right_ankle_ang_z = -turnRL;
+
+  RCLCPP_DEBUG(logger, "Sending IKCommand with:");
+  RCLCPP_DEBUG(
+    logger,
+    "   LEFT - Position: (%.4f, %.4f, %.4f), Rotation: (%.4f, %.4f, %.4f)",
+    left_ankle_pos_x, left_ankle_pos_y, left_ankle_pos_z,
+    left_ankle_ang_x, left_ankle_ang_y, left_ankle_ang_z);
+  RCLCPP_DEBUG(
+    logger,
+    "  RIGHT - Position: (%.4f, %.4f, %.4f), Rotation: (%.4f, %.4f, %.4f)",
+    right_ankle_pos_x, right_ankle_pos_y, right_ankle_pos_z,
+    right_ankle_ang_x, right_ankle_ang_y, right_ankle_ang_z);
+
+  nao_ik_interfaces::msg::IKCommand command;
+  command.left_ankle.position.x = left_ankle_pos_x;
+  command.left_ankle.position.y = left_ankle_pos_y;
+  command.left_ankle.position.z = left_ankle_pos_z;
+  command.left_ankle.orientation = rpy_to_geometry_quat(
+    left_ankle_ang_x, left_ankle_ang_y, left_ankle_ang_z);
+  command.right_ankle.position.x = right_ankle_pos_x;
+  command.right_ankle.position.y = right_ankle_pos_y;
+  command.right_ankle.position.z = right_ankle_pos_z;
+  command.right_ankle.orientation = rpy_to_geometry_quat(
+    right_ankle_ang_x, right_ankle_ang_y, right_ankle_ang_z);
+
+  return command;
+}
+
+geometry_msgs::msg::Quaternion Walk::rpy_to_geometry_quat(
+  double roll, double pitch, double yaw)
+{
+  tf2::Quaternion quat;
+  quat.setRPY(roll, pitch, yaw);
+  geometry_msgs::msg::Quaternion geometry_quat = tf2::toMsg(quat);
+  return geometry_quat;
 }

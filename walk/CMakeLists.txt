@@ -12,6 +12,8 @@ find_package(rclcpp_action REQUIRED)
 find_package(walk_interfaces REQUIRED)
 find_package(nao_ik_interfaces REQUIRED)
 find_package(std_srvs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 
 # Include hpp files
 include_directories(
@@ -30,7 +32,9 @@ ament_target_dependencies(walk_lib
   rclcpp_action
   walk_interfaces
   nao_ik_interfaces
-  std_srvs)
+  std_srvs
+  tf2
+  tf2_geometry_msgs)
 
 # Build walk executable
 add_executable(walk

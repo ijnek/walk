@@ -52,7 +52,7 @@ private:
     WALK = 2,
   };
 
-  const std::map<WalkOption, const char*> walkOptionToString = {
+  const std::map<WalkOption, const char *> walkOptionToString = {
     {WalkOption::CROUCH, "CROUCH"},
     {WalkOption::WALK, "WALK"}};
 
@@ -78,6 +78,11 @@ private:
   float period;
   float ankleZ;
   float footLiftAmp;
+
+  nao_ik_interfaces::msg::IKCommand generate_ik_command(
+    float forwardL, float forwardR, float leftL,
+    float leftR, float foothL, float foothR, float turnRL);
+  geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, double yaw);
 };
 
 #endif  // WALK__WALK_HPP_
