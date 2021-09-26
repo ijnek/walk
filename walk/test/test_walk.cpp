@@ -20,7 +20,7 @@ class TestWalk : public ::testing::Test
 protected:
   TestWalk()
   : walk(
-      std::bind(&TestWalk::send_ik_command, this, std::placeholders::_1),
+      std::bind(&TestWalk::send_ankle_poses, this, std::placeholders::_1),
       std::bind(&TestWalk::report_current_twist, this, std::placeholders::_1),
       std::bind(&TestWalk::report_ready_to_step, this, std::placeholders::_1))
   {
@@ -31,16 +31,16 @@ protected:
 
   void SetUp()
   {
-    send_ik_commandCalled = false;
+    send_ankle_posesCalled = false;
     report_current_twistCalled = false;
     report_ready_to_stepCalled = false;
     ready_to_stepVal = false;
   }
 
 public:
-  void send_ik_command(nao_ik_interfaces::msg::IKCommand)
+  void send_ankle_poses(biped_interfaces::msg::AnklePoses)
   {
-    send_ik_commandCalled = true;
+    send_ankle_posesCalled = true;
   }
 
   void report_current_twist(geometry_msgs::msg::Twist)
@@ -54,7 +54,7 @@ public:
     ready_to_stepVal = ready_to_step.data;
   }
 
-  bool send_ik_commandCalled;
+  bool send_ankle_posesCalled;
   bool report_current_twistCalled;
   bool report_ready_to_stepCalled;
   bool ready_to_stepVal;
@@ -64,7 +64,7 @@ public:
 TEST_F(TestWalk, TestNotDuringWalk)
 {
   walk.generateCommand();
-  EXPECT_FALSE(send_ik_commandCalled);
+  EXPECT_FALSE(send_ankle_posesCalled);
   EXPECT_FALSE(report_current_twistCalled);
   EXPECT_FALSE(ready_to_stepVal);
 }
@@ -73,7 +73,7 @@ TEST_F(TestWalk, TestCrouch)
 {
   walk.crouch();
   walk.generateCommand();
-  EXPECT_TRUE(send_ik_commandCalled);
+  EXPECT_TRUE(send_ankle_posesCalled);
   EXPECT_TRUE(report_current_twistCalled);
   EXPECT_TRUE(report_ready_to_stepCalled);
   EXPECT_TRUE(ready_to_stepVal);
@@ -84,7 +84,7 @@ TEST_F(TestWalk, TestWalk)
   geometry_msgs::msg::Twist target;
   walk.walk(target);
   walk.generateCommand();
-  EXPECT_TRUE(send_ik_commandCalled);
+  EXPECT_TRUE(send_ankle_posesCalled);
   EXPECT_TRUE(report_current_twistCalled);
   EXPECT_TRUE(report_ready_to_stepCalled);
   EXPECT_FALSE(ready_to_stepVal);
@@ -96,7 +96,7 @@ TEST_F(TestWalk, TestCrouchToAbort)
   walk.crouch();
   walk.abort();
   walk.generateCommand();
-  EXPECT_FALSE(send_ik_commandCalled);
+  EXPECT_FALSE(send_ankle_posesCalled);
   EXPECT_FALSE(report_current_twistCalled);
   EXPECT_FALSE(report_ready_to_stepCalled);
   EXPECT_FALSE(ready_to_stepVal);
@@ -108,7 +108,7 @@ TEST_F(TestWalk, TestWalkToAbort)
   walk.walk(target);
   walk.abort();
   walk.generateCommand();
-  EXPECT_FALSE(send_ik_commandCalled);
+  EXPECT_FALSE(send_ankle_posesCalled);
   EXPECT_FALSE(report_current_twistCalled);
   EXPECT_FALSE(report_ready_to_stepCalled);
   EXPECT_FALSE(ready_to_stepVal);

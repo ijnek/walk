@@ -15,7 +15,7 @@ Start simulator:
 rcsoccersim3d
 ```
 
-Launch robot in simulator:
+Launch NAO in simulator:
 ```
 ros2 run rcss3d_nao rcss3d_nao
 ```
@@ -27,7 +27,7 @@ ros2 run nao_ik ik_node
 
 Make robot crouch with:
 ```
-ros2 topic pub --once /motion/ik_command nao_ik_interfaces/msg/IKCommand "left_ankle:
+ros2 topic pub --once /motion/ankle_poses biped_interfaces/msg/AnklePoses "l_ankle:
   position:
     x: 0.0
     y: 0.05
@@ -37,7 +37,7 @@ ros2 topic pub --once /motion/ik_command nao_ik_interfaces/msg/IKCommand "left_a
     y: 0.0
     z: 0.0
     w: 1.0
-right_ankle:
+r_ankle:
   position:
     x: 0.0
     y: -0.05

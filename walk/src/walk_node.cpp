@@ -21,7 +21,7 @@ using namespace std::placeholders;
 WalkNode::WalkNode()
 : Node("WalkNode"),
   walk(
-    std::bind(&WalkNode::send_ik_command, this, _1),
+    std::bind(&WalkNode::send_ankle_poses, this, _1),
     std::bind(&WalkNode::report_current_twist, this, _1),
     std::bind(&WalkNode::report_ready_to_step, this, _1))
 {
@@ -58,7 +58,7 @@ WalkNode::WalkNode()
   sub_target = this->create_subscription<geometry_msgs::msg::Twist>(
     "target", 10, std::bind(&WalkNode::target_callback, this, _1));
 
-  pub_ik_command = create_publisher<nao_ik_interfaces::msg::IKCommand>("motion/ik_command", 1);
+  pub_ankle_poses = create_publisher<biped_interfaces::msg::AnklePoses>("motion/ankle_poses", 1);
   pub_current_twist = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
   pub_ready_to_step = create_publisher<std_msgs::msg::Bool>("walk/ready_to_step", 1);
 
@@ -97,10 +97,10 @@ void WalkNode::abort(
   walk.abort();
 }
 
-void WalkNode::send_ik_command(nao_ik_interfaces::msg::IKCommand ik_command)
+void WalkNode::send_ankle_poses(biped_interfaces::msg::AnklePoses ankle_poses)
 {
-  RCLCPP_DEBUG(get_logger(), "send_ik_command() called");
-  pub_ik_command->publish(ik_command);
+  RCLCPP_DEBUG(get_logger(), "send_ankle_poses() called");
+  pub_ankle_poses->publish(ankle_poses);
 }
 
 void WalkNode::report_current_twist(geometry_msgs::msg::Twist current_twist)

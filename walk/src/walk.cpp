@@ -28,10 +28,10 @@
 #include "tf2_geometry_msgs/tf2_geometry_msgs.h"
 
 Walk::Walk(
-  std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command,
+  std::function<void(biped_interfaces::msg::AnklePoses)> send_ankle_poses,
   std::function<void(geometry_msgs::msg::Twist)> report_current_twist,
   std::function<void(std_msgs::msg::Bool)> report_ready_to_step)
-: send_ik_command(send_ik_command),
+: send_ankle_poses(send_ankle_poses),
   report_current_twist(report_current_twist),
   report_ready_to_step(report_ready_to_step),
   logger(rclcpp::get_logger("Walk"))
@@ -182,8 +182,8 @@ void Walk::generateCommand()
   }
 
   // Send IK Command
-  send_ik_command(
-    generate_ik_command(
+  send_ankle_poses(
+    generate_ankle_poses(
       forwardL, forwardR, leftL, leftR, foothL, foothR, turnRL));
 
   // Report current twist
@@ -216,48 +216,48 @@ void Walk::walk(const geometry_msgs::msg::Twist & target)
 }
 
 
-nao_ik_interfaces::msg::IKCommand Walk::generate_ik_command(
+biped_interfaces::msg::AnklePoses Walk::generate_ankle_poses(
   float forwardL, float forwardR, float leftL,
   float leftR, float foothL, float foothR, float turnRL)
 {
   // Evaluate position and angle of both feet
-  float left_ankle_pos_x = forwardL;
-  float left_ankle_pos_y = leftL + 0.050;
-  float left_ankle_pos_z = ankleZ + foothL;
-  float left_ankle_ang_x = 0;
-  float left_ankle_ang_y = 0;
-  float left_ankle_ang_z = turnRL;
+  float l_ankle_pos_x = forwardL;
+  float l_ankle_pos_y = leftL + 0.050;
+  float l_ankle_pos_z = ankleZ + foothL;
+  float l_ankle_ang_x = 0;
+  float l_ankle_ang_y = 0;
+  float l_ankle_ang_z = turnRL;
 
-  float right_ankle_pos_x = forwardR;
-  float right_ankle_pos_y = leftR - 0.050;
-  float right_ankle_pos_z = ankleZ + foothR;
-  float right_ankle_ang_x = 0;
-  float right_ankle_ang_y = 0;
-  float right_ankle_ang_z = -turnRL;
+  float r_ankle_pos_x = forwardR;
+  float r_ankle_pos_y = leftR - 0.050;
+  float r_ankle_pos_z = ankleZ + foothR;
+  float r_ankle_ang_x = 0;
+  float r_ankle_ang_y = 0;
+  float r_ankle_ang_z = -turnRL;
 
   RCLCPP_DEBUG(logger, "Sending IKCommand with:");
   RCLCPP_DEBUG(
     logger,
     "   LEFT - Position: (%.4f, %.4f, %.4f), Rotation: (%.4f, %.4f, %.4f)",
-    left_ankle_pos_x, left_ankle_pos_y, left_ankle_pos_z,
-    left_ankle_ang_x, left_ankle_ang_y, left_ankle_ang_z);
+    l_ankle_pos_x, l_ankle_pos_y, l_ankle_pos_z,
+    l_ankle_ang_x, l_ankle_ang_y, l_ankle_ang_z);
   RCLCPP_DEBUG(
     logger,
     "  RIGHT - Position: (%.4f, %.4f, %.4f), Rotation: (%.4f, %.4f, %.4f)",
-    right_ankle_pos_x, right_ankle_pos_y, right_ankle_pos_z,
-    right_ankle_ang_x, right_ankle_ang_y, right_ankle_ang_z);
+    r_ankle_pos_x, r_ankle_pos_y, r_ankle_pos_z,
+    r_ankle_ang_x, r_ankle_ang_y, r_ankle_ang_z);
 
-  nao_ik_interfaces::msg::IKCommand command;
-  command.left_ankle.position.x = left_ankle_pos_x;
-  command.left_ankle.position.y = left_ankle_pos_y;
-  command.left_ankle.position.z = left_ankle_pos_z;
-  command.left_ankle.orientation = rpy_to_geometry_quat(
-    left_ankle_ang_x, left_ankle_ang_y, left_ankle_ang_z);
-  command.right_ankle.position.x = right_ankle_pos_x;
-  command.right_ankle.position.y = right_ankle_pos_y;
-  command.right_ankle.position.z = right_ankle_pos_z;
-  command.right_ankle.orientation = rpy_to_geometry_quat(
-    right_ankle_ang_x, right_ankle_ang_y, right_ankle_ang_z);
+  biped_interfaces::msg::AnklePoses command;
+  command.l_ankle.position.x = l_ankle_pos_x;
+  command.l_ankle.position.y = l_ankle_pos_y;
+  command.l_ankle.position.z = l_ankle_pos_z;
+  command.l_ankle.orientation = rpy_to_geometry_quat(
+    l_ankle_ang_x, l_ankle_ang_y, l_ankle_ang_z);
+  command.r_ankle.position.x = r_ankle_pos_x;
+  command.r_ankle.position.y = r_ankle_pos_y;
+  command.r_ankle.position.z = r_ankle_pos_z;
+  command.r_ankle.orientation = rpy_to_geometry_quat(
+    r_ankle_ang_x, r_ankle_ang_y, r_ankle_ang_z);
 
   return command;
 }

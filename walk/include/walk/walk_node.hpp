@@ -20,7 +20,7 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "walk_interfaces/action/crouch.hpp"
 #include "walk_interfaces/action/stand.hpp"
-#include "nao_ik_interfaces/msg/ik_command.hpp"
+#include "biped_interfaces/msg/ankle_poses.hpp"
 #include "walk/walk.hpp"
 #include "std_srvs/srv/empty.hpp"
 
@@ -48,7 +48,7 @@ private:
   // rclcpp_action::Server<walk_interfaces::action::Crouch>::SharedPtr action_server_crouch_;
   // rclcpp_action::Server<walk_interfaces::action::Stand>::SharedPtr action_server_stand_;
 
-  rclcpp::Publisher<nao_ik_interfaces::msg::IKCommand>::SharedPtr pub_ik_command;
+  rclcpp::Publisher<biped_interfaces::msg::AnklePoses>::SharedPtr pub_ankle_poses;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist;
   rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_to_step;
 
@@ -61,7 +61,7 @@ private:
     const std::shared_ptr<std_srvs::srv::Empty::Request>,
     std::shared_ptr<std_srvs::srv::Empty::Response>);
 
-  void send_ik_command(nao_ik_interfaces::msg::IKCommand ik_command);
+  void send_ankle_poses(biped_interfaces::msg::AnklePoses ankle_poses);
   void report_current_twist(geometry_msgs::msg::Twist current_twist);
   void report_ready_to_step(std_msgs::msg::Bool ready_to_step);
   // void handle_accepted(

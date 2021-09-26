@@ -15,7 +15,7 @@
   <depend>rclcpp</depend>
   <depend>rclcpp_action</depend>
   <depend>walk_interfaces</depend>
-  <depend>nao_ik_interfaces</depend>
+  <depend>biped_interfaces</depend>
   <depend>std_srvs</depend>
   <depend>std_msgs</depend>
   <depend>tf2</depend>

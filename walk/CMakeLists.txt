@@ -10,7 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(walk_interfaces REQUIRED)
-find_package(nao_ik_interfaces REQUIRED)
+find_package(biped_interfaces REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(tf2 REQUIRED)
@@ -32,7 +32,7 @@ ament_target_dependencies(walk_lib
   rclcpp
   rclcpp_action
   walk_interfaces
-  nao_ik_interfaces
+  biped_interfaces
   std_srvs
   std_msgs
   tf2

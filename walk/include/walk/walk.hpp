@@ -19,7 +19,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "std_msgs/msg/bool.hpp"
-#include "nao_ik_interfaces/msg/ik_command.hpp"
+#include "biped_interfaces/msg/ankle_poses.hpp"
 #include "walk/step_variable.hpp"
 #include "walk/step_calculator.hpp"
 
@@ -28,7 +28,7 @@ class Walk
 {
 public:
   Walk(
-    std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command,
+    std::function<void(biped_interfaces::msg::AnklePoses)> send_ankle_poses,
     std::function<void(geometry_msgs::msg::Twist)> report_current_twist,
     std::function<void(std_msgs::msg::Bool)> report_ready_to_step);
   void setParams(
@@ -48,7 +48,7 @@ public:
   void crouch();
 
 private:
-  std::function<void(nao_ik_interfaces::msg::IKCommand)> send_ik_command;
+  std::function<void(biped_interfaces::msg::AnklePoses)> send_ankle_poses;
   std::function<void(geometry_msgs::msg::Twist)> report_current_twist;
   std::function<void(std_msgs::msg::Bool)> report_ready_to_step;
 
@@ -85,7 +85,7 @@ private:
   float ankleZ;
   float footLiftAmp;
 
-  nao_ik_interfaces::msg::IKCommand generate_ik_command(
+  biped_interfaces::msg::AnklePoses generate_ankle_poses(
     float forwardL, float forwardR, float leftL,
     float leftR, float foothL, float foothR, float turnRL);
   geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, double yaw);
