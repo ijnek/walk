@@ -38,6 +38,8 @@ public:
     float speedMultiplier,  // how much to multiple speed by (0.0 - 1.0)
     float footLiftAmp,  // how much to raise foot when it is highest (m)
     float period,  // time taken for one step, (s)
+    float ankleX,  // x coordinate of ankle from hip when standing (m)
+    float ankleY,  // y coordinate of ankle from hip when standing (m)
     float ankleZ,  // z coordinate of ankle from hip when standing (m)
     float maxForwardChange,  // how much forward can change in one step (m/s)
     float maxLeftChange,  // how much left can change in one step (m/s)
@@ -82,6 +84,8 @@ private:
   rclcpp::Logger logger;
 
   float period;
+  float ankleX;
+  float ankleY;
   float ankleZ;
   float footLiftAmp;
 

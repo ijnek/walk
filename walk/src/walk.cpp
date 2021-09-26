@@ -40,9 +40,12 @@ Walk::Walk(
 
 void Walk::setParams(
   float maxForward, float maxLeft, float maxTurn, float speedMultiplier, float footLiftAmp,
-  float period, float ankleZ, float maxForwardChange, float maxLeftChange, float maxTurnChange)
+  float period, float ankleX, float ankleY, float ankleZ, float maxForwardChange,
+  float maxLeftChange, float maxTurnChange)
 {
   this->period = period;
+  this->ankleX = ankleX;
+  this->ankleY = ankleY;
   this->ankleZ = ankleZ;
   this->footLiftAmp = footLiftAmp;
   stepCalculator.setParams(
@@ -221,16 +224,16 @@ biped_interfaces::msg::AnklePoses Walk::generate_ankle_poses(
   float leftR, float foothL, float foothR, float turnRL)
 {
   // Evaluate position and angle of both feet
-  float l_ankle_pos_x = forwardL;
-  float l_ankle_pos_y = leftL + 0.050;
-  float l_ankle_pos_z = ankleZ + foothL;
+  float l_ankle_pos_x = forwardL + ankleX;
+  float l_ankle_pos_y = leftL + ankleY;
+  float l_ankle_pos_z = foothL + ankleZ;
   float l_ankle_ang_x = 0;
   float l_ankle_ang_y = 0;
   float l_ankle_ang_z = turnRL;
 
-  float r_ankle_pos_x = forwardR;
-  float r_ankle_pos_y = leftR - 0.050;
-  float r_ankle_pos_z = ankleZ + foothR;
+  float r_ankle_pos_x = forwardR + ankleX;
+  float r_ankle_pos_y = leftR - ankleY;
+  float r_ankle_pos_z = foothR + ankleZ;
   float r_ankle_ang_x = 0;
   float r_ankle_ang_y = 0;
   float r_ankle_ang_z = -turnRL;
