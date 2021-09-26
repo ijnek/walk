@@ -1,5 +1,5 @@
 repositories:
   biped_interfaces:
     type: git
-    url: git@github.com:ijnek/biped_interfaces.git
+    url: https://github.com/ijnek/biped_interfaces.git
     verson: rolling
