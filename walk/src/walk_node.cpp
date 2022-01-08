@@ -102,19 +102,19 @@ void WalkNode::abort(
   walk->abort();
 }
 
-void WalkNode::send_ankle_poses(biped_interfaces::msg::AnklePoses ankle_poses)
+void WalkNode::send_ankle_poses(const biped_interfaces::msg::AnklePoses & ankle_poses)
 {
   RCLCPP_DEBUG(get_logger(), "send_ankle_poses() called");
   pub_ankle_poses->publish(ankle_poses);
 }
 
-void WalkNode::report_current_twist(geometry_msgs::msg::Twist current_twist)
+void WalkNode::report_current_twist(const geometry_msgs::msg::Twist & current_twist)
 {
   RCLCPP_DEBUG(get_logger(), "report_current_twist() called");
   pub_current_twist->publish(current_twist);
 }
 
-void WalkNode::report_ready_to_step(std_msgs::msg::Bool ready_to_step)
+void WalkNode::report_ready_to_step(const std_msgs::msg::Bool & ready_to_step)
 {
   RCLCPP_DEBUG(get_logger(), "report_ready_to_step() called");
   pub_ready_to_step->publish(ready_to_step);
