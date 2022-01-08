@@ -25,7 +25,7 @@
 #include "walk/walk.hpp"
 #include "walk/maths_functions.hpp"
 #include "tf2/LinearMath/Quaternion.h"
-#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
 
 Walk::Walk(
   std::function<void(biped_interfaces::msg::AnklePoses)> send_ankle_poses,
