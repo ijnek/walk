@@ -38,17 +38,17 @@ protected:
   }
 
 public:
-  void send_ankle_poses(biped_interfaces::msg::AnklePoses)
+  void send_ankle_poses(const biped_interfaces::msg::AnklePoses &)
   {
     send_ankle_posesCalled = true;
   }
 
-  void report_current_twist(geometry_msgs::msg::Twist)
+  void report_current_twist(const geometry_msgs::msg::Twist &)
   {
     report_current_twistCalled = true;
   }
 
-  void report_ready_to_step(std_msgs::msg::Bool ready_to_step)
+  void report_ready_to_step(const std_msgs::msg::Bool & ready_to_step)
   {
     report_ready_to_stepCalled = true;
     ready_to_stepVal = ready_to_step.data;

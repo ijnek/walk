@@ -31,9 +31,9 @@
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 
 Walk::Walk(
-  std::function<void(biped_interfaces::msg::AnklePoses)> send_ankle_poses,
-  std::function<void(geometry_msgs::msg::Twist)> report_current_twist,
-  std::function<void(std_msgs::msg::Bool)> report_ready_to_step)
+  std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses,
+  std::function<void(const geometry_msgs::msg::Twist &)> report_current_twist,
+  std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step)
 : send_ankle_poses(send_ankle_poses),
   report_current_twist(report_current_twist),
   report_ready_to_step(report_ready_to_step),
