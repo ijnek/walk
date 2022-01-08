@@ -16,12 +16,14 @@
 #define WALK__WALK_HPP_
 
 #include <map>
+#include <memory>
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "std_msgs/msg/bool.hpp"
 #include "biped_interfaces/msg/ankle_poses.hpp"
-#include "walk/step_variable.hpp"
-#include "walk/step_calculator.hpp"
+
+class StepVariable;
+class StepCalculator;
 
 
 class Walk
@@ -66,9 +68,9 @@ private:
 
   WalkOption walkOption = CROUCH;
   geometry_msgs::msg::Twist currTwist;
-  StepVariable currStep;
+  std::shared_ptr<StepVariable> currStep;
 
-  StepCalculator stepCalculator;
+  std::shared_ptr<StepCalculator> stepCalculator;
 
   float t = 0.0;
   float forwardL0, forwardR0, leftL0, leftR0, turnRL0;

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <gtest/gtest.h>
-#include "walk/step_calculator.hpp"
+#include "../src/step_calculator.hpp"
 
 TEST(TestStepCalculator, TestForward)
 {

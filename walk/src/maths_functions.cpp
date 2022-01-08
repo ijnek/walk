@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "walk/maths_functions.hpp"
+#include "./maths_functions.hpp"
 
 float parabolicStep(float dt, float time, float period, float deadTimeFraction)
 {

@@ -22,8 +22,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
 #include "walk/walk.hpp"
-#include "walk/maths_functions.hpp"
+#include "./step_variable.hpp"
+#include "./step_calculator.hpp"
+#include "./maths_functions.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 
@@ -34,6 +37,8 @@ Walk::Walk(
 : send_ankle_poses(send_ankle_poses),
   report_current_twist(report_current_twist),
   report_ready_to_step(report_ready_to_step),
+  currStep(std::make_shared<StepVariable>()),
+  stepCalculator(std::make_shared<StepCalculator>()),
   logger(rclcpp::get_logger("Walk"))
 {
 }
@@ -48,7 +53,7 @@ void Walk::setParams(
   this->ankleY = ankleY;
   this->ankleZ = ankleZ;
   this->footLiftAmp = footLiftAmp;
-  stepCalculator.setParams(
+  stepCalculator->setParams(
     maxForward, maxLeft, maxTurn, speedMultiplier, footLiftAmp,
     maxForwardChange, maxLeftChange, maxTurnChange);
 }
@@ -72,21 +77,21 @@ void Walk::generateCommand()
         walkOption = WALK;
         RCLCPP_DEBUG(logger, "walkOption changed to %s", walkOptionToString.at(walkOption));
       }
-      currTwist = stepCalculator.calculateNext(currTwist, target);
+      currTwist = stepCalculator->calculateNext(currTwist, target);
     } else if (targetWalkOption == CROUCH) {
       if (walkOption == WALK) {
-        currTwist = stepCalculator.calculateNext(currTwist, target);
+        currTwist = stepCalculator->calculateNext(currTwist, target);
       }
     }
 
     // Calculate currStep
-    currStep.forward = currTwist.linear.x * period;
-    currStep.left = currTwist.linear.y * period;
-    currStep.turn = currTwist.angular.z * period;
+    currStep->forward = currTwist.linear.x * period;
+    currStep->left = currTwist.linear.y * period;
+    currStep->turn = currTwist.angular.z * period;
 
     RCLCPP_DEBUG(
       logger, "Next step: (%gm, %gm, %grad) with legLift: %gm",
-      currStep.forward, currStep.left, currStep.turn, currStep.legLift);
+      currStep->forward, currStep->left, currStep->turn, currStep->legLift);
   }
 
   RCLCPP_DEBUG(logger, "Executing walkOption: %s", walkOptionToString.at(walkOption));
@@ -102,7 +107,7 @@ void Walk::generateCommand()
   if (walkOption == WALK) {
     // 5.1 Calculate the height to lift each swing foot
     // TODO(ijnek): ideally footLiftAmp should be smaller when the walk starts
-    float maxFootHeight = footLiftAmp + abs(currStep.forward) * 0.01 + abs(currStep.left) * 0.03;
+    float maxFootHeight = footLiftAmp + abs(currStep->forward) * 0.01 + abs(currStep->left) * 0.03;
     float varfootHeight = maxFootHeight * parabolicReturnMod(t / period);
     // 5.2 When walking in an arc, the outside foot needs to travel further
     //     than the inside one - void
@@ -111,15 +116,15 @@ void Walk::generateCommand()
     if (isLeftPhase) {                 // if the support foot is right
       if (weightHasShifted) {
         // 5.3.1L forward (the / by 2 is because the CoM moves as well and forwardL is wrt the CoM
-        forwardR = forwardR0 + (-(currStep.forward / 2) - forwardR0) * linearStep(t, period);
+        forwardR = forwardR0 + (-(currStep->forward / 2) - forwardR0) * linearStep(t, period);
         // swing-foot follow-through
         forwardL = forwardL0 +
-          parabolicStep(dt, t, period, 0) * (currStep.forward / 2 - forwardL0);
+          parabolicStep(dt, t, period, 0) * (currStep->forward / 2 - forwardL0);
         // 5.3.2L Jab kick with left foot - removed
         // 5.3.3L Determine how much to lean from side to side - removed
         // 5.3.4L left
-        if (currStep.left > 0) {
-          leftL = leftL0 + (currStep.left - leftL0) * parabolicStep(dt, t, period, 0.2);
+        if (currStep->left > 0) {
+          leftL = leftL0 + (currStep->left - leftL0) * parabolicStep(dt, t, period, 0.2);
           leftR = -leftL;
         } else {
           leftL = leftL0 * (1 - parabolicStep(dt, t, period, 0.0));
@@ -127,11 +132,11 @@ void Walk::generateCommand()
         }
         // 5.3.5L turn (note, we achieve correct turn by splitting turn foot placement unevely over
         //        two steps, but 1.6 + 0.4 = 2 and adds up to two steps worth of turn)
-        if (currStep.turn < 0) {
+        if (currStep->turn < 0) {
           // turn back to restore previous turn angle
-          turnRL = turnRL0 + (0.4 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
+          turnRL = turnRL0 + (0.4 * currStep->turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
         } else {
-          turnRL = turnRL0 + (1.6 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
+          turnRL = turnRL0 + (1.6 * currStep->turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
         }
       }
       // 5.3.6L determine how high to lift the swing foot off the ground
@@ -142,26 +147,26 @@ void Walk::generateCommand()
     if (!isLeftPhase) {              // if the support foot is left
       if (weightHasShifted) {
         // 5.3.1R forward
-        forwardL = forwardL0 + (-(currStep.forward / 2) - forwardL0) * linearStep(t, period);
+        forwardL = forwardL0 + (-(currStep->forward / 2) - forwardL0) * linearStep(t, period);
         // swing-foot follow-through
         forwardR = forwardR0 +
-          parabolicStep(dt, t, period, 0) * (currStep.forward / 2 - forwardR0);
+          parabolicStep(dt, t, period, 0) * (currStep->forward / 2 - forwardR0);
         // 5.3.2R Jab-Kick with right foot - removed
         // 5.3.3R lean - not used
         // 5.3.4R left
-        if (currStep.left < 0) {
-          leftR = leftR0 + (currStep.left - leftR0) * parabolicStep(dt, t, period, 0.2);
+        if (currStep->left < 0) {
+          leftR = leftR0 + (currStep->left - leftR0) * parabolicStep(dt, t, period, 0.2);
           leftL = -leftR;
         } else {
           leftR = leftR0 * (1 - parabolicStep(dt, t, period, 0.0));
           leftL = -leftR;
         }
         // 5.3.5R turn
-        if (currStep.turn < 0) {
-          turnRL = turnRL0 + (-1.6 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
+        if (currStep->turn < 0) {
+          turnRL = turnRL0 + (-1.6 * currStep->turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
         } else {
           // turn back to restore previous turn angle
-          turnRL = turnRL0 + (-0.4 * currStep.turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
+          turnRL = turnRL0 + (-0.4 * currStep->turn - turnRL0) * parabolicStep(dt, t, period, 0.0);
         }
         // 5.3.6R Foot height
       }

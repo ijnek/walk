@@ -21,8 +21,12 @@
 #include "walk_interfaces/action/crouch.hpp"
 #include "walk_interfaces/action/stand.hpp"
 #include "biped_interfaces/msg/ankle_poses.hpp"
-#include "walk/walk.hpp"
 #include "std_srvs/srv/empty.hpp"
+#include "std_msgs/msg/bool.hpp"
+#include "geometry_msgs/msg/twist.hpp"
+
+
+class Walk;
 
 class WalkNode : public rclcpp::Node
 {
@@ -33,7 +37,7 @@ public:
   WalkNode();
 
 private:
-  Walk walk;
+  std::shared_ptr<Walk> walk;
 
   // TODO(ijnek): Replace this timer with an input signal
   rclcpp::TimerBase::SharedPtr timer_;
