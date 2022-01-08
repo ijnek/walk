@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rclcpp/rclcpp.hpp"
-#include "walk/step_variable.hpp"
-#include "geometry_msgs/msg/twist.hpp"
+#ifndef STEP_CALCULATOR_HPP_
+#define STEP_CALCULATOR_HPP_
 
-#ifndef WALK__STEP_CALCULATOR_HPP_
-#define WALK__STEP_CALCULATOR_HPP_
+#include "rclcpp/rclcpp.hpp"
+#include "geometry_msgs/msg/twist.hpp"
 
 class StepCalculator
 {
@@ -59,4 +58,4 @@ private:
   rclcpp::Logger logger;
 };  // namespace StepCalculator
 
-#endif  // WALK__STEP_CALCULATOR_HPP_
+#endif  // STEP_CALCULATOR_HPP_

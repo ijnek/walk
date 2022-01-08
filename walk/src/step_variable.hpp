@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WALK__MATHS_FUNCTIONS_HPP_
-#define WALK__MATHS_FUNCTIONS_HPP_
+#ifndef STEP_VARIABLE_HPP_
+#define STEP_VARIABLE_HPP_
 
-float parabolicStep(float dt, float time, float period, float deadTimeFraction = 0);
-float parabolicReturnMod(float f);
-float linearStep(float time, float period);
+struct StepVariable
+{
+  float forward;  // m
+  float left;  // m
+  float turn;  // rad
+  float legLift;  // m
+};
 
-#endif  // WALK__MATHS_FUNCTIONS_HPP_
+#endif  // STEP_VARIABLE_HPP_
