@@ -8,6 +8,15 @@ ROS2 Walking Node
 
 ## This package is not ready for usage**
 
+# Compiling
+
+In your workspace, run:
+```
+git clone git@github.com:ijnek/walk.git src/walk
+vcs import src < src/walk/dependencies.repos --recursive
+colcon build
+```
+
 # Instructions, all in separate terminals
 
 Start simulator:
