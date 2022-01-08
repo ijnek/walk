@@ -17,10 +17,10 @@
 
 struct StepVariable
 {
-  float forward;  // m
-  float left;  // m
-  float turn;  // rad
-  float legLift;  // m
+  float forward = 0.0;  // m
+  float left = 0.0;  // m
+  float turn = 0.0;  // rad
+  float legLift = 0.0;  // m
 };
 
 #endif  // STEP_VARIABLE_HPP_
