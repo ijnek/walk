@@ -14,7 +14,7 @@
 
 #include <gtest/gtest.h>
 #include <math.h>
-#include "walk/step_calculator.hpp"
+#include "./step_calculator.hpp"
 
 void StepCalculator::setParams(
   float maxForward,

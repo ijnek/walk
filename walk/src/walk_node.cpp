@@ -14,16 +14,17 @@
 
 #include <memory>
 #include "walk/walk_node.hpp"
+#include "walk/walk.hpp"
 
 using namespace std::chrono_literals;
 using namespace std::placeholders;
 
 WalkNode::WalkNode()
 : Node("WalkNode"),
-  walk(
-    std::bind(&WalkNode::send_ankle_poses, this, _1),
-    std::bind(&WalkNode::report_current_twist, this, _1),
-    std::bind(&WalkNode::report_ready_to_step, this, _1))
+  walk(std::make_shared<Walk>(
+      std::bind(&WalkNode::send_ankle_poses, this, _1),
+      std::bind(&WalkNode::report_current_twist, this, _1),
+      std::bind(&WalkNode::report_ready_to_step, this, _1)))
 {
   float max_forward = this->declare_parameter("max_forward", 0.3);
   float max_left = this->declare_parameter("max_left", 0.2);
@@ -52,7 +53,7 @@ WalkNode::WalkNode()
   RCLCPP_DEBUG(get_logger(), "  max_left_change : %f", max_left_change);
   RCLCPP_DEBUG(get_logger(), "  max_turn_change : %f", max_turn_change);
 
-  walk.setParams(
+  walk->setParams(
     max_forward, max_left, max_turn, speed_multiplier, foot_lift_amp, period, ankle_x, ankle_y,
     ankle_z, max_forward_change, max_left_change, max_turn_change);
 
@@ -80,14 +81,14 @@ WalkNode::WalkNode()
   //       target.linear.x, target.linear.y, target.linear.z,
   //       target.angular.x, target.angular.y, target.angular.z);
   //     // Accept all goals
-  //     walk.walk(target);
+  //     walk->walk(target);
   //     return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
   //   },
   //   [this](const std::shared_ptr<CrouchGoalHandle>)
   //   {
   //     RCLCPP_INFO(get_logger(), "Received request to cancel goal");
   //     // Accept all cancel requests
-  //     walk.abort();
+  //     walk->abort();
   //     return rclcpp_action::CancelResponse::ACCEPT;
   //   },
   //   std::bind(&WalkNode::handle_accepted, this, _1));
@@ -97,8 +98,8 @@ void WalkNode::abort(
   const std::shared_ptr<std_srvs::srv::Empty::Request>,
   std::shared_ptr<std_srvs::srv::Empty::Response>)
 {
-  RCLCPP_DEBUG(get_logger(), "abort() called, aborting walk.");
-  walk.abort();
+  RCLCPP_DEBUG(get_logger(), "abort() called, aborting walk->");
+  walk->abort();
 }
 
 void WalkNode::send_ankle_poses(biped_interfaces::msg::AnklePoses ankle_poses)
@@ -133,13 +134,13 @@ void WalkNode::report_ready_to_step(std_msgs::msg::Bool ready_to_step)
 //     walk_goal_handle_->abort(result);
 //   }
 //   walk_goal_handle_ = goal_handle;
-//   walk.walk(goal_handle->get_goal()->target);
+//   walk->walk(goal_handle->get_goal()->target);
 // }
 
 void WalkNode::timer_callback()
 {
   RCLCPP_DEBUG(get_logger(), "timer_callback()");
-  walk.generateCommand();
+  walk->generateCommand();
 }
 
 void WalkNode::target_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
@@ -148,5 +149,5 @@ void WalkNode::target_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
     get_logger(), "target_callback() called with twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
     msg->linear.x, msg->linear.y, msg->linear.z,
     msg->angular.x, msg->angular.y, msg->angular.z);
-  walk.walk(*msg);
+  walk->walk(*msg);
 }
