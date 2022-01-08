@@ -22,7 +22,7 @@
 #include "std_msgs/msg/bool.hpp"
 #include "biped_interfaces/msg/ankle_poses.hpp"
 
-class StepVariable;
+struct StepVariable;
 class StepCalculator;
 
 
@@ -73,7 +73,11 @@ private:
   std::shared_ptr<StepCalculator> stepCalculator;
 
   float t = 0.0;
-  float forwardL0, forwardR0, leftL0, leftR0, turnRL0;
+  float forwardL0 = 0.0;
+  float forwardR0 = 0.0;
+  float leftL0 = 0.0;
+  float leftR0 = 0.0;
+  float turnRL0 = 0.0;
   bool isLeftPhase = false;
   bool weightHasShifted = true;
 
@@ -85,11 +89,11 @@ private:
 
   rclcpp::Logger logger;
 
-  float period;
-  float ankleX;
-  float ankleY;
-  float ankleZ;
-  float footLiftAmp;
+  float period = 0.0;
+  float ankleX = 0.0;
+  float ankleY = 0.0;
+  float ankleZ = 0.0;
+  float footLiftAmp = 0.0;
 
   biped_interfaces::msg::AnklePoses generate_ankle_poses(
     float forwardL, float forwardR, float leftL,
