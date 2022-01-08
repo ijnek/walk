@@ -65,9 +65,9 @@ private:
     const std::shared_ptr<std_srvs::srv::Empty::Request>,
     std::shared_ptr<std_srvs::srv::Empty::Response>);
 
-  void send_ankle_poses(biped_interfaces::msg::AnklePoses ankle_poses);
-  void report_current_twist(geometry_msgs::msg::Twist current_twist);
-  void report_ready_to_step(std_msgs::msg::Bool ready_to_step);
+  void send_ankle_poses(const biped_interfaces::msg::AnklePoses & ankle_poses);
+  void report_current_twist(const geometry_msgs::msg::Twist & current_twist);
+  void report_ready_to_step(const std_msgs::msg::Bool & ready_to_step);
   // void handle_accepted(
   //   const std::shared_ptr<CrouchGoalHandle> crouch_goal_handle);
 

@@ -30,9 +30,9 @@ class Walk
 {
 public:
   Walk(
-    std::function<void(biped_interfaces::msg::AnklePoses)> send_ankle_poses,
-    std::function<void(geometry_msgs::msg::Twist)> report_current_twist,
-    std::function<void(std_msgs::msg::Bool)> report_ready_to_step);
+    std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses,
+    std::function<void(const geometry_msgs::msg::Twist &)> report_current_twist,
+    std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step);
   void setParams(
     float maxForward,  // max forward velocity (m/s)
     float maxLeft,  // max side velocity (m/s)
@@ -52,9 +52,9 @@ public:
   void crouch();
 
 private:
-  std::function<void(biped_interfaces::msg::AnklePoses)> send_ankle_poses;
-  std::function<void(geometry_msgs::msg::Twist)> report_current_twist;
-  std::function<void(std_msgs::msg::Bool)> report_ready_to_step;
+  const std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses;
+  const std::function<void(const geometry_msgs::msg::Twist &)> report_current_twist;
+  const std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step;
 
   enum WalkOption
   {
