@@ -100,6 +100,7 @@ void Walk::generateCommand()
   double dt = 0.02;
 
   t += dt;
+  RCLCPP_DEBUG(logger, "t: %.4f", t);
 
   float forwardL = 0, forwardR = 0, leftL = 0, leftR = 0,
     foothL = 0, foothR = 0, turnRL = 0;
@@ -109,10 +110,14 @@ void Walk::generateCommand()
     // TODO(ijnek): ideally footLiftAmp should be smaller when the walk starts
     float maxFootHeight = footLiftAmp + abs(currStep->forward) * 0.01 + abs(currStep->left) * 0.03;
     float varfootHeight = maxFootHeight * parabolicReturnMod(t / period);
+    RCLCPP_DEBUG(logger, "maxFootHeight: %.4f, varFootHeight: %.4f", maxFootHeight, varfootHeight);
     // 5.2 When walking in an arc, the outside foot needs to travel further
     //     than the inside one - void
     // 5.3L Calculate intra-walkphase forward, left and turn at time-step dt,
     //      for left swing foot
+    RCLCPP_DEBUG(
+      logger, "isLeftPhase: %s, weightHasShifted: %s",
+      isLeftPhase ? "true" : "false", weightHasShifted ? "true" : "false");
     if (isLeftPhase) {                 // if the support foot is right
       if (weightHasShifted) {
         // 5.3.1L forward (the / by 2 is because the CoM moves as well and forwardL is wrt the CoM
@@ -188,6 +193,10 @@ void Walk::generateCommand()
   } else if (walkOption == CROUCH) {
     t = 0;
   }
+
+  RCLCPP_DEBUG(logger, "forwardL: %.4f, leftL: %.4f, foothL: %.4f", forwardL, leftL, foothL);
+  RCLCPP_DEBUG(logger, "forwardR: %.4f, leftR: %.4f, foothR: %.4f", forwardR, leftR, foothR);
+  RCLCPP_DEBUG(logger, "turnRL: %.4f", turnRL);
 
   // Send IK Command
   send_ankle_poses(
