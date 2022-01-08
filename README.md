@@ -36,26 +36,15 @@ ros2 run nao_ik ik_node
 
 Make robot crouch with:
 ```
-ros2 topic pub --once /motion/ankle_poses biped_interfaces/msg/AnklePoses "l_ankle:
+ros2 topic pub --once /motion/ankle_poses biped_interfaces/msg/AnklePoses "
+l_ankle:
   position:
-    x: 0.0
     y: 0.05
     z: -0.18
-  orientation:
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
 r_ankle:
   position:
-    x: 0.0
     y: -0.05
     z: -0.18
-  orientation:
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
 "
 ```
 
