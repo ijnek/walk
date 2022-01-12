@@ -72,7 +72,7 @@ private:
   WalkOption walkOption = CROUCH;
   geometry_msgs::msg::Twist currTwist;
 
-  std::shared_ptr<TwistLimiter> twistLimiter;
+  std::unique_ptr<TwistLimiter> twistLimiter;
 
   std::unique_ptr<Phase> phase;
 
@@ -93,8 +93,8 @@ private:
   biped_interfaces::msg::AnklePoses generate_ankle_poses(const FeetTrajectoryPoint & ftp);
   geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, double yaw);
 
-  std::shared_ptr<Step> step;
-  std::shared_ptr<FeetTrajectoryPoint> last;
+  std::unique_ptr<Step> step;
+  std::unique_ptr<FeetTrajectoryPoint> last;
 };
 
 #endif  // WALK__WALK_HPP_

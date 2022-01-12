@@ -41,10 +41,10 @@ Walk::Walk(
 : send_ankle_poses(send_ankle_poses),
   report_current_twist(report_current_twist),
   report_ready_to_step(report_ready_to_step),
-  twistLimiter(std::make_shared<TwistLimiter>()),
+  twistLimiter(std::make_unique<TwistLimiter>()),
   logger(rclcpp::get_logger("Walk")),
-  step(std::make_shared<Step>()),
-  last(std::make_shared<FeetTrajectoryPoint>())
+  step(std::make_unique<Step>()),
+  last(std::make_unique<FeetTrajectoryPoint>())
 {
 }
 
@@ -101,7 +101,7 @@ void Walk::generateCommand()
         phase = std::make_unique<Phase>(Phase::LeftStance);
       }
 
-      std::shared_ptr<Gait> gait = std::make_shared<Gait>(
+      std::unique_ptr<Gait> gait = std::make_unique<Gait>(
         target_gait_calculator::calculate(currTwist, period));
 
       RCLCPP_DEBUG(logger, "Gait:");
@@ -116,15 +116,15 @@ void Walk::generateCommand()
         gait->rightStancePhaseAim.leftL, gait->rightStancePhaseAim.leftR,
         gait->rightStancePhaseAim.headingL, gait->rightStancePhaseAim.headingR);
 
-      std::shared_ptr<FeetTrajectoryPoint> next = std::make_shared<FeetTrajectoryPoint>(
+      std::unique_ptr<FeetTrajectoryPoint> next = std::make_unique<FeetTrajectoryPoint>(
         (*phase == Phase::LeftStance) ? gait->leftStancePhaseAim : gait->rightStancePhaseAim);
 
       RCLCPP_DEBUG(
         logger, "Using %s",
         (*phase == Phase::LeftStance) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
-      step = std::make_shared<Step>(period, dt, *phase, *last, *next);
-      last = next;
+      step = std::make_unique<Step>(period, dt, *phase, *last, *next);
+      last = std::move(next);
     }
   }
 
