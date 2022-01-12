@@ -15,6 +15,8 @@
 #include <vector>
 #include "gtest/gtest.h"
 #include "../src/feet_trajectory.hpp"
+#include "../src/feet_trajectory_point.hpp"
+#include "../src/phase.hpp"
 
 TEST(TestFeetTrajectory, TestSmoothSteps)
 {
@@ -27,10 +29,10 @@ TEST(TestFeetTrajectory, TestSmoothSteps)
   FeetTrajectoryPoint step2(-0.04, -0.04, 0, 0, -0.1, 0.1, 0, 0);
 
   std::vector<FeetTrajectoryPoint> pointsStep1 =
-    feet_trajectory::generate(period, dt, true, init, step1);
+    feet_trajectory::generate(period, dt, Phase::RightSwing, init, step1);
 
   std::vector<FeetTrajectoryPoint> pointsStep2 =
-    feet_trajectory::generate(period, dt, false, step1, step2);
+    feet_trajectory::generate(period, dt, Phase::LeftSwing, step1, step2);
 
   std::vector<FeetTrajectoryPoint> points;
   points.insert(points.end(), pointsStep1.begin(), pointsStep1.end());

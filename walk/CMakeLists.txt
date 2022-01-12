@@ -29,7 +29,8 @@ add_library(walk_lib
   src/twist_limiter.cpp
   src/feet_trajectory.cpp
   src/step.cpp
-  src/target_gait_calculator.cpp)
+  src/target_gait_calculator.cpp
+  src/phase.cpp)
 
 ament_target_dependencies(walk_lib
   rclcpp

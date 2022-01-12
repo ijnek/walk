@@ -23,7 +23,7 @@ class Step
 public:
   Step() {}
   Step(
-    float period, float dt, bool isLeftStancePhase,
+    float period, float dt, const Phase & phase,
     const FeetTrajectoryPoint & last,
     const FeetTrajectoryPoint & next);
   bool done();

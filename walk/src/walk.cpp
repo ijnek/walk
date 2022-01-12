@@ -32,6 +32,7 @@
 #include "./step.hpp"
 #include "./gait.hpp"
 #include "./target_gait_calculator.hpp"
+#include "./phase.hpp"
 
 Walk::Walk(
   std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses,
@@ -46,6 +47,8 @@ Walk::Walk(
   last(std::make_shared<FeetTrajectoryPoint>())
 {
 }
+
+Walk::~Walk() {}
 
 void Walk::setParams(
   float maxForward, float maxLeft, float maxTurn, float speedMultiplier, float footLiftAmp,
@@ -92,7 +95,11 @@ void Walk::generateCommand()
     }
 
     if (walkOption == WALK) {
-      isLeftStancePhase = !isLeftStancePhase;
+      if (phase) {
+        phase->invert();
+      } else {
+        phase = std::make_unique<Phase>(Phase::LeftStance);
+      }
 
       std::shared_ptr<Gait> gait = std::make_shared<Gait>(
         target_gait_calculator::calculate(currTwist, period));
@@ -110,13 +117,13 @@ void Walk::generateCommand()
         gait->rightStancePhaseAim.headingL, gait->rightStancePhaseAim.headingR);
 
       std::shared_ptr<FeetTrajectoryPoint> next = std::make_shared<FeetTrajectoryPoint>(
-        isLeftStancePhase ? gait->leftStancePhaseAim : gait->rightStancePhaseAim);
+        (*phase == Phase::LeftStance) ? gait->leftStancePhaseAim : gait->rightStancePhaseAim);
 
       RCLCPP_DEBUG(
         logger, "Using %s",
-        isLeftStancePhase ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
+        (*phase == Phase::LeftStance) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
-      step = std::make_shared<Step>(period, dt, isLeftStancePhase, *last, *next);
+      step = std::make_shared<Step>(period, dt, *phase, *last, *next);
       last = next;
     }
   }

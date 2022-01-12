@@ -15,11 +15,13 @@
 #include <vector>
 #include "./feet_trajectory.hpp"
 #include "./maths_functions.hpp"
+#include "./phase.hpp"
+#include "./feet_trajectory_point.hpp"
 
 namespace feet_trajectory
 {
 std::vector<FeetTrajectoryPoint> generate(
-  float period, float dt, bool isLeftStancePhase,
+  float period, float dt, const Phase & phase,
   const FeetTrajectoryPoint & last,
   const FeetTrajectoryPoint & next)
 {
@@ -33,14 +35,12 @@ std::vector<FeetTrajectoryPoint> generate(
     float forwardL = 0.0;
     float forwardR = 0.0;
 
-    if (isLeftStancePhase) {
-      // Stance Foot = Left, Swing Foot = Right
+    if (phase == Phase::RightSwing) {
       forwardL = last.forwardL +
         (next.forwardL - last.forwardL) * linearStep(t, period);
       forwardR = last.forwardR +
         (next.forwardR - last.forwardR) * parabolicStep(dt, t, period, 0);
     } else {
-      // Stance Foot = Right, Swing Foot = Left
       forwardL = last.forwardL +
         (next.forwardL - last.forwardL) * parabolicStep(dt, t, period, 0);
       forwardR = last.forwardR +
@@ -58,7 +58,7 @@ std::vector<FeetTrajectoryPoint> generate(
     float foothL = 0;
     float foothR = 0;
 
-    if (isLeftStancePhase) {
+    if (phase == Phase::RightSwing) {
       foothR = maxFootHeight * parabolicReturnMod(t / period);
     } else {
       foothL = maxFootHeight * parabolicReturnMod(t / period);

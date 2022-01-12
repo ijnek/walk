@@ -25,6 +25,7 @@
 class TwistLimiter;
 class Step;
 class FeetTrajectoryPoint;
+class Phase;
 
 
 class Walk
@@ -34,6 +35,7 @@ public:
     std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses,
     std::function<void(const geometry_msgs::msg::Twist &)> report_current_twist,
     std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step);
+  virtual ~Walk();
   void setParams(
     float maxForward,  // max forward velocity (m/s)
     float maxLeft,  // max side velocity (m/s)
@@ -72,7 +74,7 @@ private:
 
   std::shared_ptr<TwistLimiter> twistLimiter;
 
-  bool isLeftStancePhase = false;
+  std::unique_ptr<Phase> phase;
 
   bool firstMsg = true;
 

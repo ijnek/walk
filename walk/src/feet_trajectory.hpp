@@ -13,7 +13,9 @@
 // limitations under the License.
 
 #include <vector>
-#include "./feet_trajectory_point.hpp"
+
+class Phase;
+class FeetTrajectoryPoint;
 
 #ifndef FEET_TRAJECTORY_HPP_
 #define FEET_TRAJECTORY_HPP_
@@ -21,7 +23,7 @@
 namespace feet_trajectory
 {
 std::vector<FeetTrajectoryPoint> generate(
-  float period, float dt, bool isLeftStancePhase,
+  float period, float dt, const Phase & phase,
   const FeetTrajectoryPoint & last,
   const FeetTrajectoryPoint & next);
 }  // namespace feet_trajectory

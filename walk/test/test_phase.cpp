@@ -58,9 +58,7 @@ TEST(TestPhase, TestRightSwing)
 TEST(TestPhase, TestInvert)
 {
   Phase phase(Phase::RightSwing);
+  phase.invert();
 
-  ASSERT_NE(phase, Phase::LeftSwing);
-  ASSERT_NE(phase, Phase::RightStance);
-  ASSERT_EQ(phase, Phase::RightSwing);
-  ASSERT_EQ(phase, Phase::LeftStance);
+  ASSERT_EQ(phase, Phase::LeftSwing);
 }

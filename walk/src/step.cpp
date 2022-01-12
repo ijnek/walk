@@ -17,9 +17,9 @@
 #include "./step.hpp"
 
 Step::Step(
-  float period, float dt, bool isLeftStancePhase,
+  float period, float dt, const Phase & phase,
   const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next)
-: points(feet_trajectory::generate(period, dt, isLeftStancePhase, last, next))
+: points(feet_trajectory::generate(period, dt, phase, last, next))
 {
 }
 

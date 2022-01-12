@@ -18,21 +18,29 @@
 class Phase
 {
 public:
+  Phase(const Phase & phase)
+  : value(phase.value) {}
+
+  static const Phase LeftStance;
+  static const Phase RightStance;
+  static const Phase & LeftSwing;
+  static const Phase & RightSwing;
+
+  void invert();
+
+  bool operator==(const Phase & p) const {return value == p.value;}
+  bool operator!=(const Phase & p) const {return value != p.value;}
+
+private:
   enum Value
   {
-    LeftSwing = 0,
-    RightStance = 0,
-    RightSwing = 1,
-    LeftStance = 1
+    LeftStancePhase = 0,
+    RightStancePhase = 1,
   };
 
   explicit Phase(Value value)
   : value(value) {}
 
-  bool operator==(Phase p) const {return value == p.value;}
-  bool operator!=(Phase p) const {return value != p.value;}
-
-private:
   Value value;
 };
 
