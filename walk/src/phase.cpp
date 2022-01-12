@@ -16,8 +16,8 @@
 
 const Phase Phase::LeftStance(Phase::LeftStancePhase);
 const Phase Phase::RightStance(Phase::RightStancePhase);
-const Phase & Phase::LeftSwing(Phase::RightStance);
-const Phase & Phase::RightSwing(Phase::LeftStance);
+const Phase Phase::LeftSwing(Phase::RightStancePhase);
+const Phase Phase::RightSwing(Phase::LeftStancePhase);
 
 void Phase::invert()
 {

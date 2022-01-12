@@ -23,8 +23,8 @@ public:
 
   static const Phase LeftStance;
   static const Phase RightStance;
-  static const Phase & LeftSwing;
-  static const Phase & RightSwing;
+  static const Phase LeftSwing;
+  static const Phase RightSwing;
 
   void invert();
 
