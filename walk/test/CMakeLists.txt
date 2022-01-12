@@ -22,10 +22,18 @@ target_link_libraries(test_feet_trajectory
   walk_lib
 )
 
-# Build test_target_gait_calculator
+# Build test_phase
 ament_add_gtest(test_target_gait_calculator
 test_target_gait_calculator.cpp)
 
 target_link_libraries(test_target_gait_calculator
+  walk_lib
+)
+
+# Build test_phase
+ament_add_gtest(test_phase
+test_phase.cpp)
+
+target_link_libraries(test_phase
   walk_lib
 )
