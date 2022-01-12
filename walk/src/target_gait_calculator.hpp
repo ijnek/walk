@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef STEP_VARIABLE_HPP_
-#define STEP_VARIABLE_HPP_
+#ifndef TARGET_GAIT_CALCULATOR_HPP_
+#define TARGET_GAIT_CALCULATOR_HPP_
 
-struct StepVariable
+#include "geometry_msgs/msg/twist.hpp"
+#include "./gait.hpp"
+
+namespace target_gait_calculator
 {
-  float forward = 0.0;  // m
-  float left = 0.0;  // m
-  float turn = 0.0;  // rad
-  float legLift = 0.0;  // m
-};
+Gait calculate(const geometry_msgs::msg::Twist & target, float period);
+}  // namespace target_gait_calculator
 
-#endif  // STEP_VARIABLE_HPP_
+#endif  // TARGET_GAIT_CALCULATOR_HPP_

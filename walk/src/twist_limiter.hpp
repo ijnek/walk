@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef STEP_CALCULATOR_HPP_
-#define STEP_CALCULATOR_HPP_
+#ifndef TWIST_LIMITER_HPP_
+#define TWIST_LIMITER_HPP_
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
-class StepCalculator
+class TwistLimiter
 {
 public:
-  StepCalculator()
-  : logger(rclcpp::get_logger("StepCalculator")) {}
+  TwistLimiter()
+  : logger(rclcpp::get_logger("TwistLimiter")) {}
 
-  geometry_msgs::msg::Twist calculateNext(
+  geometry_msgs::msg::Twist limit(
     const geometry_msgs::msg::Twist & current,
     const geometry_msgs::msg::Twist & target);
 
@@ -56,6 +56,6 @@ private:
   float evaluateWalkVolume(float x, float y, float z);
 
   rclcpp::Logger logger;
-};  // namespace StepCalculator
+};  // namespace TwistLimiter
 
-#endif  // STEP_CALCULATOR_HPP_
+#endif  // TWIST_LIMITER_HPP_

@@ -14,9 +14,9 @@
 
 #include <gtest/gtest.h>
 #include <math.h>
-#include "./step_calculator.hpp"
+#include "./twist_limiter.hpp"
 
-void StepCalculator::setParams(
+void TwistLimiter::setParams(
   float maxForward,
   float maxLeft,
   float maxTurn,
@@ -36,7 +36,7 @@ void StepCalculator::setParams(
   this->maxTurnChange = maxTurnChange;
 }
 
-geometry_msgs::msg::Twist StepCalculator::calculateNext(
+geometry_msgs::msg::Twist TwistLimiter::limit(
   const geometry_msgs::msg::Twist & current,
   const geometry_msgs::msg::Twist & target)
 {
@@ -62,7 +62,7 @@ geometry_msgs::msg::Twist StepCalculator::calculateNext(
   return nextStepTarget;
 }
 
-void StepCalculator::ellipsoidClamp(geometry_msgs::msg::Twist & target)
+void TwistLimiter::ellipsoidClamp(geometry_msgs::msg::Twist & target)
 {
   // limit max depending on speedMultiplier
   float m_forward = maxForward * speedMultiplier;
@@ -111,7 +111,7 @@ void StepCalculator::ellipsoidClamp(geometry_msgs::msg::Twist & target)
   target.angular.z = m_turn * turnAmount;
 }
 
-void StepCalculator::limitChange(
+void TwistLimiter::limitChange(
   geometry_msgs::msg::Twist & target,
   const geometry_msgs::msg::Twist & current)
 {
@@ -135,7 +135,7 @@ void StepCalculator::limitChange(
 }
 
 // x = forward, y = left, z = turn
-float StepCalculator::evaluateWalkVolume(float x, float y, float z)
+float TwistLimiter::evaluateWalkVolume(float x, float y, float z)
 {
   return sqrt(x * x + y * y + z * z);
 }

@@ -16,7 +16,6 @@
 #include "./feet_trajectory.hpp"
 #include "./maths_functions.hpp"
 
-
 namespace feet_trajectory
 {
 std::vector<FeetTrajectoryPoint> generate(
@@ -24,6 +23,8 @@ std::vector<FeetTrajectoryPoint> generate(
   const FeetTrajectoryPoint & last,
   const FeetTrajectoryPoint & next)
 {
+  float maxFootHeight = 0.012;
+
   std::vector<FeetTrajectoryPoint> points;
   points.reserve(period / dt);
 
@@ -54,7 +55,16 @@ std::vector<FeetTrajectoryPoint> generate(
     float headingR = last.headingR +
       (next.headingR - last.headingR) * parabolicStep(dt, t, period, 0.0);
 
-    points.emplace_back(forwardL, forwardR, leftL, leftR, headingL, headingR);
+    float foothL = 0;
+    float foothR = 0;
+
+    if (isLeftStancePhase) {
+      foothR = maxFootHeight * parabolicReturnMod(t / period);
+    } else {
+      foothL = maxFootHeight * parabolicReturnMod(t / period);
+    }
+
+    points.emplace_back(forwardL, forwardR, leftL, leftR, headingL, headingR, foothL, foothR);
   }
 
   return points;

@@ -26,8 +26,10 @@ add_library(walk_lib
   src/walk_node.cpp
   src/walk.cpp
   src/maths_functions.cpp
-  src/step_calculator.cpp
-  src/feet_trajectory.cpp)
+  src/twist_limiter.cpp
+  src/feet_trajectory.cpp
+  src/step.cpp
+  src/target_gait_calculator.cpp)
 
 ament_target_dependencies(walk_lib
   rclcpp

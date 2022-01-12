@@ -22,9 +22,9 @@ TEST(TestFeetTrajectory, TestSmoothSteps)
   // a small margin, and there are no large changes in value.
   float period = 0.3;
   float dt = 0.01;
-  FeetTrajectoryPoint init(0, 0, 0, 0, 0, 0);
-  FeetTrajectoryPoint step1(0.02, -0.02, 0.01, -0.01, 0.6, -0.6);
-  FeetTrajectoryPoint step2(-0.04, -0.04, 0, 0, -0.1, 0.1);
+  FeetTrajectoryPoint init(0, 0, 0, 0, 0, 0, 0, 0);
+  FeetTrajectoryPoint step1(0.02, -0.02, 0.01, -0.01, 0.6, -0.6, 0, 0);
+  FeetTrajectoryPoint step2(-0.04, -0.04, 0, 0, -0.1, 0.1, 0, 0);
 
   std::vector<FeetTrajectoryPoint> pointsStep1 =
     feet_trajectory::generate(period, dt, true, init, step1);

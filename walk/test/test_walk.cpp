@@ -113,3 +113,11 @@ TEST_F(TestWalk, TestWalkToAbort)
   EXPECT_FALSE(report_ready_to_stepCalled);
   EXPECT_FALSE(ready_to_stepVal);
 }
+
+TEST_F(TestWalk, Test1)
+{
+  geometry_msgs::msg::Twist target;
+  target.linear.x = 0.1;
+  walk.walk(target);
+  walk.generateCommand();
+}

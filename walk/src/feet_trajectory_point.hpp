@@ -15,12 +15,33 @@
 #ifndef FEET_TRAJECTORY_POINT_HPP_
 #define FEET_TRAJECTORY_POINT_HPP_
 
-struct FeetTrajectoryPoint
+class FeetTrajectoryPoint
 {
+public:
+  FeetTrajectoryPoint() {}
+
   FeetTrajectoryPoint(
-    float forwardL, float forwardR, float leftL, float leftR, float headingL, float headingR)
+    float forwardL, float forwardR, float leftL, float leftR, float headingL, float headingR,
+    float foothL, float foothR)
   : forwardL(forwardL), forwardR(forwardR), leftL(leftL), leftR(leftR), headingL(headingL),
-    headingR(headingR) {}
+    headingR(headingR), foothL(foothL), foothR(foothR) {}
+
+  FeetTrajectoryPoint(const FeetTrajectoryPoint & ftp)
+  : forwardL(ftp.forwardL), forwardR(ftp.forwardR), leftL(ftp.leftL), leftR(ftp.leftR),
+    headingL(ftp.headingL), headingR(ftp.headingR), foothL(ftp.foothL), foothR(ftp.foothR) {}
+
+  FeetTrajectoryPoint & operator=(const FeetTrajectoryPoint & ftp)
+  {
+    forwardL = ftp.forwardL;
+    forwardR = ftp.forwardR;
+    leftL = ftp.leftL;
+    leftR = ftp.leftR;
+    headingL = ftp.headingL;
+    headingR = ftp.headingR;
+    foothL = ftp.foothL;
+    foothR = ftp.foothR;
+    return *this;
+  }
 
   float forwardL = 0.0;  // m
   float forwardR = 0.0;  // m
@@ -28,6 +49,8 @@ struct FeetTrajectoryPoint
   float leftR = 0.0;  // m
   float headingL = 0.0;  // rad
   float headingR = 0.0;   // rad (MAKE SURE THIS EQUALS NEGATIVE OF headingL)
+  float foothL = 0.0;  // m
+  float foothR = 0.0;  // m
 };
 
 #endif  // FEET_TRAJECTORY_POINT_HPP_

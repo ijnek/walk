@@ -22,8 +22,9 @@
 #include "std_msgs/msg/bool.hpp"
 #include "biped_interfaces/msg/ankle_poses.hpp"
 
-struct StepVariable;
-class StepCalculator;
+class TwistLimiter;
+class Step;
+class FeetTrajectoryPoint;
 
 
 class Walk
@@ -68,18 +69,10 @@ private:
 
   WalkOption walkOption = CROUCH;
   geometry_msgs::msg::Twist currTwist;
-  std::shared_ptr<StepVariable> currStep;
 
-  std::shared_ptr<StepCalculator> stepCalculator;
+  std::shared_ptr<TwistLimiter> twistLimiter;
 
-  float t = 0.0;
-  float forwardL0 = 0.0;
-  float forwardR0 = 0.0;
-  float leftL0 = 0.0;
-  float leftR0 = 0.0;
-  float turnRL0 = 0.0;
-  bool isLeftPhase = false;
-  bool weightHasShifted = true;
+  bool isLeftStancePhase = false;
 
   bool firstMsg = true;
 
@@ -95,10 +88,11 @@ private:
   float ankleZ = 0.0;
   float footLiftAmp = 0.0;
 
-  biped_interfaces::msg::AnklePoses generate_ankle_poses(
-    float forwardL, float forwardR, float leftL,
-    float leftR, float foothL, float foothR, float turnRL);
+  biped_interfaces::msg::AnklePoses generate_ankle_poses(const FeetTrajectoryPoint & ftp);
   geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, double yaw);
+
+  std::shared_ptr<Step> step;
+  std::shared_ptr<FeetTrajectoryPoint> last;
 };
 
 #endif  // WALK__WALK_HPP_
