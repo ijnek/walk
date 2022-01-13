@@ -17,36 +17,36 @@
 
 TEST(TestTwistLimiter, TestForward)
 {
-  TwistLimiter sc;
-  sc.setParams(0.3, 0.3, 1.0, 1.0, 0.10, 0.1, 0.1, 1.0);
+  TwistLimiter tl;
+  tl.setParams(0.3, 0.3, 1.0, 1.0, 0.1, 0.1, 1.0);
 
   geometry_msgs::msg::Twist initial;
   geometry_msgs::msg::Twist target;
   target.linear.x = 0.3;
-  auto curr1 = sc.limit(initial, target);
+  auto curr1 = tl.limit(initial, target);
   EXPECT_NEAR(curr1.linear.x, 0.1, 0.001);
 
-  auto curr2 = sc.limit(curr1, target);
+  auto curr2 = tl.limit(curr1, target);
   EXPECT_NEAR(curr2.linear.x, 0.2, 0.001);
 
-  auto curr3 = sc.limit(curr2, target);
+  auto curr3 = tl.limit(curr2, target);
   EXPECT_NEAR(curr3.linear.x, 0.3, 0.001);
 }
 
 TEST(TestTwistLimiter, TestLeft)
 {
-  TwistLimiter sc;
-  sc.setParams(0.3, 0.3, 1.0, 1.0, 0.10, 0.1, 0.1, 1.0);
+  TwistLimiter tl;
+  tl.setParams(0.3, 0.3, 1.0, 1.0, 0.1, 0.1, 1.0);
 
   geometry_msgs::msg::Twist initial;
   geometry_msgs::msg::Twist target;
   target.linear.y = 0.3;
-  auto curr1 = sc.limit(initial, target);
+  auto curr1 = tl.limit(initial, target);
   EXPECT_NEAR(curr1.linear.y, 0.1, 0.001);
 
-  auto curr2 = sc.limit(curr1, target);
+  auto curr2 = tl.limit(curr1, target);
   EXPECT_NEAR(curr2.linear.y, 0.2, 0.001);
 
-  auto curr3 = sc.limit(curr2, target);
+  auto curr3 = tl.limit(curr2, target);
   EXPECT_NEAR(curr3.linear.y, 0.3, 0.001);
 }

@@ -21,7 +21,6 @@ void TwistLimiter::setParams(
   float maxLeft,
   float maxTurn,
   float speedMultiplier,
-  float footLiftAmp,
   float maxForwardChange,
   float maxLeftChange,
   float maxTurnChange)
@@ -30,7 +29,6 @@ void TwistLimiter::setParams(
   this->maxLeft = maxLeft;
   this->maxTurn = maxTurn;
   this->speedMultiplier = speedMultiplier;
-  this->footLiftAmp = footLiftAmp;
   this->maxForwardChange = maxForwardChange;
   this->maxLeftChange = maxLeftChange;
   this->maxTurnChange = maxTurnChange;

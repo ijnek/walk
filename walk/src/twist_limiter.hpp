@@ -33,7 +33,6 @@ public:
     float maxLeft,  // max side velocity (m/s)
     float maxTurn,  // max turn velocity (rad/s)
     float speedMultiplier,  // how much to multiple speed by (0.0 - 1.0)
-    float footLiftAmp,  // how much to raise foot when it is highest (m)
     float maxForwardChange,  // how much forward can change in one step (m/s)
     float maxLeftChange,  // how much left can change in one step (m/s)
     float maxTurnChange);  // how much turn can change in one step (rad/s)
@@ -43,7 +42,6 @@ private:
   float maxLeft;
   float maxTurn;
   float speedMultiplier;
-  float footLiftAmp;
   float maxForwardChange;
   float maxLeftChange;
   float maxTurnChange;
