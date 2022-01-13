@@ -31,10 +31,11 @@ std::vector<FeetTrajectoryPoint> generate(
 class Params
 {
 public:
-  explicit Params(float period, float dt)
-  : period(period), dt(dt)
+  explicit Params(float footLiftAmp, float period, float dt)
+  : footLiftAmp(footLiftAmp), period(period), dt(dt)
   {}
 
+  float footLiftAmp;
   float period;
   float dt;
 };

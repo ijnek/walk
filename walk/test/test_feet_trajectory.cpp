@@ -22,13 +22,14 @@ TEST(TestFeetTrajectory, TestSmoothSteps)
 {
   // In this test, we ensure that all consecutive points in the trajectory are within
   // a small margin, and there are no large changes in value.
+  float footLiftAmp = 0.12;
   float period = 0.3;
   float dt = 0.01;
   FeetTrajectoryPoint init(0, 0, 0, 0, 0, 0, 0, 0);
   FeetTrajectoryPoint step1(0.02, -0.02, 0.01, -0.01, 0.6, -0.6, 0, 0);
   FeetTrajectoryPoint step2(-0.04, -0.04, 0, 0, -0.1, 0.1, 0, 0);
 
-  feet_trajectory::Params params{period, dt};
+  feet_trajectory::Params params{footLiftAmp, period, dt};
 
   std::vector<FeetTrajectoryPoint> pointsStep1 =
     feet_trajectory::generate(params, Phase::RightSwing, init, step1);

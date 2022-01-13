@@ -57,15 +57,13 @@ void Walk::setParams(
   float period, float dt, float ankleX, float ankleY, float ankleZ, float maxForwardChange,
   float maxLeftChange, float maxTurnChange)
 {
-  this->period = period;
-  this->footLiftAmp = footLiftAmp;
   anklePoseParams = std::make_unique<ankle_pose::Params>(ankleX, ankleY, ankleZ);
   twistLimiterParams = std::make_unique<twist_limiter::Params>(
     maxForward, maxLeft, maxTurn, speedMultiplier);
   twistChangeLimiterParams = std::make_unique<twist_change_limiter::Params>(
     maxForwardChange, maxLeftChange, maxTurnChange);
   targetGaitCalculatorParams = std::make_unique<target_gait_calculator::Params>(period);
-  feetTrajectoryParams = std::make_unique<feet_trajectory::Params>(period, dt);
+  feetTrajectoryParams = std::make_unique<feet_trajectory::Params>(footLiftAmp, period, dt);
 }
 
 void Walk::generateCommand()
@@ -79,10 +77,8 @@ void Walk::generateCommand()
 
   send_ankle_poses(ankle_pose::generate(*anklePoseParams, stepCopy->next()));
 
-  // Report current twist
   report_current_twist(*currTwist);
 
-  // Report ready_to_step
   std_msgs::msg::Bool ready_to_step;
   ready_to_step.data = stepCopy->done();
   report_ready_to_step(ready_to_step);
@@ -131,8 +127,7 @@ void Walk::notifyPhase(const Phase & phase)
     logger, "Using %s",
     (phase == Phase::LeftStance) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
-  std::shared_ptr<Step> step =
-    std::make_shared<Step>(
+  std::shared_ptr<Step> step = std::make_shared<Step>(
     feet_trajectory::generate(*feetTrajectoryParams, phase, *ftpCurrent, *ftpNext));
   ftpCurrent = std::move(ftpNext);
 

@@ -70,14 +70,10 @@ private:
   std::unique_ptr<target_gait_calculator::Params> targetGaitCalculatorParams;
   std::unique_ptr<feet_trajectory::Params> feetTrajectoryParams;
 
-  float period = 0.0;
-  float footLiftAmp = 0.0;
-
   rclcpp::Logger logger;
 
   std::unique_ptr<Phase> phase;
   std::unique_ptr<FeetTrajectoryPoint> ftpCurrent;
-
   std::unique_ptr<geometry_msgs::msg::Twist> currTwist;
 
   // Following members must be stored and loaded in a thread-safe manner
