@@ -12,28 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ANKLE_POSE_GENERATOR_HPP_
-#define ANKLE_POSE_GENERATOR_HPP_
+#ifndef ANKLE_POSE_HPP_
+#define ANKLE_POSE_HPP_
 
-#include "geometry_msgs/msg/twist.hpp"
 #include "biped_interfaces/msg/ankle_poses.hpp"
-#include "tf2/LinearMath/Quaternion.h"
-#include "rclcpp/logger.hpp"
-#include "./gait.hpp"
 
-class AnklePoseGenerator
+class FeetTrajectoryPoint;
+
+namespace ankle_pose
+{
+class Params;
+
+biped_interfaces::msg::AnklePoses generate(
+  const ankle_pose::Params & p,
+  const FeetTrajectoryPoint & ftp);
+
+class Params
 {
 public:
-  explicit AnklePoseGenerator(float ankleX = 0.0, float ankleY = 0.0, float ankleZ = 0.0);
-  biped_interfaces::msg::AnklePoses generate(const FeetTrajectoryPoint & ftp) const;
+  Params(float ankleX, float ankleY, float ankleZ)
+  : ankleX(ankleX), ankleY(ankleY), ankleZ(ankleZ)
+  {
+  }
 
-private:
-  geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, double yaw) const;
-
-  float ankleX = 0.0;
-  float ankleY = 0.0;
-  float ankleZ = 0.0;
-  rclcpp::Logger logger;
+  float ankleX;
+  float ankleY;
+  float ankleZ;
 };
+}  // namespace ankle_pose
 
-#endif  // ANKLE_POSE_GENERATOR_HPP_
+#endif  // ANKLE_POSE_HPP_

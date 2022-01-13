@@ -32,7 +32,7 @@
 #include "./gait.hpp"
 #include "./target_gait_calculator.hpp"
 #include "./phase.hpp"
-#include "./ankle_pose_generator.hpp"
+#include "./ankle_pose.hpp"
 
 Walk::Walk(
   std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses,
@@ -41,7 +41,6 @@ Walk::Walk(
 : send_ankle_poses(send_ankle_poses),
   report_current_twist(report_current_twist),
   report_ready_to_step(report_ready_to_step),
-  anklePoseGenerator(std::make_unique<AnklePoseGenerator>()),
   logger(rclcpp::get_logger("Walk"))
 {
 }
@@ -55,7 +54,7 @@ void Walk::setParams(
 {
   this->period = period;
   this->footLiftAmp = footLiftAmp;
-  anklePoseGenerator = std::make_unique<AnklePoseGenerator>(ankleX, ankleY, ankleZ);
+  anklePoseParams = std::make_unique<ankle_pose::Params>(ankleX, ankleY, ankleZ);
   twistLimiterParams = std::make_unique<twist_limiter::Params>(
     maxForward, maxLeft, maxTurn, speedMultiplier, maxForwardChange, maxLeftChange, maxTurnChange);
 }
@@ -120,9 +119,9 @@ void Walk::generateCommand()
     const FeetTrajectoryPoint & currentFTP = step->next();
     // RCLCPP_DEBUG(logger, "Executing walkOption: %s", walkOptionToString.at(walkOption));
     // Send IK Command
-    send_ankle_poses(anklePoseGenerator->generate(currentFTP));
+    send_ankle_poses(ankle_pose::generate(*anklePoseParams, currentFTP));
   } else {
-    send_ankle_poses(anklePoseGenerator->generate(FeetTrajectoryPoint{}));
+    send_ankle_poses(ankle_pose::generate(*anklePoseParams, FeetTrajectoryPoint{}));
   }
 
   // Report current twist

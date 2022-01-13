@@ -31,7 +31,7 @@ add_library(walk_lib
   src/step.cpp
   src/target_gait_calculator.cpp
   src/phase.cpp
-  src/ankle_pose_generator.cpp)
+  src/ankle_pose.cpp)
 
 ament_target_dependencies(walk_lib
   rclcpp

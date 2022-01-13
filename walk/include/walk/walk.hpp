@@ -23,10 +23,10 @@
 #include "biped_interfaces/msg/ankle_poses.hpp"
 
 namespace twist_limiter {class Params;}
+namespace ankle_pose {class Params;}
 class Step;
 class FeetTrajectoryPoint;
 class Phase;
-class AnklePoseGenerator;
 
 
 class Walk
@@ -63,7 +63,7 @@ private:
   std::unique_ptr<geometry_msgs::msg::Twist> currTwist;
 
   std::unique_ptr<twist_limiter::Params> twistLimiterParams;
-  std::unique_ptr<AnklePoseGenerator> anklePoseGenerator;
+  std::unique_ptr<ankle_pose::Params> anklePoseParams;
 
   bool firstMsg = true;
   float period = 0.0;

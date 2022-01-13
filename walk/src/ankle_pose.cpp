@@ -12,29 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "./ankle_pose_generator.hpp"
+#include "./ankle_pose.hpp"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
+#include "tf2/LinearMath/Quaternion.h"
+#include "rclcpp/logger.hpp"
+#include "./feet_trajectory_point.hpp"
 
-AnklePoseGenerator::AnklePoseGenerator(float ankleX, float ankleY, float ankleZ)
-: ankleX(ankleX), ankleY(ankleY), ankleZ(ankleZ), logger(rclcpp::get_logger("AnklePoseGenerator"))
+namespace ankle_pose
 {
-}
 
+geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, double yaw);
 
-biped_interfaces::msg::AnklePoses AnklePoseGenerator::generate(const FeetTrajectoryPoint & ftp)
-const
+biped_interfaces::msg::AnklePoses generate(
+  const ankle_pose::Params & p,
+  const FeetTrajectoryPoint & ftp)
 {
+  auto logger = rclcpp::get_logger("ankle_pose::generate");
+
   // Evaluate position and angle of both feet
-  float l_ankle_pos_x = ftp.forwardL + ankleX;
-  float l_ankle_pos_y = ftp.leftL + ankleY;
-  float l_ankle_pos_z = ftp.foothL + ankleZ;
+  float l_ankle_pos_x = ftp.forwardL + p.ankleX;
+  float l_ankle_pos_y = ftp.leftL + p.ankleY;
+  float l_ankle_pos_z = ftp.foothL + p.ankleZ;
   float l_ankle_ang_x = 0;
   float l_ankle_ang_y = 0;
   float l_ankle_ang_z = ftp.headingL;
 
-  float r_ankle_pos_x = ftp.forwardR + ankleX;
-  float r_ankle_pos_y = ftp.leftR - ankleY;
-  float r_ankle_pos_z = ftp.foothR + ankleZ;
+  float r_ankle_pos_x = ftp.forwardR + p.ankleX;
+  float r_ankle_pos_y = ftp.leftR - p.ankleY;
+  float r_ankle_pos_z = ftp.foothR + p.ankleZ;
   float r_ankle_ang_x = 0;
   float r_ankle_ang_y = 0;
   float r_ankle_ang_z = ftp.headingR;
@@ -66,11 +71,13 @@ const
   return command;
 }
 
-geometry_msgs::msg::Quaternion AnklePoseGenerator::rpy_to_geometry_quat(
-  double roll, double pitch, double yaw) const
+geometry_msgs::msg::Quaternion rpy_to_geometry_quat(
+  double roll, double pitch, double yaw)
 {
   tf2::Quaternion quat;
   quat.setRPY(roll, pitch, yaw);
   geometry_msgs::msg::Quaternion geometry_quat = tf2::toMsg(quat);
   return geometry_quat;
 }
+
+}  // namespace ankle_pose
