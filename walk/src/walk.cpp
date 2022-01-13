@@ -93,10 +93,16 @@ void Walk::generateCommand()
     }
 
     if (walkOption == WALK) {
-      if (phase) {
-        phase->invert();
-      } else {
+      if (!phase) {
         phase = std::make_unique<Phase>(Phase::LeftStance);
+      }
+
+      if (notifiedPhase) {
+        if (*notifiedPhase != *phase) {
+          phase = std::move(notifiedPhase);
+        } else {
+          notifiedPhase.reset();
+        }
       }
 
       std::unique_ptr<Gait> gait = std::make_unique<Gait>(

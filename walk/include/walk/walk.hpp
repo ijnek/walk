@@ -54,6 +54,7 @@ public:
   void abort();
   void walk(const geometry_msgs::msg::Twist & target);
   void crouch();
+  void notifyPhase(const Phase &phase);
 
 private:
   const std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses;
@@ -92,6 +93,7 @@ private:
   std::unique_ptr<FeetTrajectoryPoint> last;
 
   std::unique_ptr<AnklePoseGenerator> anklePoseGenerator;
+  std::unique_ptr<Phase> notifiedPhase;
 };
 
 #endif  // WALK__WALK_HPP_
