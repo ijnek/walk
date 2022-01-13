@@ -20,23 +20,13 @@ namespace twist_limiter
 
 // Declare functions
 void ellipsoidClamp(const twist_limiter::Params & p, geometry_msgs::msg::Twist & target);
-void limitChange(
-  const twist_limiter::Params & p,
-  geometry_msgs::msg::Twist & target,
-  const geometry_msgs::msg::Twist & current);
 float evaluateWalkVolume(float x, float y, float z);
 
 geometry_msgs::msg::Twist limit(
   const twist_limiter::Params & p,
-  const geometry_msgs::msg::Twist & current,
   const geometry_msgs::msg::Twist & target)
 {
   auto logger = rclcpp::get_logger("twist_limiter::limit");
-
-  RCLCPP_DEBUG(
-    logger, "current twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
-    current.linear.x, current.linear.y, current.linear.z,
-    current.angular.x, current.angular.y, current.angular.z);
 
   RCLCPP_DEBUG(
     logger, " target twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
@@ -45,7 +35,6 @@ geometry_msgs::msg::Twist limit(
 
   geometry_msgs::msg::Twist nextStepTarget = target;
   ellipsoidClamp(p, nextStepTarget);
-  limitChange(p, nextStepTarget, current);
 
   RCLCPP_DEBUG(
     logger, " result twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
@@ -102,31 +91,6 @@ void ellipsoidClamp(const twist_limiter::Params & p, geometry_msgs::msg::Twist &
   target.linear.x = m_forward * forwardAmount;
   target.linear.y = m_left * leftAmount;
   target.angular.z = m_turn * turnAmount;
-}
-
-void limitChange(
-  const twist_limiter::Params & p,
-  geometry_msgs::msg::Twist & target,
-  const geometry_msgs::msg::Twist & current)
-{
-  double & forward = target.linear.x;
-  double & left = target.linear.y;
-  double & turn = target.angular.z;
-
-  const double & lastForward = current.linear.x;
-  const double & lastLeft = current.linear.y;
-  const double & lastTurn = current.angular.z;
-
-  if (abs(forward - lastForward) > p.maxForwardChange) {
-    forward = lastForward + (forward - lastForward) / abs(forward - lastForward) *
-      p.maxForwardChange;
-  }
-  if (abs(left - lastLeft) > p.maxLeftChange) {
-    left = lastLeft + (left - lastLeft) / abs(left - lastLeft) * p.maxLeftChange;
-  }
-  if (abs(turn - lastTurn) > p.maxTurnChange) {
-    turn = lastTurn + (turn - lastTurn) / abs(turn - lastTurn) * p.maxTurnChange;
-  }
 }
 
 // x = forward, y = left, z = turn

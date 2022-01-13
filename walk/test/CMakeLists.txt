@@ -6,11 +6,11 @@ target_link_libraries(test_walk
   walk_lib
 )
 
-# Build test_twist_limiter
-ament_add_gtest(test_twist_limiter
-test_twist_limiter.cpp)
+# Build test_twist_change_limiter
+ament_add_gtest(test_twist_change_limiter
+test_twist_change_limiter.cpp)
 
-target_link_libraries(test_twist_limiter
+target_link_libraries(test_twist_change_limiter
   walk_lib
 )
 

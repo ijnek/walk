@@ -13,38 +13,38 @@
 // limitations under the License.
 
 #include <gtest/gtest.h>
-#include "../src/twist_limiter.hpp"
+#include "../src/twist_change_limiter.hpp"
 
-TEST(TestTwistLimiter, TestForward)
+TEST(TestTwistChangeLimiter, TestForward)
 {
-  twist_limiter::Params p(0.3, 0.3, 1.0, 1.0, 0.1, 0.1, 1.0);
+  twist_change_limiter::Params p(0.1, 0.1, 1.0);
 
   geometry_msgs::msg::Twist initial;
   geometry_msgs::msg::Twist target;
   target.linear.x = 0.3;
-  auto curr1 = twist_limiter::limit(p, initial, target);
+  auto curr1 = twist_change_limiter::limit(p, initial, target);
   EXPECT_NEAR(curr1.linear.x, 0.1, 0.001);
 
-  auto curr2 = twist_limiter::limit(p, curr1, target);
+  auto curr2 = twist_change_limiter::limit(p, curr1, target);
   EXPECT_NEAR(curr2.linear.x, 0.2, 0.001);
 
-  auto curr3 = twist_limiter::limit(p, curr2, target);
+  auto curr3 = twist_change_limiter::limit(p, curr2, target);
   EXPECT_NEAR(curr3.linear.x, 0.3, 0.001);
 }
 
-TEST(TestTwistLimiter, TestLeft)
+TEST(TestTwistChangeLimiter, TestLeft)
 {
-  twist_limiter::Params p(0.3, 0.3, 1.0, 1.0, 0.1, 0.1, 1.0);
+  twist_change_limiter::Params p(0.1, 0.1, 1.0);
 
   geometry_msgs::msg::Twist initial;
   geometry_msgs::msg::Twist target;
   target.linear.y = 0.3;
-  auto curr1 = twist_limiter::limit(p, initial, target);
+  auto curr1 = twist_change_limiter::limit(p, initial, target);
   EXPECT_NEAR(curr1.linear.y, 0.1, 0.001);
 
-  auto curr2 = twist_limiter::limit(p, curr1, target);
+  auto curr2 = twist_change_limiter::limit(p, curr1, target);
   EXPECT_NEAR(curr2.linear.y, 0.2, 0.001);
 
-  auto curr3 = twist_limiter::limit(p, curr2, target);
+  auto curr3 = twist_change_limiter::limit(p, curr2, target);
   EXPECT_NEAR(curr3.linear.y, 0.3, 0.001);
 }

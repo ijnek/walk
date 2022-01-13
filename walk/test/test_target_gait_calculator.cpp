@@ -17,12 +17,12 @@
 
 TEST(TestTargetGaitCalculator, TestX)
 {
-  float period = 0.50;
+  target_gait_calculator::Params params{0.50};
   geometry_msgs::msg::Twist target;
   Gait gait;
 
   target.linear.x = 0.1;
-  gait = target_gait_calculator::calculate(target, period);
+  gait = target_gait_calculator::calculate(target, params);
   EXPECT_NEAR(gait.leftStancePhaseAim.forwardL, -0.025, 0.00001);
   EXPECT_NEAR(gait.leftStancePhaseAim.forwardR, 0.025, 0.00001);
   EXPECT_NEAR(gait.rightStancePhaseAim.forwardL, 0.025, 0.00001);
@@ -31,12 +31,12 @@ TEST(TestTargetGaitCalculator, TestX)
 
 TEST(TestTargetGaitCalculator, TestPositiveY)
 {
-  float period = 0.50;
+  target_gait_calculator::Params params{0.50};
   geometry_msgs::msg::Twist target;
   Gait gait;
 
   target.linear.y = 0.1;
-  gait = target_gait_calculator::calculate(target, period);
+  gait = target_gait_calculator::calculate(target, params);
   EXPECT_NEAR(gait.leftStancePhaseAim.leftL, 0, 0.00001);
   EXPECT_NEAR(gait.leftStancePhaseAim.leftR, 0, 0.00001);
   EXPECT_NEAR(gait.rightStancePhaseAim.leftL, 0.05, 0.00001);
@@ -45,12 +45,12 @@ TEST(TestTargetGaitCalculator, TestPositiveY)
 
 TEST(TestTargetGaitCalculator, TestNegativeY)
 {
-  float period = 0.50;
+  target_gait_calculator::Params params{0.50};
   geometry_msgs::msg::Twist target;
   Gait gait;
 
   target.linear.y = -0.1;
-  gait = target_gait_calculator::calculate(target, period);
+  gait = target_gait_calculator::calculate(target, params);
   EXPECT_NEAR(gait.leftStancePhaseAim.leftL, 0.05, 0.00001);
   EXPECT_NEAR(gait.leftStancePhaseAim.leftR, -0.05, 0.00001);
   EXPECT_NEAR(gait.rightStancePhaseAim.leftL, 0, 0.00001);
@@ -59,12 +59,12 @@ TEST(TestTargetGaitCalculator, TestNegativeY)
 
 TEST(TestTargetGaitCalculator, TestPositiveTheta)
 {
-  float period = 0.50;
+  target_gait_calculator::Params params{0.50};
   geometry_msgs::msg::Twist target;
   Gait gait;
 
   target.angular.z = 0.1;
-  gait = target_gait_calculator::calculate(target, period);
+  gait = target_gait_calculator::calculate(target, params);
   EXPECT_NEAR(gait.leftStancePhaseAim.headingL, -0.01, 0.00001);
   EXPECT_NEAR(gait.leftStancePhaseAim.headingR, 0.01, 0.00001);
   EXPECT_NEAR(gait.rightStancePhaseAim.headingL, 0.04, 0.00001);
@@ -73,12 +73,12 @@ TEST(TestTargetGaitCalculator, TestPositiveTheta)
 
 TEST(TestTargetGaitCalculator, TestNegativeTheta)
 {
-  float period = 0.50;
+  target_gait_calculator::Params params{0.50};
   geometry_msgs::msg::Twist target;
   Gait gait;
 
   target.angular.z = -0.1;
-  gait = target_gait_calculator::calculate(target, period);
+  gait = target_gait_calculator::calculate(target, params);
   EXPECT_NEAR(gait.leftStancePhaseAim.headingL, 0.04, 0.00001);
   EXPECT_NEAR(gait.leftStancePhaseAim.headingR, -0.04, 0.00001);
   EXPECT_NEAR(gait.rightStancePhaseAim.headingL, -0.01, 0.00001);

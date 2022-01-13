@@ -20,7 +20,21 @@
 
 namespace target_gait_calculator
 {
-Gait calculate(const geometry_msgs::msg::Twist & target, float period);
+class Params;
+
+Gait calculate(
+  const geometry_msgs::msg::Twist & target,
+  const target_gait_calculator::Params & p);
+
+class Params
+{
+public:
+  explicit Params(float period)
+  : period(period)
+  {}
+
+  float period;
+};
 }  // namespace target_gait_calculator
 
 #endif  // TARGET_GAIT_CALCULATOR_HPP_

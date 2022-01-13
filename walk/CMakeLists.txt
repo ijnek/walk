@@ -27,6 +27,7 @@ add_library(walk_lib
   src/walk.cpp
   src/maths_functions.cpp
   src/twist_limiter.cpp
+  src/twist_change_limiter.cpp
   src/feet_trajectory.cpp
   src/step.cpp
   src/target_gait_calculator.cpp

@@ -16,7 +16,7 @@
 #include "gtest/gtest.h"
 #include "../src/feet_trajectory.hpp"
 #include "../src/feet_trajectory_point.hpp"
-#include "../src/phase.hpp"
+#include "walk/phase.hpp"
 
 TEST(TestFeetTrajectory, TestSmoothSteps)
 {

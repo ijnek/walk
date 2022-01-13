@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "./phase.hpp"
+#include "walk/phase.hpp"
 
 const Phase Phase::LeftStance(Phase::LeftStancePhase);
 const Phase Phase::RightStance(Phase::RightStancePhase);

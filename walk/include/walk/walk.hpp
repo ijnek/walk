@@ -23,7 +23,9 @@
 #include "biped_interfaces/msg/ankle_poses.hpp"
 
 namespace twist_limiter {class Params;}
+namespace twist_change_limiter {class Params;}
 namespace ankle_pose {class Params;}
+namespace target_gait_calculator {class Params;}
 class Step;
 class FeetTrajectoryPoint;
 class Phase;
@@ -53,7 +55,7 @@ public:
   void generateCommand();
   void walk(const geometry_msgs::msg::Twist & target);
   void notifyPhase(const Phase & phase);
-  void reset();
+  // void reset();
 
 private:
   const std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses;
@@ -61,23 +63,23 @@ private:
   const std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step;
 
   std::unique_ptr<twist_limiter::Params> twistLimiterParams;
+  std::unique_ptr<twist_change_limiter::Params> twistChangeLimiterParams;
   std::unique_ptr<ankle_pose::Params> anklePoseParams;
+  std::unique_ptr<target_gait_calculator::Params> targetGaitCalculatorParams;
 
-  bool firstMsg = true;
   float period = 0.0;
   float footLiftAmp = 0.0;
 
   rclcpp::Logger logger;
 
   std::unique_ptr<Phase> phase;
-  std::unique_ptr<Step> step;
-  std::unique_ptr<FeetTrajectoryPoint> last;
+  std::unique_ptr<FeetTrajectoryPoint> ftpCurrent;
 
   std::unique_ptr<geometry_msgs::msg::Twist> currTwist;
-  std::shared_ptr<geometry_msgs::msg::Twist> target;
-  std::shared_ptr<Phase> notifiedPhase;
 
-  void logGait(const Gait & gait);
+  // Following members must be stored and loaded in a thread-safe manner
+  std::shared_ptr<geometry_msgs::msg::Twist> targetTwist;
+  std::shared_ptr<Step> step;
 };
 
 #endif  // WALK__WALK_HPP_

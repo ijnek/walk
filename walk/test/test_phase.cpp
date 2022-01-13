@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "gtest/gtest.h"
-#include "../src/phase.hpp"
+#include "walk/phase.hpp"
 
 TEST(TestPhase, TestLeftSwing)
 {

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PHASE_HPP_
-#define PHASE_HPP_
+#ifndef WALK__PHASE_HPP_
+#define WALK__PHASE_HPP_
 
 class Phase
 {
@@ -44,4 +44,4 @@ private:
   Value value;
 };
 
-#endif  // PHASE_HPP_
+#endif  // WALK__PHASE_HPP_

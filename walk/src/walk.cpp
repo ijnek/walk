@@ -26,12 +26,13 @@
 #include <utility>
 #include "walk/walk.hpp"
 #include "./twist_limiter.hpp"
+#include "./twist_change_limiter.hpp"
 #include "./maths_functions.hpp"
 #include "./feet_trajectory_point.hpp"
 #include "./step.hpp"
 #include "./gait.hpp"
 #include "./target_gait_calculator.hpp"
-#include "./phase.hpp"
+#include "walk/phase.hpp"
 #include "./ankle_pose.hpp"
 
 Walk::Walk(
@@ -42,7 +43,9 @@ Walk::Walk(
   report_current_twist(report_current_twist),
   report_ready_to_step(report_ready_to_step),
   logger(rclcpp::get_logger("Walk")),
-  currTwist(std::make_unique<geometry_msgs::msg::Twist>())
+  ftpCurrent(std::make_unique<FeetTrajectoryPoint>()),
+  currTwist(std::make_unique<geometry_msgs::msg::Twist>()),
+  targetTwist(std::make_shared<geometry_msgs::msg::Twist>())
 {
 }
 
@@ -57,107 +60,78 @@ void Walk::setParams(
   this->footLiftAmp = footLiftAmp;
   anklePoseParams = std::make_unique<ankle_pose::Params>(ankleX, ankleY, ankleZ);
   twistLimiterParams = std::make_unique<twist_limiter::Params>(
-    maxForward, maxLeft, maxTurn, speedMultiplier, maxForwardChange, maxLeftChange, maxTurnChange);
+    maxForward, maxLeft, maxTurn, speedMultiplier);
+  twistChangeLimiterParams = std::make_unique<twist_change_limiter::Params>(
+    maxForwardChange, maxLeftChange, maxTurnChange);
+  targetGaitCalculatorParams = std::make_unique<target_gait_calculator::Params>(period);
 }
 
 void Walk::generateCommand()
 {
-  if (firstMsg) {
-    // Handle special
-    firstMsg = false;
-    phase = std::make_unique<Phase>(Phase::LeftStance);
-    step = std::make_unique<Step>();
-    last = std::make_unique<FeetTrajectoryPoint>();
-  }
-
-  if (!target) {
+  if (!step) {
+    RCLCPP_ERROR(logger, "No step calculated yet, can't generate command!");
     return;
   }
 
-  // TODO(ijnek): Hardcoded dt for now, should figure out what to do this.
-  float dt = 0.02;
+  std::shared_ptr<Step> stepCopy = std::atomic_load(&step);
 
-  if (step->done()) {
-    currTwist =
-      std::make_unique<geometry_msgs::msg::Twist>(
-      twist_limiter::limit(
-        *twistLimiterParams,
-        *currTwist, *std::atomic_load(&target)));
-
-    if (phase) {
-      phase->invert();
-    } else {
-      phase = std::make_unique<Phase>(Phase::LeftSwing);
-    }
-
-    // if (notifiedPhase)
-    // {
-    //   std::unique_ptr<Phase> notifiedPhaseCopy =
-    //     std::make_unique<Phase>(*std::atomic_load(&notifiedPhase));
-    //   if (notifiedPhaseCopy) {
-    //     if (*notifiedPhaseCopy != *phase) {
-    //       phase = std::move(notifiedPhaseCopy);
-    //     } else {
-    //       notifiedPhase.reset();
-    //     }
-    //   }
-    // }
-
-    std::unique_ptr<Gait> gait = std::make_unique<Gait>(
-      target_gait_calculator::calculate(*currTwist, period));
-
-    logGait(*gait);
-
-    std::unique_ptr<FeetTrajectoryPoint> next = std::make_unique<FeetTrajectoryPoint>(
-      (*phase == Phase::LeftStance) ? gait->leftStancePhaseAim : gait->rightStancePhaseAim);
-
-    RCLCPP_DEBUG(
-      logger, "Using %s",
-      (*phase == Phase::LeftStance) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
-
-    step = std::make_unique<Step>(period, dt, *phase, *last, *next);
-    last = std::move(next);
-  }
-
-  if (!step->done()) {
-    const FeetTrajectoryPoint & currentFTP = step->next();
-    // RCLCPP_DEBUG(logger, "Executing walkOption: %s", walkOptionToString.at(walkOption));
-    // Send IK Command
-    send_ankle_poses(ankle_pose::generate(*anklePoseParams, currentFTP));
-  } else {
-    send_ankle_poses(ankle_pose::generate(*anklePoseParams, FeetTrajectoryPoint{}));
-  }
+  send_ankle_poses(ankle_pose::generate(*anklePoseParams, stepCopy->next()));
 
   // Report current twist
   report_current_twist(*currTwist);
 
   // Report ready_to_step
   std_msgs::msg::Bool ready_to_step;
-  ready_to_step.data = step->done();
+  ready_to_step.data = stepCopy->done();
   report_ready_to_step(ready_to_step);
 }
 
-void Walk::walk(const geometry_msgs::msg::Twist & target)
+void Walk::walk(const geometry_msgs::msg::Twist & twist)
 {
-  std::atomic_store(&this->target, std::make_shared<geometry_msgs::msg::Twist>(target));
+  auto limitedTwist =
+    std::make_shared<geometry_msgs::msg::Twist>(twist_limiter::limit(*twistLimiterParams, twist));
+  std::atomic_store(&this->targetTwist, std::move(limitedTwist));
 }
 
-void Walk::reset()
+void Walk::notifyPhase(const Phase & phase)
 {
-  firstMsg = true;
-}
+  if (this->phase && phase == *this->phase) {
+    RCLCPP_WARN(logger, "Notified of a phase, but no change has taken place. Ignoring.");
+    return;
+  }
 
-void Walk::logGait(const Gait & gait)
-{
+  this->phase = std::make_unique<Phase>(phase);
+
+  currTwist =
+    std::make_unique<geometry_msgs::msg::Twist>(
+    twist_change_limiter::limit(
+      *twistChangeLimiterParams,
+      *currTwist, *std::atomic_load(&targetTwist)));
+
+  std::unique_ptr<Gait> gait = std::make_unique<Gait>(
+    target_gait_calculator::calculate(*currTwist, *targetGaitCalculatorParams));
   RCLCPP_DEBUG(logger, "Gait:");
   RCLCPP_DEBUG(
     logger, " LSP: (%f, %f, %f, %f, %f, %f)",
-    gait.leftStancePhaseAim.forwardL, gait.leftStancePhaseAim.forwardR,
-    gait.leftStancePhaseAim.leftL, gait.leftStancePhaseAim.leftR,
-    gait.leftStancePhaseAim.headingL, gait.leftStancePhaseAim.headingR);
+    gait->leftStancePhaseAim.forwardL, gait->leftStancePhaseAim.forwardR,
+    gait->leftStancePhaseAim.leftL, gait->leftStancePhaseAim.leftR,
+    gait->leftStancePhaseAim.headingL, gait->leftStancePhaseAim.headingR);
   RCLCPP_DEBUG(
     logger, " RSP: (%f, %f, %f, %f, %f, %f)",
-    gait.rightStancePhaseAim.forwardL, gait.rightStancePhaseAim.forwardR,
-    gait.rightStancePhaseAim.leftL, gait.rightStancePhaseAim.leftR,
-    gait.rightStancePhaseAim.headingL, gait.rightStancePhaseAim.headingR);
+    gait->rightStancePhaseAim.forwardL, gait->rightStancePhaseAim.forwardR,
+    gait->rightStancePhaseAim.leftL, gait->rightStancePhaseAim.leftR,
+    gait->rightStancePhaseAim.headingL, gait->rightStancePhaseAim.headingR);
+
+  std::unique_ptr<FeetTrajectoryPoint> ftpNext = std::make_unique<FeetTrajectoryPoint>(
+    (phase == Phase::LeftStance) ? gait->leftStancePhaseAim : gait->rightStancePhaseAim);
+
+  RCLCPP_DEBUG(
+    logger, "Using %s",
+    (phase == Phase::LeftStance) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
+
+  // TODO(ijnek): Hardcoded dt for now, should figure out what to do this.
+  float dt = 0.02;
+
+  std::atomic_store(&step, std::make_shared<Step>(period, dt, phase, *ftpCurrent, *ftpNext));
+  ftpCurrent = std::move(ftpNext);
 }

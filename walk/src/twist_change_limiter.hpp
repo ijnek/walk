@@ -12,33 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef TWIST_LIMITER_HPP_
-#define TWIST_LIMITER_HPP_
+#ifndef TWIST_CHANGE_LIMITER_HPP_
+#define TWIST_CHANGE_LIMITER_HPP_
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
-namespace twist_limiter
+namespace twist_change_limiter
 {
 class Params;
 
 geometry_msgs::msg::Twist limit(
-  const twist_limiter::Params & p,
+  const twist_change_limiter::Params & p,
+  const geometry_msgs::msg::Twist & current,
   const geometry_msgs::msg::Twist & target);
 
 class Params
 {
 public:
-  Params(float maxForward, float maxLeft, float maxTurn, float speedMultiplier)
-  : maxForward(maxForward), maxLeft(maxLeft), maxTurn(maxTurn), speedMultiplier(speedMultiplier)
+  Params(float maxForwardChange, float maxLeftChange, float maxTurnChange)
+  : maxForwardChange(maxForwardChange), maxLeftChange(maxLeftChange), maxTurnChange(maxTurnChange)
   {
   }
 
-  float maxForward;        // max forward velocity (m/s)
-  float maxLeft;           // max side velocity (m/s)
-  float maxTurn;           // max turn velocity (rad/s)
-  float speedMultiplier;   // how much to multiple speed by (0.0 - 1.0)
+  float maxForwardChange;  // how much forward can change in one step (m/s)
+  float maxLeftChange;     // how much left can change in one step (m/s)
+  float maxTurnChange;     // how much turn can change in one step (rad/s)
 };
-}   // namespace twist_limiter
+}   // namespace twist_change_limiter
 
-#endif  // TWIST_LIMITER_HPP_
+#endif  // TWIST_CHANGE_LIMITER_HPP_

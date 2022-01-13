@@ -21,8 +21,7 @@
 class Step
 {
 public:
-  Step() {}
-  Step(
+  explicit Step(
     float period, float dt, const Phase & phase,
     const FeetTrajectoryPoint & last,
     const FeetTrajectoryPoint & next);

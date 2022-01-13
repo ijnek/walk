@@ -24,7 +24,8 @@ WalkNode::WalkNode()
   walk(std::make_shared<Walk>(
       std::bind(&WalkNode::send_ankle_poses, this, _1),
       std::bind(&WalkNode::report_current_twist, this, _1),
-      std::bind(&WalkNode::report_ready_to_step, this, _1)))
+      std::bind(&WalkNode::report_ready_to_step, this, _1))),
+  phase{Phase::LeftSwing}
 {
   float max_forward = this->declare_parameter("max_forward", 0.3);
   float max_left = this->declare_parameter("max_left", 0.2);
@@ -57,8 +58,11 @@ WalkNode::WalkNode()
     max_forward, max_left, max_turn, speed_multiplier, foot_lift_amp, period, ankle_x, ankle_y,
     ankle_z, max_forward_change, max_left_change, max_turn_change);
 
-  timer_ = this->create_wall_timer(
-    20ms, std::bind(&WalkNode::timer_callback, this));
+  generateCommand_timer_ = this->create_wall_timer(
+    20ms, std::bind(&WalkNode::generateCommand_timer_callback, this));
+
+  notifyPhase_timer_ = this->create_wall_timer(
+    250ms, std::bind(&WalkNode::notifyPhase_timer_callback, this));
 
   sub_target = this->create_subscription<geometry_msgs::msg::Twist>(
     "target", 10, std::bind(&WalkNode::target_callback, this, _1));
@@ -69,29 +73,6 @@ WalkNode::WalkNode()
 
   service_abort = create_service<std_srvs::srv::Empty>(
     "abort", std::bind(&WalkNode::abort, this, _1, _2));
-
-  // this->action_server_crouch_ = rclcpp_action::create_server<walk_interfaces::action::Crouch>(
-  //   this,
-  //   "walk",
-  //   [this](const rclcpp_action::GoalUUID &, std::shared_ptr<const CrouchGoal> goal)
-  //   {
-  //     geometry_msgs::msg::Twist target = goal->target;
-  //     RCLCPP_INFO(
-  //   get_logger(), "Recevied CrouchGoal with target linear:[%g, %g, %g], angular:[%g, %g, %g]",
-  //       target.linear.x, target.linear.y, target.linear.z,
-  //       target.angular.x, target.angular.y, target.angular.z);
-  //     // Accept all goals
-  //     walk->walk(target);
-  //     return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
-  //   },
-  //   [this](const std::shared_ptr<CrouchGoalHandle>)
-  //   {
-  //     RCLCPP_INFO(get_logger(), "Received request to cancel goal");
-  //     // Accept all cancel requests
-  //     walk->abort();
-  //     return rclcpp_action::CancelResponse::ACCEPT;
-  //   },
-  //   std::bind(&WalkNode::handle_accepted, this, _1));
 }
 
 void WalkNode::abort(
@@ -120,27 +101,17 @@ void WalkNode::report_ready_to_step(const std_msgs::msg::Bool & ready_to_step)
   pub_ready_to_step->publish(ready_to_step);
 }
 
-
-// void WalkNode::handle_accepted(
-//   const std::shared_ptr<CrouchGoalHandle> goal_handle)
-// {
-//   RCLCPP_DEBUG(get_logger(), "handle_accepted");
-//   // Abort any existing goal
-//   if (walk_goal_handle_) {
-//     RCLCPP_INFO(
-//       get_logger(),
-//       "Crouch goal received before a previous goal finished. Aborting previous goal");
-//     auto result = std::make_shared<walk_interfaces::action::Crouch::Result>();
-//     walk_goal_handle_->abort(result);
-//   }
-//   walk_goal_handle_ = goal_handle;
-//   walk->walk(goal_handle->get_goal()->target);
-// }
-
-void WalkNode::timer_callback()
+void WalkNode::generateCommand_timer_callback()
 {
-  RCLCPP_DEBUG(get_logger(), "timer_callback()");
+  RCLCPP_DEBUG(get_logger(), "generateCommand_timer_callback()");
   walk->generateCommand();
+}
+
+void WalkNode::notifyPhase_timer_callback()
+{
+  RCLCPP_DEBUG(get_logger(), "notifyPhase_timer_callback()");
+  phase.invert();
+  walk->notifyPhase(phase);
 }
 
 void WalkNode::target_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
