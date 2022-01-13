@@ -60,8 +60,6 @@ private:
   const std::function<void(const geometry_msgs::msg::Twist &)> report_current_twist;
   const std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step;
 
-  std::unique_ptr<geometry_msgs::msg::Twist> currTwist;
-
   std::unique_ptr<twist_limiter::Params> twistLimiterParams;
   std::unique_ptr<ankle_pose::Params> anklePoseParams;
 
@@ -75,8 +73,11 @@ private:
   std::unique_ptr<Step> step;
   std::unique_ptr<FeetTrajectoryPoint> last;
 
+  std::unique_ptr<geometry_msgs::msg::Twist> currTwist;
   std::shared_ptr<geometry_msgs::msg::Twist> target;
   std::shared_ptr<Phase> notifiedPhase;
+
+  void logGait(const Gait & gait);
 };
 
 #endif  // WALK__WALK_HPP_

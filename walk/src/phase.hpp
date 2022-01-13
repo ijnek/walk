@@ -18,7 +18,7 @@
 class Phase
 {
 public:
-  Phase(const Phase & phase)
+  explicit Phase(const Phase & phase)
   : value(phase.value) {}
 
   static const Phase LeftStance;
