@@ -23,9 +23,8 @@
 // limitations under the License.
 
 #include <memory>
+#include <utility>
 #include "walk/walk.hpp"
-#include "tf2/LinearMath/Quaternion.h"
-#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "./twist_limiter.hpp"
 #include "./maths_functions.hpp"
 #include "./feet_trajectory_point.hpp"
@@ -33,6 +32,7 @@
 #include "./gait.hpp"
 #include "./target_gait_calculator.hpp"
 #include "./phase.hpp"
+#include "./ankle_pose_generator.hpp"
 
 Walk::Walk(
   std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses,
@@ -44,7 +44,8 @@ Walk::Walk(
   twistLimiter(std::make_unique<TwistLimiter>()),
   logger(rclcpp::get_logger("Walk")),
   step(std::make_unique<Step>()),
-  last(std::make_unique<FeetTrajectoryPoint>())
+  last(std::make_unique<FeetTrajectoryPoint>()),
+  anklePoseGenerator(std::make_unique<AnklePoseGenerator>())
 {
 }
 
@@ -56,13 +57,10 @@ void Walk::setParams(
   float maxLeftChange, float maxTurnChange)
 {
   this->period = period;
-  this->ankleX = ankleX;
-  this->ankleY = ankleY;
-  this->ankleZ = ankleZ;
   this->footLiftAmp = footLiftAmp;
+  anklePoseGenerator = std::make_unique<AnklePoseGenerator>(ankleX, ankleY, ankleZ);
   twistLimiter->setParams(
-    maxForward, maxLeft, maxTurn, speedMultiplier, footLiftAmp,
-    maxForwardChange, maxLeftChange, maxTurnChange);
+    maxForward, maxLeft, maxTurn, speedMultiplier, maxForwardChange, maxLeftChange, maxTurnChange);
 }
 
 void Walk::generateCommand()
@@ -132,9 +130,9 @@ void Walk::generateCommand()
     const FeetTrajectoryPoint & currentFTP = step->next();
     // RCLCPP_DEBUG(logger, "Executing walkOption: %s", walkOptionToString.at(walkOption));
     // Send IK Command
-    send_ankle_poses(generate_ankle_poses(currentFTP));
+    send_ankle_poses(anklePoseGenerator->generate(currentFTP));
   } else {
-    send_ankle_poses(generate_ankle_poses(FeetTrajectoryPoint{}));
+    send_ankle_poses(anklePoseGenerator->generate(FeetTrajectoryPoint{}));
   }
 
   // Report current twist
@@ -164,58 +162,4 @@ void Walk::walk(const geometry_msgs::msg::Twist & target)
   duringWalk = true;
   targetWalkOption = WALK;
   this->target = target;
-}
-
-
-biped_interfaces::msg::AnklePoses Walk::generate_ankle_poses(const FeetTrajectoryPoint & ftp)
-{
-  // Evaluate position and angle of both feet
-  float l_ankle_pos_x = ftp.forwardL + ankleX;
-  float l_ankle_pos_y = ftp.leftL + ankleY;
-  float l_ankle_pos_z = ftp.foothL + ankleZ;
-  float l_ankle_ang_x = 0;
-  float l_ankle_ang_y = 0;
-  float l_ankle_ang_z = ftp.headingL;
-
-  float r_ankle_pos_x = ftp.forwardR + ankleX;
-  float r_ankle_pos_y = ftp.leftR - ankleY;
-  float r_ankle_pos_z = ftp.foothR + ankleZ;
-  float r_ankle_ang_x = 0;
-  float r_ankle_ang_y = 0;
-  float r_ankle_ang_z = ftp.headingR;
-
-  RCLCPP_DEBUG(logger, "Sending IKCommand with:");
-  RCLCPP_DEBUG(
-    logger,
-    "   LEFT - Position: (%.4f, %.4f, %.4f), Rotation: (%.4f, %.4f, %.4f)",
-    l_ankle_pos_x, l_ankle_pos_y, l_ankle_pos_z,
-    l_ankle_ang_x, l_ankle_ang_y, l_ankle_ang_z);
-  RCLCPP_DEBUG(
-    logger,
-    "  RIGHT - Position: (%.4f, %.4f, %.4f), Rotation: (%.4f, %.4f, %.4f)",
-    r_ankle_pos_x, r_ankle_pos_y, r_ankle_pos_z,
-    r_ankle_ang_x, r_ankle_ang_y, r_ankle_ang_z);
-
-  biped_interfaces::msg::AnklePoses command;
-  command.l_ankle.position.x = l_ankle_pos_x;
-  command.l_ankle.position.y = l_ankle_pos_y;
-  command.l_ankle.position.z = l_ankle_pos_z;
-  command.l_ankle.orientation = rpy_to_geometry_quat(
-    l_ankle_ang_x, l_ankle_ang_y, l_ankle_ang_z);
-  command.r_ankle.position.x = r_ankle_pos_x;
-  command.r_ankle.position.y = r_ankle_pos_y;
-  command.r_ankle.position.z = r_ankle_pos_z;
-  command.r_ankle.orientation = rpy_to_geometry_quat(
-    r_ankle_ang_x, r_ankle_ang_y, r_ankle_ang_z);
-
-  return command;
-}
-
-geometry_msgs::msg::Quaternion Walk::rpy_to_geometry_quat(
-  double roll, double pitch, double yaw)
-{
-  tf2::Quaternion quat;
-  quat.setRPY(roll, pitch, yaw);
-  geometry_msgs::msg::Quaternion geometry_quat = tf2::toMsg(quat);
-  return geometry_quat;
 }

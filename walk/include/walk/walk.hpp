@@ -26,6 +26,7 @@ class TwistLimiter;
 class Step;
 class FeetTrajectoryPoint;
 class Phase;
+class AnklePoseGenerator;
 
 
 class Walk
@@ -85,16 +86,12 @@ private:
   rclcpp::Logger logger;
 
   float period = 0.0;
-  float ankleX = 0.0;
-  float ankleY = 0.0;
-  float ankleZ = 0.0;
   float footLiftAmp = 0.0;
-
-  biped_interfaces::msg::AnklePoses generate_ankle_poses(const FeetTrajectoryPoint & ftp);
-  geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, double yaw);
 
   std::unique_ptr<Step> step;
   std::unique_ptr<FeetTrajectoryPoint> last;
+
+  std::unique_ptr<AnklePoseGenerator> anklePoseGenerator;
 };
 
 #endif  // WALK__WALK_HPP_
