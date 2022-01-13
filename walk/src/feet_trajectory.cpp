@@ -24,8 +24,7 @@ std::vector<FeetTrajectoryPoint> generate(
   const feet_trajectory::Params & p, const Phase & phase,
   const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next)
 {
-  float maxFootHeight = 0.012;
-
+  float maxFootHeight = p.footLiftAmp;
   float period = p.period;
   float dt = p.dt;
 
