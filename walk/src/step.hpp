@@ -21,10 +21,7 @@
 class Step
 {
 public:
-  explicit Step(
-    float period, float dt, const Phase & phase,
-    const FeetTrajectoryPoint & last,
-    const FeetTrajectoryPoint & next);
+  explicit Step(const std::vector<FeetTrajectoryPoint> points);
   bool done();
   const FeetTrajectoryPoint & next();
 

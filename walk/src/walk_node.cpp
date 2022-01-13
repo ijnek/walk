@@ -33,6 +33,7 @@ WalkNode::WalkNode()
   float speed_multiplier = this->declare_parameter("speed_multiplier", 1.0);
   float foot_lift_amp = this->declare_parameter("foot_lift_amp", 0.012);
   float period = this->declare_parameter("period", 0.25);
+  float dt = this->declare_parameter("dt", 0.01);
   float ankle_x = this->declare_parameter("ankle_x", -0.01);
   float ankle_y = this->declare_parameter("ankle_y", 0.05);
   float ankle_z = this->declare_parameter("ankle_z", -0.18);
@@ -47,6 +48,7 @@ WalkNode::WalkNode()
   RCLCPP_DEBUG(get_logger(), "  speed_multiplier : %f", speed_multiplier);
   RCLCPP_DEBUG(get_logger(), "  foot_lift_amp : %f", foot_lift_amp);
   RCLCPP_DEBUG(get_logger(), "  period : %f", period);
+  RCLCPP_DEBUG(get_logger(), "  dt : %f", dt);
   RCLCPP_DEBUG(get_logger(), "  ankle_x : %f", ankle_x);
   RCLCPP_DEBUG(get_logger(), "  ankle_y : %f", ankle_y);
   RCLCPP_DEBUG(get_logger(), "  ankle_z : %f", ankle_z);
@@ -55,7 +57,7 @@ WalkNode::WalkNode()
   RCLCPP_DEBUG(get_logger(), "  max_turn_change : %f", max_turn_change);
 
   walk->setParams(
-    max_forward, max_left, max_turn, speed_multiplier, foot_lift_amp, period, ankle_x, ankle_y,
+    max_forward, max_left, max_turn, speed_multiplier, foot_lift_amp, period, dt, ankle_x, ankle_y,
     ankle_z, max_forward_change, max_left_change, max_turn_change);
 
   generateCommand_timer_ = this->create_wall_timer(

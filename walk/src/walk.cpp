@@ -34,6 +34,7 @@
 #include "./target_gait_calculator.hpp"
 #include "walk/phase.hpp"
 #include "./ankle_pose.hpp"
+#include "./feet_trajectory.hpp"
 
 Walk::Walk(
   std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses,
@@ -53,7 +54,7 @@ Walk::~Walk() {}
 
 void Walk::setParams(
   float maxForward, float maxLeft, float maxTurn, float speedMultiplier, float footLiftAmp,
-  float period, float ankleX, float ankleY, float ankleZ, float maxForwardChange,
+  float period, float dt, float ankleX, float ankleY, float ankleZ, float maxForwardChange,
   float maxLeftChange, float maxTurnChange)
 {
   this->period = period;
@@ -64,6 +65,7 @@ void Walk::setParams(
   twistChangeLimiterParams = std::make_unique<twist_change_limiter::Params>(
     maxForwardChange, maxLeftChange, maxTurnChange);
   targetGaitCalculatorParams = std::make_unique<target_gait_calculator::Params>(period);
+  feetTrajectoryParams = std::make_unique<feet_trajectory::Params>(period, dt);
 }
 
 void Walk::generateCommand()
@@ -129,9 +131,10 @@ void Walk::notifyPhase(const Phase & phase)
     logger, "Using %s",
     (phase == Phase::LeftStance) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
-  // TODO(ijnek): Hardcoded dt for now, should figure out what to do this.
-  float dt = 0.02;
-
-  std::atomic_store(&step, std::make_shared<Step>(period, dt, phase, *ftpCurrent, *ftpNext));
+  std::shared_ptr<Step> step =
+    std::make_shared<Step>(
+    feet_trajectory::generate(*feetTrajectoryParams, phase, *ftpCurrent, *ftpNext));
   ftpCurrent = std::move(ftpNext);
+
+  std::atomic_store(&this->step, step);
 }

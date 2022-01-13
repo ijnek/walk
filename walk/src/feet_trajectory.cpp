@@ -21,11 +21,13 @@
 namespace feet_trajectory
 {
 std::vector<FeetTrajectoryPoint> generate(
-  float period, float dt, const Phase & phase,
-  const FeetTrajectoryPoint & last,
-  const FeetTrajectoryPoint & next)
+  const feet_trajectory::Params & p, const Phase & phase,
+  const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next)
 {
   float maxFootHeight = 0.012;
+
+  float period = p.period;
+  float dt = p.dt;
 
   std::vector<FeetTrajectoryPoint> points;
   points.reserve(period / dt);

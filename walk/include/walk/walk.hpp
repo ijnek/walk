@@ -26,6 +26,7 @@ namespace twist_limiter {class Params;}
 namespace twist_change_limiter {class Params;}
 namespace ankle_pose {class Params;}
 namespace target_gait_calculator {class Params;}
+namespace feet_trajectory {class Params;}
 class Step;
 class FeetTrajectoryPoint;
 class Phase;
@@ -46,6 +47,7 @@ public:
     float speedMultiplier,  // how much to multiple speed by (0.0 - 1.0)
     float footLiftAmp,  // how much to raise foot when it is highest (m)
     float period,  // time taken for one step, (s)
+    float dt,      // time taken between each generateCommand call (s)
     float ankleX,  // x coordinate of ankle from hip when standing (m)
     float ankleY,  // y coordinate of ankle from hip when standing (m)
     float ankleZ,  // z coordinate of ankle from hip when standing (m)
@@ -66,6 +68,7 @@ private:
   std::unique_ptr<twist_change_limiter::Params> twistChangeLimiterParams;
   std::unique_ptr<ankle_pose::Params> anklePoseParams;
   std::unique_ptr<target_gait_calculator::Params> targetGaitCalculatorParams;
+  std::unique_ptr<feet_trajectory::Params> feetTrajectoryParams;
 
   float period = 0.0;
   float footLiftAmp = 0.0;

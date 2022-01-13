@@ -22,10 +22,22 @@ class FeetTrajectoryPoint;
 
 namespace feet_trajectory
 {
+class Params;
+
 std::vector<FeetTrajectoryPoint> generate(
-  float period, float dt, const Phase & phase,
-  const FeetTrajectoryPoint & last,
-  const FeetTrajectoryPoint & next);
+  const feet_trajectory::Params & p, const Phase & phase,
+  const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next);
+
+class Params
+{
+public:
+  explicit Params(float period, float dt)
+  : period(period), dt(dt)
+  {}
+
+  float period;
+  float dt;
+};
 }  // namespace feet_trajectory
 
 #endif  // FEET_TRAJECTORY_HPP_

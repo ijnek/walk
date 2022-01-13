@@ -26,7 +26,7 @@ protected:
   {
     // Walk params are zero by default, so this funcion must be called!
     // For this test case, the values used are taken from the default of a NAO walk.
-    walk.setParams(0.3, 0.2, 2.0, 1.0, 0.012, 0.25, -0.01, 0.05, -0.18, 0.06, 0.1, 1.0);
+    walk.setParams(0.3, 0.2, 2.0, 1.0, 0.012, 0.25, 0.01, -0.01, 0.05, -0.18, 0.06, 0.1, 1.0);
   }
 
   void SetUp()

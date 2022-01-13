@@ -12,21 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <vector>
-#include "./feet_trajectory.hpp"
-#include "./step.hpp"
+#ifndef STEP_GENERATOR_HPP_
+#define STEP_GENERATOR_HPP_
 
-Step::Step(const std::vector<FeetTrajectoryPoint> points)
-: points(points)
+namespace step_generator
 {
-}
+class Params;
 
-bool Step::done()
-{
-  return i == points.size();
-}
+Step generate(
+  const step_generator::Params & p, const Phase & phase,
+  const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next);
 
-const FeetTrajectoryPoint & Step::next()
+class Params
 {
-  return points.at(i++);
-}
+public:
+  explicit Params(float period, float dt)
+  : period(period), dt(dt)
+  {}
+
+  float period;
+  float dt;
+};
+}  // namespace step_generator
+
+#endif  // STEP_GENERATOR_HPP_
