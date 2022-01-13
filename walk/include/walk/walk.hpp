@@ -22,7 +22,7 @@
 #include "std_msgs/msg/bool.hpp"
 #include "biped_interfaces/msg/ankle_poses.hpp"
 
-class TwistLimiter;
+namespace twist_limiter {class Params;}
 class Step;
 class FeetTrajectoryPoint;
 class Phase;
@@ -51,49 +51,32 @@ public:
     float maxLeftChange,  // how much left can change in one step (m/s)
     float maxTurnChange);  // how much turn can change in one step (rad/s)
   void generateCommand();
-  void abort();
   void walk(const geometry_msgs::msg::Twist & target);
-  void crouch();
-  void notifyPhase(const Phase &phase);
+  void notifyPhase(const Phase & phase);
+  void reset();
 
 private:
   const std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses;
   const std::function<void(const geometry_msgs::msg::Twist &)> report_current_twist;
   const std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step;
 
-  enum WalkOption
-  {
-    CROUCH = 1,      // crouch still ready to walk
-    WALK = 2,
-  };
+  std::unique_ptr<geometry_msgs::msg::Twist> currTwist;
 
-  const std::map<WalkOption, const char *> walkOptionToString = {
-    {WalkOption::CROUCH, "CROUCH"},
-    {WalkOption::WALK, "WALK"}};
-
-  WalkOption walkOption = CROUCH;
-  geometry_msgs::msg::Twist currTwist;
-
-  std::unique_ptr<TwistLimiter> twistLimiter;
-
-  std::unique_ptr<Phase> phase;
+  std::unique_ptr<twist_limiter::Params> twistLimiterParams;
+  std::unique_ptr<AnklePoseGenerator> anklePoseGenerator;
 
   bool firstMsg = true;
-
-  bool duringWalk = false;  // whether this action is active or not
-  WalkOption targetWalkOption = CROUCH;  // target walk option to aim for
-  geometry_msgs::msg::Twist target;  // target twist to aim for, if walking
-
-  rclcpp::Logger logger;
-
   float period = 0.0;
   float footLiftAmp = 0.0;
 
+  rclcpp::Logger logger;
+
+  std::unique_ptr<Phase> phase;
   std::unique_ptr<Step> step;
   std::unique_ptr<FeetTrajectoryPoint> last;
 
-  std::unique_ptr<AnklePoseGenerator> anklePoseGenerator;
-  std::unique_ptr<Phase> notifiedPhase;
+  std::shared_ptr<geometry_msgs::msg::Twist> target;
+  std::shared_ptr<Phase> notifiedPhase;
 };
 
 #endif  // WALK__WALK_HPP_

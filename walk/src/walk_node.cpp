@@ -99,7 +99,7 @@ void WalkNode::abort(
   std::shared_ptr<std_srvs::srv::Empty::Response>)
 {
   RCLCPP_DEBUG(get_logger(), "abort() called, aborting walk->");
-  walk->abort();
+  // walk->abort();
 }
 
 void WalkNode::send_ankle_poses(const biped_interfaces::msg::AnklePoses & ankle_poses)

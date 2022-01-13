@@ -18,42 +18,34 @@
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
-class TwistLimiter
+namespace twist_limiter
+{
+class Params;
+
+geometry_msgs::msg::Twist limit(
+  const twist_limiter::Params & p,
+  const geometry_msgs::msg::Twist & current,
+  const geometry_msgs::msg::Twist & target);
+
+class Params
 {
 public:
-  TwistLimiter()
-  : logger(rclcpp::get_logger("TwistLimiter")) {}
+  Params(
+    float maxForward, float maxLeft, float maxTurn, float speedMultiplier,
+    float maxForwardChange, float maxLeftChange, float maxTurnChange)
+  : maxForward(maxForward), maxLeft(maxLeft), maxTurn(maxTurn), speedMultiplier(speedMultiplier),
+    maxForwardChange(maxForwardChange), maxLeftChange(maxLeftChange), maxTurnChange(maxTurnChange)
+  {
+  }
 
-  geometry_msgs::msg::Twist limit(
-    const geometry_msgs::msg::Twist & current,
-    const geometry_msgs::msg::Twist & target);
-
-  void setParams(
-    float maxForward,  // max forward velocity (m/s)
-    float maxLeft,  // max side velocity (m/s)
-    float maxTurn,  // max turn velocity (rad/s)
-    float speedMultiplier,  // how much to multiple speed by (0.0 - 1.0)
-    float maxForwardChange,  // how much forward can change in one step (m/s)
-    float maxLeftChange,  // how much left can change in one step (m/s)
-    float maxTurnChange);  // how much turn can change in one step (rad/s)
-
-private:
-  float maxForward;
-  float maxLeft;
-  float maxTurn;
-  float speedMultiplier;
-  float maxForwardChange;
-  float maxLeftChange;
-  float maxTurnChange;
-
-  void ellipsoidClamp(geometry_msgs::msg::Twist & target);
-  void limitChange(
-    geometry_msgs::msg::Twist & target,
-    const geometry_msgs::msg::Twist & current);
-
-  float evaluateWalkVolume(float x, float y, float z);
-
-  rclcpp::Logger logger;
-};  // namespace TwistLimiter
+  float maxForward;        // max forward velocity (m/s)
+  float maxLeft;           // max side velocity (m/s)
+  float maxTurn;           // max turn velocity (rad/s)
+  float speedMultiplier;   // how much to multiple speed by (0.0 - 1.0)
+  float maxForwardChange;  // how much forward can change in one step (m/s)
+  float maxLeftChange;     // how much left can change in one step (m/s)
+  float maxTurnChange;     // how much turn can change in one step (rad/s)
+};
+}   // namespace twist_limiter
 
 #endif  // TWIST_LIMITER_HPP_
