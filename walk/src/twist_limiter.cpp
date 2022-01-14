@@ -12,38 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <gtest/gtest.h>
 #include <math.h>
-#include "./step_calculator.hpp"
+#include "./twist_limiter.hpp"
 
-void StepCalculator::setParams(
-  float maxForward,
-  float maxLeft,
-  float maxTurn,
-  float speedMultiplier,
-  float footLiftAmp,
-  float maxForwardChange,
-  float maxLeftChange,
-  float maxTurnChange)
+namespace twist_limiter
 {
-  this->maxForward = maxForward;
-  this->maxLeft = maxLeft;
-  this->maxTurn = maxTurn;
-  this->speedMultiplier = speedMultiplier;
-  this->footLiftAmp = footLiftAmp;
-  this->maxForwardChange = maxForwardChange;
-  this->maxLeftChange = maxLeftChange;
-  this->maxTurnChange = maxTurnChange;
-}
 
-geometry_msgs::msg::Twist StepCalculator::calculateNext(
-  const geometry_msgs::msg::Twist & current,
+// Declare functions
+void ellipsoidClamp(const twist_limiter::Params & p, geometry_msgs::msg::Twist & target);
+float evaluateWalkVolume(float x, float y, float z);
+
+geometry_msgs::msg::Twist limit(
+  const twist_limiter::Params & p,
   const geometry_msgs::msg::Twist & target)
 {
-  RCLCPP_DEBUG(
-    logger, "current twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
-    current.linear.x, current.linear.y, current.linear.z,
-    current.angular.x, current.angular.y, current.angular.z);
+  auto logger = rclcpp::get_logger("twist_limiter::limit");
 
   RCLCPP_DEBUG(
     logger, " target twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
@@ -51,8 +34,7 @@ geometry_msgs::msg::Twist StepCalculator::calculateNext(
     target.angular.x, target.angular.y, target.angular.z);
 
   geometry_msgs::msg::Twist nextStepTarget = target;
-  ellipsoidClamp(nextStepTarget);
-  limitChange(nextStepTarget, current);
+  ellipsoidClamp(p, nextStepTarget);
 
   RCLCPP_DEBUG(
     logger, " result twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
@@ -62,12 +44,12 @@ geometry_msgs::msg::Twist StepCalculator::calculateNext(
   return nextStepTarget;
 }
 
-void StepCalculator::ellipsoidClamp(geometry_msgs::msg::Twist & target)
+void ellipsoidClamp(const twist_limiter::Params & p, geometry_msgs::msg::Twist & target)
 {
   // limit max depending on speedMultiplier
-  float m_forward = maxForward * speedMultiplier;
-  float m_left = maxLeft * speedMultiplier;
-  float m_turn = maxTurn * speedMultiplier;
+  float m_forward = p.maxForward * p.speedMultiplier;
+  float m_left = p.maxLeft * p.speedMultiplier;
+  float m_turn = p.maxTurn * p.speedMultiplier;
 
   // Values in range [-1..1]
   float forwardAmount = target.linear.x / m_forward;
@@ -111,31 +93,10 @@ void StepCalculator::ellipsoidClamp(geometry_msgs::msg::Twist & target)
   target.angular.z = m_turn * turnAmount;
 }
 
-void StepCalculator::limitChange(
-  geometry_msgs::msg::Twist & target,
-  const geometry_msgs::msg::Twist & current)
-{
-  double & forward = target.linear.x;
-  double & left = target.linear.y;
-  double & turn = target.angular.z;
-
-  const double & lastForward = current.linear.x;
-  const double & lastLeft = current.linear.y;
-  const double & lastTurn = current.angular.z;
-
-  if (abs(forward - lastForward) > maxForwardChange) {
-    forward = lastForward + (forward - lastForward) / abs(forward - lastForward) * maxForwardChange;
-  }
-  if (abs(left - lastLeft) > maxLeftChange) {
-    left = lastLeft + (left - lastLeft) / abs(left - lastLeft) * maxLeftChange;
-  }
-  if (abs(turn - lastTurn) > maxTurnChange) {
-    turn = lastTurn + (turn - lastTurn) / abs(turn - lastTurn) * maxTurnChange;
-  }
-}
-
 // x = forward, y = left, z = turn
-float StepCalculator::evaluateWalkVolume(float x, float y, float z)
+float evaluateWalkVolume(float x, float y, float z)
 {
   return sqrt(x * x + y * y + z * z);
 }
+
+}  // namespace twist_limiter

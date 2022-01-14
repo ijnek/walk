@@ -22,8 +22,14 @@
 #include "std_msgs/msg/bool.hpp"
 #include "biped_interfaces/msg/ankle_poses.hpp"
 
-struct StepVariable;
-class StepCalculator;
+namespace twist_limiter {class Params;}
+namespace twist_change_limiter {class Params;}
+namespace ankle_pose {class Params;}
+namespace target_gait_calculator {class Params;}
+namespace feet_trajectory {class Params;}
+class Step;
+class FeetTrajectoryPoint;
+class Phase;
 
 
 class Walk
@@ -33,6 +39,7 @@ public:
     std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses,
     std::function<void(const geometry_msgs::msg::Twist &)> report_current_twist,
     std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step);
+  virtual ~Walk();
   void setParams(
     float maxForward,  // max forward velocity (m/s)
     float maxLeft,  // max side velocity (m/s)
@@ -40,6 +47,7 @@ public:
     float speedMultiplier,  // how much to multiple speed by (0.0 - 1.0)
     float footLiftAmp,  // how much to raise foot when it is highest (m)
     float period,  // time taken for one step, (s)
+    float dt,      // time taken between each generateCommand call (s)
     float ankleX,  // x coordinate of ankle from hip when standing (m)
     float ankleY,  // y coordinate of ankle from hip when standing (m)
     float ankleZ,  // z coordinate of ankle from hip when standing (m)
@@ -47,58 +55,30 @@ public:
     float maxLeftChange,  // how much left can change in one step (m/s)
     float maxTurnChange);  // how much turn can change in one step (rad/s)
   void generateCommand();
-  void abort();
   void walk(const geometry_msgs::msg::Twist & target);
-  void crouch();
+  void notifyPhase(const Phase & phase);
+  // void reset();
 
 private:
   const std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses;
   const std::function<void(const geometry_msgs::msg::Twist &)> report_current_twist;
   const std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step;
 
-  enum WalkOption
-  {
-    CROUCH = 1,      // crouch still ready to walk
-    WALK = 2,
-  };
-
-  const std::map<WalkOption, const char *> walkOptionToString = {
-    {WalkOption::CROUCH, "CROUCH"},
-    {WalkOption::WALK, "WALK"}};
-
-  WalkOption walkOption = CROUCH;
-  geometry_msgs::msg::Twist currTwist;
-  std::shared_ptr<StepVariable> currStep;
-
-  std::shared_ptr<StepCalculator> stepCalculator;
-
-  float t = 0.0;
-  float forwardL0 = 0.0;
-  float forwardR0 = 0.0;
-  float leftL0 = 0.0;
-  float leftR0 = 0.0;
-  float turnRL0 = 0.0;
-  bool isLeftPhase = false;
-  bool weightHasShifted = true;
-
-  bool firstMsg = true;
-
-  bool duringWalk = false;  // whether this action is active or not
-  WalkOption targetWalkOption = CROUCH;  // target walk option to aim for
-  geometry_msgs::msg::Twist target;  // target twist to aim for, if walking
+  std::unique_ptr<twist_limiter::Params> twistLimiterParams;
+  std::unique_ptr<twist_change_limiter::Params> twistChangeLimiterParams;
+  std::unique_ptr<ankle_pose::Params> anklePoseParams;
+  std::unique_ptr<target_gait_calculator::Params> targetGaitCalculatorParams;
+  std::unique_ptr<feet_trajectory::Params> feetTrajectoryParams;
 
   rclcpp::Logger logger;
 
-  float period = 0.0;
-  float ankleX = 0.0;
-  float ankleY = 0.0;
-  float ankleZ = 0.0;
-  float footLiftAmp = 0.0;
+  std::unique_ptr<Phase> phase;
+  std::unique_ptr<FeetTrajectoryPoint> ftpCurrent;
+  std::unique_ptr<geometry_msgs::msg::Twist> currTwist;
 
-  biped_interfaces::msg::AnklePoses generate_ankle_poses(
-    float forwardL, float forwardR, float leftL,
-    float leftR, float foothL, float foothR, float turnRL);
-  geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, double yaw);
+  // Following members must be stored and loaded in a thread-safe manner
+  std::shared_ptr<geometry_msgs::msg::Twist> targetTwist;
+  std::shared_ptr<Step> step;
 };
 
 #endif  // WALK__WALK_HPP_

@@ -12,15 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef STEP_VARIABLE_HPP_
-#define STEP_VARIABLE_HPP_
+#include <vector>
 
-struct StepVariable
+class Phase;
+class FeetTrajectoryPoint;
+
+#ifndef FEET_TRAJECTORY_HPP_
+#define FEET_TRAJECTORY_HPP_
+
+namespace feet_trajectory
 {
-  float forward = 0.0;  // m
-  float left = 0.0;  // m
-  float turn = 0.0;  // rad
-  float legLift = 0.0;  // m
-};
+class Params;
 
-#endif  // STEP_VARIABLE_HPP_
+std::vector<FeetTrajectoryPoint> generate(
+  const feet_trajectory::Params & p, const Phase & phase,
+  const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next);
+
+class Params
+{
+public:
+  explicit Params(float footLiftAmp, float period, float dt)
+  : footLiftAmp(footLiftAmp), period(period), dt(dt)
+  {}
+
+  float footLiftAmp;
+  float period;
+  float dt;
+};
+}  // namespace feet_trajectory
+
+#endif  // FEET_TRAJECTORY_HPP_

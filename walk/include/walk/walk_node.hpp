@@ -24,6 +24,7 @@
 #include "std_srvs/srv/empty.hpp"
 #include "std_msgs/msg/bool.hpp"
 #include "geometry_msgs/msg/twist.hpp"
+#include "walk/phase.hpp"
 
 
 class Walk;
@@ -40,7 +41,8 @@ private:
   std::shared_ptr<Walk> walk;
 
   // TODO(ijnek): Replace this timer with an input signal
-  rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::TimerBase::SharedPtr generateCommand_timer_;
+  rclcpp::TimerBase::SharedPtr notifyPhase_timer_;
 
   // Twist is a subscription
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_target;
@@ -48,17 +50,12 @@ private:
   // Abort is a service
   rclcpp::Service<std_srvs::srv::Empty>::SharedPtr service_abort;
 
-  // Crouch and Stand are actions
-  // rclcpp_action::Server<walk_interfaces::action::Crouch>::SharedPtr action_server_crouch_;
-  // rclcpp_action::Server<walk_interfaces::action::Stand>::SharedPtr action_server_stand_;
-
   rclcpp::Publisher<biped_interfaces::msg::AnklePoses>::SharedPtr pub_ankle_poses;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist;
   rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_to_step;
 
-  // std::shared_ptr<CrouchGoalHandle> crouch_goal_handle_;
-
-  void timer_callback();
+  void generateCommand_timer_callback();
+  void notifyPhase_timer_callback();
 
   // TODO(ijnek): Try and figure out how to get rid of these parameters, as they're not used.
   void abort(
@@ -68,10 +65,10 @@ private:
   void send_ankle_poses(const biped_interfaces::msg::AnklePoses & ankle_poses);
   void report_current_twist(const geometry_msgs::msg::Twist & current_twist);
   void report_ready_to_step(const std_msgs::msg::Bool & ready_to_step);
-  // void handle_accepted(
-  //   const std::shared_ptr<CrouchGoalHandle> crouch_goal_handle);
 
   void target_callback(const geometry_msgs::msg::Twist::SharedPtr msg);
+
+  Phase phase;
 };
 
 #endif  // WALK__WALK_NODE_HPP_
