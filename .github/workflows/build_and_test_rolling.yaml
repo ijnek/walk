@@ -25,10 +25,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
-        with:
-          path: tmp
       - uses: ros-tooling/setup-ros@v0.2
-      - uses: ros-tooling/action-ros-ci@v0.2
+      - uses: ijnek/action-ros-ci@ijnek-vcs-repo-file-url
         with:
           target-ros2-distro: rolling
-          vcs-repo-file-url: tmp/dependencies.repos
+          vcs-repo-file-url: ros_ws/src/walk/dependencies.repos
