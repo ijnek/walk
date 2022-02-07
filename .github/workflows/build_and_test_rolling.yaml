@@ -25,9 +25,11 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
+        with:
+          path: tmp
       - uses: ros-tooling/setup-ros@v0.2
       - run: |
-          rosinstall_generator --from-paths . --rosdistro rolling \
+          rosinstall_generator --from-paths tmp --rosdistro rolling \
           --deps-only --deps --upstream-development > /tmp/deps.repos
       - uses: ros-tooling/action-ros-ci@v0.2
         with:
