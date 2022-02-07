@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <math.h>
-#include "./twist_limiter.hpp"
+#include "twist_limiter.hpp"
 
 namespace twist_limiter
 {

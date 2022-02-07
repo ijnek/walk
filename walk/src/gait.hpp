@@ -15,7 +15,7 @@
 #ifndef GAIT_HPP_
 #define GAIT_HPP_
 
-#include "./feet_trajectory_point.hpp"
+#include "feet_trajectory_point.hpp"
 
 class Gait
 {

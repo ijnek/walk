@@ -16,7 +16,7 @@
 #define STEP_HPP_
 
 #include <vector>
-#include "./feet_trajectory_point.hpp"
+#include "feet_trajectory_point.hpp"
 
 class Step
 {

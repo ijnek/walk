@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include <vector>
-#include "./feet_trajectory.hpp"
-#include "./step.hpp"
+#include "feet_trajectory.hpp"
+#include "step.hpp"
 
 Step::Step(const std::vector<FeetTrajectoryPoint> points)
 : points(points)

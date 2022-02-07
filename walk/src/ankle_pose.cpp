@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "./ankle_pose.hpp"
+#include "ankle_pose.hpp"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 #include "rclcpp/logger.hpp"
-#include "./feet_trajectory_point.hpp"
+#include "feet_trajectory_point.hpp"
 
 namespace ankle_pose
 {

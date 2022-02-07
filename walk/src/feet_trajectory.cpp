@@ -13,10 +13,10 @@
 // limitations under the License.
 
 #include <vector>
-#include "./feet_trajectory.hpp"
-#include "./maths_functions.hpp"
+#include "feet_trajectory.hpp"
+#include "maths_functions.hpp"
 #include "walk/phase.hpp"
-#include "./feet_trajectory_point.hpp"
+#include "feet_trajectory_point.hpp"
 
 namespace feet_trajectory
 {

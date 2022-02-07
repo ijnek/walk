@@ -16,7 +16,7 @@
 #define TARGET_GAIT_CALCULATOR_HPP_
 
 #include "geometry_msgs/msg/twist.hpp"
-#include "./gait.hpp"
+#include "gait.hpp"
 
 namespace target_gait_calculator
 {

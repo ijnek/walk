@@ -25,16 +25,16 @@
 #include <memory>
 #include <utility>
 #include "walk/walk.hpp"
-#include "./twist_limiter.hpp"
-#include "./twist_change_limiter.hpp"
-#include "./maths_functions.hpp"
-#include "./feet_trajectory_point.hpp"
-#include "./step.hpp"
-#include "./gait.hpp"
-#include "./target_gait_calculator.hpp"
+#include "twist_limiter.hpp"
+#include "twist_change_limiter.hpp"
+#include "maths_functions.hpp"
+#include "feet_trajectory_point.hpp"
+#include "step.hpp"
+#include "gait.hpp"
+#include "target_gait_calculator.hpp"
 #include "walk/phase.hpp"
-#include "./ankle_pose.hpp"
-#include "./feet_trajectory.hpp"
+#include "ankle_pose.hpp"
+#include "feet_trajectory.hpp"
 
 Walk::Walk(
   std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses,
