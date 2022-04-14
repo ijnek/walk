@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include <vector>
+#include "biped_interfaces/msg/phase.hpp"
 
-class Phase;
 class FeetTrajectoryPoint;
 
 #ifndef FEET_TRAJECTORY_HPP_
@@ -25,7 +25,7 @@ namespace feet_trajectory
 class Params;
 
 std::vector<FeetTrajectoryPoint> generate(
-  const feet_trajectory::Params & p, const Phase & phase,
+  const feet_trajectory::Params & p, const biped_interfaces::msg::Phase & phase,
   const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next);
 
 class Params

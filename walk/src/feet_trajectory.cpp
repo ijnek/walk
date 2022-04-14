@@ -15,13 +15,12 @@
 #include <vector>
 #include "feet_trajectory.hpp"
 #include "maths_functions.hpp"
-#include "walk/phase.hpp"
 #include "feet_trajectory_point.hpp"
 
 namespace feet_trajectory
 {
 std::vector<FeetTrajectoryPoint> generate(
-  const feet_trajectory::Params & p, const Phase & phase,
+  const feet_trajectory::Params & p, const biped_interfaces::msg::Phase & phase,
   const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next)
 {
   float maxFootHeight = p.footLiftAmp;
@@ -36,7 +35,7 @@ std::vector<FeetTrajectoryPoint> generate(
     float forwardL = 0.0;
     float forwardR = 0.0;
 
-    if (phase == Phase::RightSwing) {
+    if (phase.phase == phase.RIGHT_SWING) {
       forwardL = last.forwardL +
         (next.forwardL - last.forwardL) * linearStep(t, period);
       forwardR = last.forwardR +
@@ -59,7 +58,7 @@ std::vector<FeetTrajectoryPoint> generate(
     float foothL = 0;
     float foothR = 0;
 
-    if (phase == Phase::RightSwing) {
+    if (phase.phase == phase.RIGHT_SWING) {
       foothR = maxFootHeight * parabolicReturnMod(t / period);
     } else {
       foothL = maxFootHeight * parabolicReturnMod(t / period);

@@ -32,7 +32,6 @@
 #include "step.hpp"
 #include "gait.hpp"
 #include "target_gait_calculator.hpp"
-#include "walk/phase.hpp"
 #include "ankle_pose.hpp"
 #include "feet_trajectory.hpp"
 
@@ -91,14 +90,14 @@ void Walk::walk(const geometry_msgs::msg::Twist & twist)
   std::atomic_store(&this->targetTwist, std::move(limitedTwist));
 }
 
-void Walk::notifyPhase(const Phase & phase)
+void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 {
-  if (this->phase && phase == *this->phase) {
+  if (this->phase && phase.phase == this->phase->phase) {
     RCLCPP_WARN(logger, "Notified of a phase, but no change has taken place. Ignoring.");
     return;
   }
 
-  this->phase = std::make_unique<Phase>(phase);
+  this->phase = std::make_unique<biped_interfaces::msg::Phase>(phase);
 
   currTwist =
     std::make_unique<geometry_msgs::msg::Twist>(
@@ -121,11 +120,11 @@ void Walk::notifyPhase(const Phase & phase)
     gait->rightStancePhaseAim.headingL, gait->rightStancePhaseAim.headingR);
 
   std::unique_ptr<FeetTrajectoryPoint> ftpNext = std::make_unique<FeetTrajectoryPoint>(
-    (phase == Phase::LeftStance) ? gait->leftStancePhaseAim : gait->rightStancePhaseAim);
+    (phase.phase == phase.LEFT_STANCE) ? gait->leftStancePhaseAim : gait->rightStancePhaseAim);
 
   RCLCPP_DEBUG(
     logger, "Using %s",
-    (phase == Phase::LeftStance) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
+    (phase.phase == phase.LEFT_STANCE) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
   std::shared_ptr<Step> step = std::make_shared<Step>(
     feet_trajectory::generate(*feetTrajectoryParams, phase, *ftpCurrent, *ftpNext));
