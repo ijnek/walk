@@ -74,7 +74,9 @@ void Walk::generateCommand()
 
   std::shared_ptr<Step> stepCopy = std::atomic_load(&step);
 
-  send_ankle_poses(ankle_pose::generate(*anklePoseParams, stepCopy->next()));
+  if (!stepCopy->done()) {
+    send_ankle_poses(ankle_pose::generate(*anklePoseParams, stepCopy->next()));
+  }
 
   report_current_twist(*currTwist);
 
