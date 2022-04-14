@@ -21,6 +21,7 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "std_msgs/msg/bool.hpp"
 #include "biped_interfaces/msg/ankle_poses.hpp"
+#include "biped_interfaces/msg/phase.hpp"
 
 namespace twist_limiter {class Params;}
 namespace twist_change_limiter {class Params;}
@@ -29,7 +30,6 @@ namespace target_gait_calculator {class Params;}
 namespace feet_trajectory {class Params;}
 class Step;
 class FeetTrajectoryPoint;
-class Phase;
 
 
 class Walk
@@ -56,7 +56,7 @@ public:
     float maxTurnChange);  // how much turn can change in one step (rad/s)
   void generateCommand();
   void walk(const geometry_msgs::msg::Twist & target);
-  void notifyPhase(const Phase & phase);
+  void notifyPhase(const biped_interfaces::msg::Phase & phase);
   // void reset();
 
 private:
@@ -72,7 +72,7 @@ private:
 
   rclcpp::Logger logger;
 
-  std::unique_ptr<Phase> phase;
+  std::unique_ptr<biped_interfaces::msg::Phase> phase;
   std::unique_ptr<FeetTrajectoryPoint> ftpCurrent;
   std::unique_ptr<geometry_msgs::msg::Twist> currTwist;
 

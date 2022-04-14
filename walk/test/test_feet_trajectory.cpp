@@ -16,7 +16,7 @@
 #include "gtest/gtest.h"
 #include "../src/feet_trajectory.hpp"
 #include "../src/feet_trajectory_point.hpp"
-#include "walk/phase.hpp"
+#include "biped_interfaces/msg/phase.hpp"
 
 TEST(TestFeetTrajectory, TestSmoothSteps)
 {
@@ -31,11 +31,15 @@ TEST(TestFeetTrajectory, TestSmoothSteps)
 
   feet_trajectory::Params params{footLiftAmp, period, dt};
 
+  biped_interfaces::msg::Phase phase1;
+  phase1.phase = biped_interfaces::msg::Phase::RIGHT_SWING;
   std::vector<FeetTrajectoryPoint> pointsStep1 =
-    feet_trajectory::generate(params, Phase::RightSwing, init, step1);
+    feet_trajectory::generate(params, phase1, init, step1);
 
+  biped_interfaces::msg::Phase phase2;
+  phase2.phase = biped_interfaces::msg::Phase::LEFT_SWING;
   std::vector<FeetTrajectoryPoint> pointsStep2 =
-    feet_trajectory::generate(params, Phase::LeftSwing, step1, step2);
+    feet_trajectory::generate(params, phase2, step1, step2);
 
   std::vector<FeetTrajectoryPoint> points;
   points.insert(points.end(), pointsStep1.begin(), pointsStep1.end());

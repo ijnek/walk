@@ -24,8 +24,7 @@ WalkNode::WalkNode()
   walk(std::make_shared<Walk>(
       std::bind(&WalkNode::send_ankle_poses, this, _1),
       std::bind(&WalkNode::report_current_twist, this, _1),
-      std::bind(&WalkNode::report_ready_to_step, this, _1))),
-  phase{Phase::LeftSwing}
+      std::bind(&WalkNode::report_ready_to_step, this, _1)))
 {
   float max_forward = this->declare_parameter("max_forward", 0.3);
   float max_left = this->declare_parameter("max_left", 0.2);
@@ -63,8 +62,8 @@ WalkNode::WalkNode()
   generateCommand_timer_ = this->create_wall_timer(
     20ms, std::bind(&WalkNode::generateCommand_timer_callback, this));
 
-  notifyPhase_timer_ = this->create_wall_timer(
-    250ms, std::bind(&WalkNode::notifyPhase_timer_callback, this));
+  sub_phase = this->create_subscription<biped_interfaces::msg::Phase>(
+    "phase", 10, std::bind(&WalkNode::phase_callback, this, _1));
 
   sub_target = this->create_subscription<geometry_msgs::msg::Twist>(
     "target", 10, std::bind(&WalkNode::target_callback, this, _1));
@@ -109,11 +108,10 @@ void WalkNode::generateCommand_timer_callback()
   walk->generateCommand();
 }
 
-void WalkNode::notifyPhase_timer_callback()
+void WalkNode::phase_callback(const biped_interfaces::msg::Phase::SharedPtr msg)
 {
-  RCLCPP_DEBUG(get_logger(), "notifyPhase_timer_callback()");
-  phase.invert();
-  walk->notifyPhase(phase);
+  RCLCPP_DEBUG(get_logger(), "phase_callback called");
+  walk->notifyPhase(*msg);
 }
 
 void WalkNode::target_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
