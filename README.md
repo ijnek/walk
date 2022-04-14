@@ -32,6 +32,11 @@ Start inverse kinematics of robot:
 ros2 run nao_ik ik_node 
 ```
 
+Start the phase provider:
+```
+ros2 run nao_phase_provider nao_phase_provider --ros-args -r fsr:=/sensors/fsr
+```
+
 Make robot crouch with:
 ```
 ros2 topic pub --once /motion/ankle_poses biped_interfaces/msg/AnklePoses "
