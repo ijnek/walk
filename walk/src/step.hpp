@@ -16,17 +16,17 @@
 #define STEP_HPP_
 
 #include <vector>
-#include "feet_trajectory_point.hpp"
+#include "walk_interfaces/msg/feet_trajectory_point.hpp"
 
 class Step
 {
 public:
-  explicit Step(const std::vector<FeetTrajectoryPoint> points);
+  explicit Step(const std::vector<walk_interfaces::msg::FeetTrajectoryPoint> points);
   bool done();
-  const FeetTrajectoryPoint & next();
+  const walk_interfaces::msg::FeetTrajectoryPoint & next();
 
 private:
-  const std::vector<FeetTrajectoryPoint> points;
+  const std::vector<walk_interfaces::msg::FeetTrajectoryPoint> points;
   unsigned i = 0;
 };
 

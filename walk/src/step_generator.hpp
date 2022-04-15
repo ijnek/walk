@@ -21,7 +21,8 @@ class Params;
 
 Step generate(
   const step_generator::Params & p, const Phase & phase,
-  const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next);
+  const walk_interfaces::msg::FeetTrajectoryPoint & last,
+  const walk_interfaces::msg::FeetTrajectoryPoint & next);
 
 class Params
 {

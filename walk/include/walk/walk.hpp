@@ -22,6 +22,7 @@
 #include "std_msgs/msg/bool.hpp"
 #include "biped_interfaces/msg/ankle_poses.hpp"
 #include "biped_interfaces/msg/phase.hpp"
+#include "walk_interfaces/msg/feet_trajectory_point.hpp"
 
 namespace twist_limiter {class Params;}
 namespace twist_change_limiter {class Params;}
@@ -29,7 +30,6 @@ namespace ankle_pose {class Params;}
 namespace target_gait_calculator {class Params;}
 namespace feet_trajectory {class Params;}
 class Step;
-class FeetTrajectoryPoint;
 
 
 class Walk
@@ -73,7 +73,7 @@ private:
   rclcpp::Logger logger;
 
   std::unique_ptr<biped_interfaces::msg::Phase> phase;
-  std::unique_ptr<FeetTrajectoryPoint> ftpCurrent;
+  std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftpCurrent;
   std::unique_ptr<geometry_msgs::msg::Twist> currTwist;
 
   // Following members must be stored and loaded in a thread-safe manner

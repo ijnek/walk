@@ -28,9 +28,9 @@
 #include "twist_limiter.hpp"
 #include "twist_change_limiter.hpp"
 #include "maths_functions.hpp"
-#include "feet_trajectory_point.hpp"
+#include "walk_interfaces/msg/feet_trajectory_point.hpp"
 #include "step.hpp"
-#include "gait.hpp"
+#include "walk_interfaces/msg/gait.hpp"
 #include "target_gait_calculator.hpp"
 #include "ankle_pose.hpp"
 #include "feet_trajectory.hpp"
@@ -43,7 +43,7 @@ Walk::Walk(
   report_current_twist(report_current_twist),
   report_ready_to_step(report_ready_to_step),
   logger(rclcpp::get_logger("Walk")),
-  ftpCurrent(std::make_unique<FeetTrajectoryPoint>()),
+  ftpCurrent(std::make_unique<walk_interfaces::msg::FeetTrajectoryPoint>()),
   currTwist(std::make_unique<geometry_msgs::msg::Twist>()),
   targetTwist(std::make_shared<geometry_msgs::msg::Twist>())
 {
@@ -107,22 +107,24 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
       *twistChangeLimiterParams,
       *currTwist, *std::atomic_load(&targetTwist)));
 
-  std::unique_ptr<Gait> gait = std::make_unique<Gait>(
+  std::unique_ptr<walk_interfaces::msg::Gait> gait = std::make_unique<walk_interfaces::msg::Gait>(
     target_gait_calculator::calculate(*currTwist, *targetGaitCalculatorParams));
   RCLCPP_DEBUG(logger, "Gait:");
   RCLCPP_DEBUG(
     logger, " LSP: (%f, %f, %f, %f, %f, %f)",
-    gait->leftStancePhaseAim.forwardL, gait->leftStancePhaseAim.forwardR,
-    gait->leftStancePhaseAim.leftL, gait->leftStancePhaseAim.leftR,
-    gait->leftStancePhaseAim.headingL, gait->leftStancePhaseAim.headingR);
+    gait->left_stance_phase_aim.forward_l, gait->left_stance_phase_aim.forward_r,
+    gait->left_stance_phase_aim.left_l, gait->left_stance_phase_aim.left_r,
+    gait->left_stance_phase_aim.heading_l, gait->left_stance_phase_aim.heading_r);
   RCLCPP_DEBUG(
     logger, " RSP: (%f, %f, %f, %f, %f, %f)",
-    gait->rightStancePhaseAim.forwardL, gait->rightStancePhaseAim.forwardR,
-    gait->rightStancePhaseAim.leftL, gait->rightStancePhaseAim.leftR,
-    gait->rightStancePhaseAim.headingL, gait->rightStancePhaseAim.headingR);
+    gait->right_stance_phase_aim.forward_l, gait->right_stance_phase_aim.forward_r,
+    gait->right_stance_phase_aim.left_l, gait->right_stance_phase_aim.left_r,
+    gait->right_stance_phase_aim.heading_l, gait->right_stance_phase_aim.heading_r);
 
-  std::unique_ptr<FeetTrajectoryPoint> ftpNext = std::make_unique<FeetTrajectoryPoint>(
-    (phase.phase == phase.LEFT_STANCE) ? gait->leftStancePhaseAim : gait->rightStancePhaseAim);
+  std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftpNext =
+    std::make_unique<walk_interfaces::msg::FeetTrajectoryPoint>(
+    (phase.phase ==
+    phase.LEFT_STANCE) ? gait->left_stance_phase_aim : gait->right_stance_phase_aim);
 
   RCLCPP_DEBUG(
     logger, "Using %s",
