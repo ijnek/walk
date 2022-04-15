@@ -63,7 +63,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:
 
 Start debugging with rqt using an layout for debugging the walk:
 ```
-rqt -p walk
+rqt --perspective-file $(ros2 pkg prefix walk)/perspective/walk/walk.perspective
 ```
 
 ### Additional Instructions
