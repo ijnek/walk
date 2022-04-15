@@ -5,10 +5,11 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
+# Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(walk_interfaces REQUIRED)
 find_package(biped_interfaces REQUIRED)
 find_package(std_srvs REQUIRED)
@@ -16,14 +17,19 @@ find_package(std_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 
-# Include hpp files
-include_directories(
-  include
-)
+set(THIS_PACKAGE_INCLUDE_DEPENDS
+  rclcpp
+  rclcpp_action
+  rclcpp_components
+  walk_interfaces
+  biped_interfaces
+  std_srvs
+  std_msgs
+  tf2
+  tf2_geometry_msgs)
 
-# Build walk library
-add_library(walk_lib
-  src/walk_node.cpp
+# Build
+add_library(${PROJECT_NAME}_node SHARED
   src/walk.cpp
   src/maths_functions.cpp
   src/twist_limiter.cpp
@@ -33,39 +39,32 @@ add_library(walk_lib
   src/target_gait_calculator.cpp
   src/ankle_pose.cpp)
 
-ament_target_dependencies(walk_lib
-  rclcpp
-  rclcpp_action
-  walk_interfaces
-  biped_interfaces
-  std_srvs
-  std_msgs
-  tf2
-  tf2_geometry_msgs)
+target_include_directories(${PROJECT_NAME}_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 
-# Build walk executable
-add_executable(walk
-  src/walk_main.cpp)
-target_link_libraries(walk
-  walk_lib)
+rclcpp_components_register_node(${PROJECT_NAME}_node
+  PLUGIN "walk::Walk"
+  EXECUTABLE ${PROJECT_NAME})
+
+ament_target_dependencies(${PROJECT_NAME}_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
+
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
 
 # Install
-install(TARGETS
-  walk
-  DESTINATION lib/${PROJECT_NAME})
-
-install(DIRECTORY include/
-  DESTINATION include/
-)
-
 install(
-  TARGETS walk_lib
+  DIRECTORY include/
+  DESTINATION include)
+install(
+  TARGETS ${PROJECT_NAME}_node
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
-)
+  INCLUDES DESTINATION include)
 
+# Test
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   add_subdirectory(test)
@@ -74,4 +73,5 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+# Package
 ament_package()

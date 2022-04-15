@@ -17,11 +17,16 @@
 
 #include <map>
 #include <memory>
-#include "rclcpp/rclcpp.hpp"
-#include "geometry_msgs/msg/twist.hpp"
-#include "std_msgs/msg/bool.hpp"
+
 #include "biped_interfaces/msg/ankle_poses.hpp"
 #include "biped_interfaces/msg/phase.hpp"
+#include "geometry_msgs/msg/twist.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "rclcpp_action/rclcpp_action.hpp"
+#include "std_msgs/msg/bool.hpp"
+#include "std_srvs/srv/empty.hpp"
+#include "walk_interfaces/action/crouch.hpp"
+#include "walk_interfaces/action/stand.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
 
 namespace twist_limiter {class Params;}
@@ -31,46 +36,50 @@ namespace target_gait_calculator {class Params;}
 namespace feet_trajectory {class Params;}
 class Step;
 
+namespace walk
+{
 
-class Walk
+class Walk : public rclcpp::Node
 {
 public:
-  Walk(
-    std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses,
-    std::function<void(const geometry_msgs::msg::Twist &)> report_current_twist,
-    std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step);
+  using WalkGoal = walk_interfaces::action::Crouch::Goal;
+  using CrouchGoalHandle = rclcpp_action::ServerGoalHandle<walk_interfaces::action::Crouch>;
+
+  explicit Walk(const rclcpp::NodeOptions & options = rclcpp::NodeOptions{});
   virtual ~Walk();
-  void setParams(
-    float maxForward,  // max forward velocity (m/s)
-    float maxLeft,  // max side velocity (m/s)
-    float maxTurn,  // max turn velocity (rad/s)
-    float speedMultiplier,  // how much to multiple speed by (0.0 - 1.0)
-    float footLiftAmp,  // how much to raise foot when it is highest (m)
-    float period,  // time taken for one step, (s)
-    float dt,      // time taken between each generateCommand call (s)
-    float ankleX,  // x coordinate of ankle from hip when standing (m)
-    float ankleY,  // y coordinate of ankle from hip when standing (m)
-    float ankleZ,  // z coordinate of ankle from hip when standing (m)
-    float maxForwardChange,  // how much forward can change in one step (m/s)
-    float maxLeftChange,  // how much left can change in one step (m/s)
-    float maxTurnChange);  // how much turn can change in one step (rad/s)
   void generateCommand();
   void walk(const geometry_msgs::msg::Twist & target);
   void notifyPhase(const biped_interfaces::msg::Phase & phase);
   // void reset();
 
 private:
-  const std::function<void(const biped_interfaces::msg::AnklePoses &)> send_ankle_poses;
-  const std::function<void(const geometry_msgs::msg::Twist &)> report_current_twist;
-  const std::function<void(const std_msgs::msg::Bool &)> report_ready_to_step;
+  // TODO(ijnek): Replace this timer with an input signal
+  rclcpp::TimerBase::SharedPtr generateCommand_timer_;
+
+  // Twist is a subscription
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_target;
+  rclcpp::Subscription<biped_interfaces::msg::Phase>::SharedPtr sub_phase;
+
+  // Abort is a service
+  // rclcpp::Service<std_srvs::srv::Empty>::SharedPtr service_abort;
+
+  rclcpp::Publisher<biped_interfaces::msg::AnklePoses>::SharedPtr pub_ankle_poses;
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist;
+  rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_to_step;
+
+  void generateCommand_timer_callback();
+  void phase_callback(const biped_interfaces::msg::Phase::SharedPtr msg);
+  void target_callback(const geometry_msgs::msg::Twist::SharedPtr msg);
+
+  // void abort(
+  //   const std::shared_ptr<std_srvs::srv::Empty::Request>,
+  //   std::shared_ptr<std_srvs::srv::Empty::Response>);
 
   std::unique_ptr<twist_limiter::Params> twistLimiterParams;
   std::unique_ptr<twist_change_limiter::Params> twistChangeLimiterParams;
   std::unique_ptr<ankle_pose::Params> anklePoseParams;
   std::unique_ptr<target_gait_calculator::Params> targetGaitCalculatorParams;
   std::unique_ptr<feet_trajectory::Params> feetTrajectoryParams;
-
-  rclcpp::Logger logger;
 
   std::unique_ptr<biped_interfaces::msg::Phase> phase;
   std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftpCurrent;
@@ -80,5 +89,7 @@ private:
   std::shared_ptr<geometry_msgs::msg::Twist> targetTwist;
   std::shared_ptr<Step> step;
 };
+
+}  // namespace walk
 
 #endif  // WALK__WALK_HPP_

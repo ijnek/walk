@@ -20,13 +20,23 @@ class TestWalk : public ::testing::Test
 protected:
   TestWalk()
   : walk(
-      std::bind(&TestWalk::send_ankle_poses, this, std::placeholders::_1),
-      std::bind(&TestWalk::report_current_twist, this, std::placeholders::_1),
-      std::bind(&TestWalk::report_ready_to_step, this, std::placeholders::_1))
+      rclcpp::NodeOptions().parameter_overrides(
+  {  // For this test case, the values used are taken from the default of a NAO walk.
+    {"max_forward", 0.3},
+    {"max_left", 0.2},
+    {"max_turn", 2.0},
+    {"speed_multiplier", 1.0},
+    {"foot_lift_amp", 0.012},
+    {"period", 0.25},
+    {"dt", 0.01},
+    {"ankle_x", -0.01},
+    {"ankle_y", 0.05},
+    {"ankle_z", -0.18},
+    {"max_forward_change", 0.06},
+    {"max_left_change", 0.1},
+    {"max_turn_change", 1.0},
+  }))
   {
-    // Walk params are zero by default, so this funcion must be called!
-    // For this test case, the values used are taken from the default of a NAO walk.
-    walk.setParams(0.3, 0.2, 2.0, 1.0, 0.012, 0.25, 0.01, -0.01, 0.05, -0.18, 0.06, 0.1, 1.0);
   }
 
   void SetUp()
@@ -58,7 +68,7 @@ public:
   bool report_current_twistCalled;
   bool report_ready_to_stepCalled;
   bool ready_to_stepVal;
-  Walk walk;
+  walk::Walk walk;
 };
 
 // TEST_F(TestWalk, TestNotDuringWalk)

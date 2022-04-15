@@ -15,6 +15,7 @@
 
   <depend>rclcpp</depend>
   <depend>rclcpp_action</depend>
+  <depend>rclcpp_components</depend>
   <depend>walk_interfaces</depend>
   <depend>biped_interfaces</depend>
   <depend>std_srvs</depend>
