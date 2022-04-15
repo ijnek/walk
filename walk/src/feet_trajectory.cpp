@@ -15,56 +15,65 @@
 #include <vector>
 #include "feet_trajectory.hpp"
 #include "maths_functions.hpp"
-#include "feet_trajectory_point.hpp"
 
 namespace feet_trajectory
 {
-std::vector<FeetTrajectoryPoint> generate(
+std::vector<walk_interfaces::msg::FeetTrajectoryPoint> generate(
   const feet_trajectory::Params & p, const biped_interfaces::msg::Phase & phase,
-  const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next)
+  const walk_interfaces::msg::FeetTrajectoryPoint & last,
+  const walk_interfaces::msg::FeetTrajectoryPoint & next)
 {
   float maxFootHeight = p.footLiftAmp;
   float period = p.period;
   float dt = p.dt;
 
-  std::vector<FeetTrajectoryPoint> points;
+  std::vector<walk_interfaces::msg::FeetTrajectoryPoint> points;
   points.reserve(period / dt);
 
   int i = 0;
   for (float t = 0.0; t < period; t += dt, ++i) {
-    float forwardL = 0.0;
-    float forwardR = 0.0;
+    float forward_l = 0.0;
+    float forward_r = 0.0;
 
     if (phase.phase == phase.RIGHT_SWING) {
-      forwardL = last.forwardL +
-        (next.forwardL - last.forwardL) * linearStep(t, period);
-      forwardR = last.forwardR +
-        (next.forwardR - last.forwardR) * parabolicStep(dt, t, period, 0);
+      forward_l = last.forward_l +
+        (next.forward_l - last.forward_l) * linearStep(t, period);
+      forward_r = last.forward_r +
+        (next.forward_r - last.forward_r) * parabolicStep(dt, t, period, 0);
     } else {
-      forwardL = last.forwardL +
-        (next.forwardL - last.forwardL) * parabolicStep(dt, t, period, 0);
-      forwardR = last.forwardR +
-        (next.forwardR - last.forwardR) * linearStep(t, period);
+      forward_l = last.forward_l +
+        (next.forward_l - last.forward_l) * parabolicStep(dt, t, period, 0);
+      forward_r = last.forward_r +
+        (next.forward_r - last.forward_r) * linearStep(t, period);
     }
 
-    float leftL = last.leftL + (next.leftL - last.leftL) * parabolicStep(dt, t, period, 0.2);
-    float leftR = last.leftR + (next.leftR - last.leftR) * parabolicStep(dt, t, period, 0.2);
+    float left_l = last.left_l + (next.left_l - last.left_l) * parabolicStep(dt, t, period, 0.2);
+    float left_r = last.left_r + (next.left_r - last.left_r) * parabolicStep(dt, t, period, 0.2);
 
-    float headingL = last.headingL +
-      (next.headingL - last.headingL) * parabolicStep(dt, t, period, 0.0);
-    float headingR = last.headingR +
-      (next.headingR - last.headingR) * parabolicStep(dt, t, period, 0.0);
+    float heading_l = last.heading_l +
+      (next.heading_l - last.heading_l) * parabolicStep(dt, t, period, 0.0);
+    float heading_r = last.heading_r +
+      (next.heading_r - last.heading_r) * parabolicStep(dt, t, period, 0.0);
 
-    float foothL = 0;
-    float foothR = 0;
+    float footh_l = 0;
+    float footh_r = 0;
 
     if (phase.phase == phase.RIGHT_SWING) {
-      foothR = maxFootHeight * parabolicReturnMod(t / period);
+      footh_r = maxFootHeight * parabolicReturnMod(t / period);
     } else {
-      foothL = maxFootHeight * parabolicReturnMod(t / period);
+      footh_l = maxFootHeight * parabolicReturnMod(t / period);
     }
 
-    points.emplace_back(forwardL, forwardR, leftL, leftR, headingL, headingR, foothL, foothR);
+    walk_interfaces::msg::FeetTrajectoryPoint ftp;
+    ftp.forward_l = forward_l;
+    ftp.forward_r = forward_r;
+    ftp.left_l = left_l;
+    ftp.left_r = left_r;
+    ftp.heading_l = heading_l;
+    ftp.heading_r = heading_r;
+    ftp.footh_l = footh_l;
+    ftp.footh_r = footh_r;
+    points.push_back(ftp);
   }
 
   return points;

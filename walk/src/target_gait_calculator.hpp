@@ -16,13 +16,13 @@
 #define TARGET_GAIT_CALCULATOR_HPP_
 
 #include "geometry_msgs/msg/twist.hpp"
-#include "gait.hpp"
+#include "walk_interfaces/msg/gait.hpp"
 
 namespace target_gait_calculator
 {
 class Params;
 
-Gait calculate(
+walk_interfaces::msg::Gait calculate(
   const geometry_msgs::msg::Twist & target,
   const target_gait_calculator::Params & p);
 

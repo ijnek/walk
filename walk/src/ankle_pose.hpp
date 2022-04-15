@@ -16,8 +16,7 @@
 #define ANKLE_POSE_HPP_
 
 #include "biped_interfaces/msg/ankle_poses.hpp"
-
-class FeetTrajectoryPoint;
+#include "walk_interfaces/msg/feet_trajectory_point.hpp"
 
 namespace ankle_pose
 {
@@ -25,7 +24,7 @@ class Params;
 
 biped_interfaces::msg::AnklePoses generate(
   const ankle_pose::Params & p,
-  const FeetTrajectoryPoint & ftp);
+  const walk_interfaces::msg::FeetTrajectoryPoint & ftp);
 
 class Params
 {

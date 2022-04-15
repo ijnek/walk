@@ -15,7 +15,7 @@
 #include <vector>
 #include "gtest/gtest.h"
 #include "../src/feet_trajectory.hpp"
-#include "../src/feet_trajectory_point.hpp"
+#include "walk_interfaces/msg/feet_trajectory_point.hpp"
 #include "biped_interfaces/msg/phase.hpp"
 
 TEST(TestFeetTrajectory, TestSmoothSteps)
@@ -25,35 +25,52 @@ TEST(TestFeetTrajectory, TestSmoothSteps)
   float footLiftAmp = 0.012;
   float period = 0.3;
   float dt = 0.01;
-  FeetTrajectoryPoint init(0, 0, 0, 0, 0, 0, 0, 0);
-  FeetTrajectoryPoint step1(0.02, -0.02, 0.01, -0.01, 0.6, -0.6, 0, 0);
-  FeetTrajectoryPoint step2(-0.04, -0.04, 0, 0, -0.1, 0.1, 0, 0);
+  walk_interfaces::msg::FeetTrajectoryPoint init;
+
+  walk_interfaces::msg::FeetTrajectoryPoint step1;
+  step1.forward_l = 0.02;
+  step1.forward_r = -0.02;
+  step1.left_l = 0.01;
+  step1.left_r = -0.01;
+  step1.heading_l = 0.6;
+  step1.heading_r = -0.6;
+  step1.footh_l = 0.0;
+  step1.footh_r = 0.0;
+  walk_interfaces::msg::FeetTrajectoryPoint step2;
+  step2.forward_l = -0.04;
+  step2.forward_r = -0.04;
+  step2.left_l = 0.0;
+  step2.left_r = 0.0;
+  step2.heading_l = -0.1;
+  step2.heading_r = -0.1;
+  step2.footh_l = 0.0;
+  step2.footh_r = 0.0;
 
   feet_trajectory::Params params{footLiftAmp, period, dt};
 
   biped_interfaces::msg::Phase phase1;
   phase1.phase = biped_interfaces::msg::Phase::RIGHT_SWING;
-  std::vector<FeetTrajectoryPoint> pointsStep1 =
+  std::vector<walk_interfaces::msg::FeetTrajectoryPoint> pointsStep1 =
     feet_trajectory::generate(params, phase1, init, step1);
 
   biped_interfaces::msg::Phase phase2;
   phase2.phase = biped_interfaces::msg::Phase::LEFT_SWING;
-  std::vector<FeetTrajectoryPoint> pointsStep2 =
+  std::vector<walk_interfaces::msg::FeetTrajectoryPoint> pointsStep2 =
     feet_trajectory::generate(params, phase2, step1, step2);
 
-  std::vector<FeetTrajectoryPoint> points;
+  std::vector<walk_interfaces::msg::FeetTrajectoryPoint> points;
   points.insert(points.end(), pointsStep1.begin(), pointsStep1.end());
   points.insert(points.end(), pointsStep2.begin(), pointsStep2.end());
 
   for (unsigned i = 0; i < points.size() - 1; ++i) {
-    FeetTrajectoryPoint & a = points.at(i);
-    FeetTrajectoryPoint & b = points.at(i + 1);
+    walk_interfaces::msg::FeetTrajectoryPoint & a = points.at(i);
+    walk_interfaces::msg::FeetTrajectoryPoint & b = points.at(i + 1);
 
-    EXPECT_NEAR(a.forwardL, b.forwardL, 0.01);
-    EXPECT_NEAR(a.forwardR, b.forwardR, 0.01);
-    EXPECT_NEAR(a.leftL, b.leftL, 0.01);
-    EXPECT_NEAR(a.leftR, b.leftR, 0.01);
-    EXPECT_NEAR(a.headingL, b.headingL, 0.1);
-    EXPECT_NEAR(a.headingR, b.headingR, 0.1);
+    EXPECT_NEAR(a.forward_l, b.forward_l, 0.01);
+    EXPECT_NEAR(a.forward_r, b.forward_r, 0.01);
+    EXPECT_NEAR(a.left_l, b.left_l, 0.01);
+    EXPECT_NEAR(a.left_r, b.left_r, 0.01);
+    EXPECT_NEAR(a.heading_l, b.heading_l, 0.1);
+    EXPECT_NEAR(a.heading_r, b.heading_r, 0.1);
   }
 }

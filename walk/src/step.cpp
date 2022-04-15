@@ -13,10 +13,9 @@
 // limitations under the License.
 
 #include <vector>
-#include "feet_trajectory.hpp"
 #include "step.hpp"
 
-Step::Step(const std::vector<FeetTrajectoryPoint> points)
+Step::Step(const std::vector<walk_interfaces::msg::FeetTrajectoryPoint> points)
 : points(points)
 {
 }
@@ -26,7 +25,7 @@ bool Step::done()
   return i == points.size();
 }
 
-const FeetTrajectoryPoint & Step::next()
+const walk_interfaces::msg::FeetTrajectoryPoint & Step::next()
 {
   return points.at(i++);
 }

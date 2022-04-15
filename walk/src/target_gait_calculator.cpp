@@ -16,42 +16,42 @@
 
 namespace target_gait_calculator
 {
-Gait calculate(
+walk_interfaces::msg::Gait calculate(
   const geometry_msgs::msg::Twist & target,
   const target_gait_calculator::Params & p)
 {
-  Gait gait;
+  walk_interfaces::msg::Gait gait;
 
   // Forward
-  gait.leftStancePhaseAim.forwardL = -target.linear.x * p.period / 2;
-  gait.leftStancePhaseAim.forwardR = target.linear.x * p.period / 2;
-  gait.rightStancePhaseAim.forwardL = target.linear.x * p.period / 2;
-  gait.rightStancePhaseAim.forwardR = -target.linear.x * p.period / 2;
+  gait.left_stance_phase_aim.forward_l = -target.linear.x * p.period / 2;
+  gait.left_stance_phase_aim.forward_r = target.linear.x * p.period / 2;
+  gait.right_stance_phase_aim.forward_l = target.linear.x * p.period / 2;
+  gait.right_stance_phase_aim.forward_r = -target.linear.x * p.period / 2;
 
   // Left
   if (target.linear.y > 0) {  // Moving left
-    gait.leftStancePhaseAim.leftL = 0;
-    gait.leftStancePhaseAim.leftR = 0;
-    gait.rightStancePhaseAim.leftL = target.linear.y * p.period;
-    gait.rightStancePhaseAim.leftR = -target.linear.y * p.period;
+    gait.left_stance_phase_aim.left_l = 0;
+    gait.left_stance_phase_aim.left_r = 0;
+    gait.right_stance_phase_aim.left_l = target.linear.y * p.period;
+    gait.right_stance_phase_aim.left_r = -target.linear.y * p.period;
   } else {  // Moving right
-    gait.leftStancePhaseAim.leftL = -target.linear.y * p.period;
-    gait.leftStancePhaseAim.leftR = target.linear.y * p.period;
-    gait.rightStancePhaseAim.leftL = 0;
-    gait.rightStancePhaseAim.leftR = 0;
+    gait.left_stance_phase_aim.left_l = -target.linear.y * p.period;
+    gait.left_stance_phase_aim.left_r = target.linear.y * p.period;
+    gait.right_stance_phase_aim.left_l = 0;
+    gait.right_stance_phase_aim.left_r = 0;
   }
 
   // Heading
   if (target.angular.z > 0) {  // Turning left
-    gait.leftStancePhaseAim.headingL = -target.angular.z * p.period * 0.2;
-    gait.leftStancePhaseAim.headingR = target.angular.z * p.period * 0.2;
-    gait.rightStancePhaseAim.headingL = target.angular.z * p.period * 0.8;
-    gait.rightStancePhaseAim.headingR = -target.angular.z * p.period * 0.8;
+    gait.left_stance_phase_aim.heading_l = -target.angular.z * p.period * 0.2;
+    gait.left_stance_phase_aim.heading_r = target.angular.z * p.period * 0.2;
+    gait.right_stance_phase_aim.heading_l = target.angular.z * p.period * 0.8;
+    gait.right_stance_phase_aim.heading_r = -target.angular.z * p.period * 0.8;
   } else {  // Turning right (NOTE: target.angular.z IS NEGATIVE)
-    gait.leftStancePhaseAim.headingL = -target.angular.z * p.period * 0.8;
-    gait.leftStancePhaseAim.headingR = target.angular.z * p.period * 0.8;
-    gait.rightStancePhaseAim.headingL = target.angular.z * p.period * 0.2;
-    gait.rightStancePhaseAim.headingR = -target.angular.z * p.period * 0.2;
+    gait.left_stance_phase_aim.heading_l = -target.angular.z * p.period * 0.8;
+    gait.left_stance_phase_aim.heading_r = target.angular.z * p.period * 0.8;
+    gait.right_stance_phase_aim.heading_l = target.angular.z * p.period * 0.2;
+    gait.right_stance_phase_aim.heading_r = -target.angular.z * p.period * 0.2;
   }
 
   return gait;

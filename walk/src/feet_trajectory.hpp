@@ -14,8 +14,7 @@
 
 #include <vector>
 #include "biped_interfaces/msg/phase.hpp"
-
-class FeetTrajectoryPoint;
+#include "walk_interfaces/msg/feet_trajectory_point.hpp"
 
 #ifndef FEET_TRAJECTORY_HPP_
 #define FEET_TRAJECTORY_HPP_
@@ -24,9 +23,10 @@ namespace feet_trajectory
 {
 class Params;
 
-std::vector<FeetTrajectoryPoint> generate(
+std::vector<walk_interfaces::msg::FeetTrajectoryPoint> generate(
   const feet_trajectory::Params & p, const biped_interfaces::msg::Phase & phase,
-  const FeetTrajectoryPoint & last, const FeetTrajectoryPoint & next);
+  const walk_interfaces::msg::FeetTrajectoryPoint & last,
+  const walk_interfaces::msg::FeetTrajectoryPoint & next);
 
 class Params
 {

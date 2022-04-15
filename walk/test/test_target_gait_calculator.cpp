@@ -19,68 +19,68 @@ TEST(TestTargetGaitCalculator, TestX)
 {
   target_gait_calculator::Params params{0.50};
   geometry_msgs::msg::Twist target;
-  Gait gait;
+  walk_interfaces::msg::Gait gait;
 
   target.linear.x = 0.1;
   gait = target_gait_calculator::calculate(target, params);
-  EXPECT_NEAR(gait.leftStancePhaseAim.forwardL, -0.025, 0.00001);
-  EXPECT_NEAR(gait.leftStancePhaseAim.forwardR, 0.025, 0.00001);
-  EXPECT_NEAR(gait.rightStancePhaseAim.forwardL, 0.025, 0.00001);
-  EXPECT_NEAR(gait.rightStancePhaseAim.forwardR, -0.025, 0.00001);
+  EXPECT_NEAR(gait.left_stance_phase_aim.forward_l, -0.025, 0.00001);
+  EXPECT_NEAR(gait.left_stance_phase_aim.forward_r, 0.025, 0.00001);
+  EXPECT_NEAR(gait.right_stance_phase_aim.forward_l, 0.025, 0.00001);
+  EXPECT_NEAR(gait.right_stance_phase_aim.forward_r, -0.025, 0.00001);
 }
 
 TEST(TestTargetGaitCalculator, TestPositiveY)
 {
   target_gait_calculator::Params params{0.50};
   geometry_msgs::msg::Twist target;
-  Gait gait;
+  walk_interfaces::msg::Gait gait;
 
   target.linear.y = 0.1;
   gait = target_gait_calculator::calculate(target, params);
-  EXPECT_NEAR(gait.leftStancePhaseAim.leftL, 0, 0.00001);
-  EXPECT_NEAR(gait.leftStancePhaseAim.leftR, 0, 0.00001);
-  EXPECT_NEAR(gait.rightStancePhaseAim.leftL, 0.05, 0.00001);
-  EXPECT_NEAR(gait.rightStancePhaseAim.leftR, -0.05, 0.00001);
+  EXPECT_NEAR(gait.left_stance_phase_aim.left_l, 0, 0.00001);
+  EXPECT_NEAR(gait.left_stance_phase_aim.left_r, 0, 0.00001);
+  EXPECT_NEAR(gait.right_stance_phase_aim.left_l, 0.05, 0.00001);
+  EXPECT_NEAR(gait.right_stance_phase_aim.left_r, -0.05, 0.00001);
 }
 
 TEST(TestTargetGaitCalculator, TestNegativeY)
 {
   target_gait_calculator::Params params{0.50};
   geometry_msgs::msg::Twist target;
-  Gait gait;
+  walk_interfaces::msg::Gait gait;
 
   target.linear.y = -0.1;
   gait = target_gait_calculator::calculate(target, params);
-  EXPECT_NEAR(gait.leftStancePhaseAim.leftL, 0.05, 0.00001);
-  EXPECT_NEAR(gait.leftStancePhaseAim.leftR, -0.05, 0.00001);
-  EXPECT_NEAR(gait.rightStancePhaseAim.leftL, 0, 0.00001);
-  EXPECT_NEAR(gait.rightStancePhaseAim.leftR, 0, 0.00001);
+  EXPECT_NEAR(gait.left_stance_phase_aim.left_l, 0.05, 0.00001);
+  EXPECT_NEAR(gait.left_stance_phase_aim.left_r, -0.05, 0.00001);
+  EXPECT_NEAR(gait.right_stance_phase_aim.left_l, 0, 0.00001);
+  EXPECT_NEAR(gait.right_stance_phase_aim.left_r, 0, 0.00001);
 }
 
 TEST(TestTargetGaitCalculator, TestPositiveTheta)
 {
   target_gait_calculator::Params params{0.50};
   geometry_msgs::msg::Twist target;
-  Gait gait;
+  walk_interfaces::msg::Gait gait;
 
   target.angular.z = 0.1;
   gait = target_gait_calculator::calculate(target, params);
-  EXPECT_NEAR(gait.leftStancePhaseAim.headingL, -0.01, 0.00001);
-  EXPECT_NEAR(gait.leftStancePhaseAim.headingR, 0.01, 0.00001);
-  EXPECT_NEAR(gait.rightStancePhaseAim.headingL, 0.04, 0.00001);
-  EXPECT_NEAR(gait.rightStancePhaseAim.headingR, -0.04, 0.00001);
+  EXPECT_NEAR(gait.left_stance_phase_aim.heading_l, -0.01, 0.00001);
+  EXPECT_NEAR(gait.left_stance_phase_aim.heading_r, 0.01, 0.00001);
+  EXPECT_NEAR(gait.right_stance_phase_aim.heading_l, 0.04, 0.00001);
+  EXPECT_NEAR(gait.right_stance_phase_aim.heading_r, -0.04, 0.00001);
 }
 
 TEST(TestTargetGaitCalculator, TestNegativeTheta)
 {
   target_gait_calculator::Params params{0.50};
   geometry_msgs::msg::Twist target;
-  Gait gait;
+  walk_interfaces::msg::Gait gait;
 
   target.angular.z = -0.1;
   gait = target_gait_calculator::calculate(target, params);
-  EXPECT_NEAR(gait.leftStancePhaseAim.headingL, 0.04, 0.00001);
-  EXPECT_NEAR(gait.leftStancePhaseAim.headingR, -0.04, 0.00001);
-  EXPECT_NEAR(gait.rightStancePhaseAim.headingL, -0.01, 0.00001);
-  EXPECT_NEAR(gait.rightStancePhaseAim.headingR, 0.01, 0.00001);
+  EXPECT_NEAR(gait.left_stance_phase_aim.heading_l, 0.04, 0.00001);
+  EXPECT_NEAR(gait.left_stance_phase_aim.heading_r, -0.04, 0.00001);
+  EXPECT_NEAR(gait.right_stance_phase_aim.heading_l, -0.01, 0.00001);
+  EXPECT_NEAR(gait.right_stance_phase_aim.heading_r, 0.01, 0.00001);
 }

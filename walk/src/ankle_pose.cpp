@@ -16,7 +16,7 @@
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 #include "rclcpp/logger.hpp"
-#include "feet_trajectory_point.hpp"
+#include "walk_interfaces/msg/feet_trajectory_point.hpp"
 
 namespace ankle_pose
 {
@@ -25,24 +25,24 @@ geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, d
 
 biped_interfaces::msg::AnklePoses generate(
   const ankle_pose::Params & p,
-  const FeetTrajectoryPoint & ftp)
+  const walk_interfaces::msg::FeetTrajectoryPoint & ftp)
 {
   auto logger = rclcpp::get_logger("ankle_pose::generate");
 
   // Evaluate position and angle of both feet
-  float l_ankle_pos_x = ftp.forwardL + p.ankleX;
-  float l_ankle_pos_y = ftp.leftL + p.ankleY;
-  float l_ankle_pos_z = ftp.foothL + p.ankleZ;
+  float l_ankle_pos_x = ftp.forward_l + p.ankleX;
+  float l_ankle_pos_y = ftp.left_l + p.ankleY;
+  float l_ankle_pos_z = ftp.footh_l + p.ankleZ;
   float l_ankle_ang_x = 0;
   float l_ankle_ang_y = 0;
-  float l_ankle_ang_z = ftp.headingL;
+  float l_ankle_ang_z = ftp.heading_l;
 
-  float r_ankle_pos_x = ftp.forwardR + p.ankleX;
-  float r_ankle_pos_y = ftp.leftR - p.ankleY;
-  float r_ankle_pos_z = ftp.foothR + p.ankleZ;
+  float r_ankle_pos_x = ftp.forward_r + p.ankleX;
+  float r_ankle_pos_y = ftp.left_r - p.ankleY;
+  float r_ankle_pos_z = ftp.footh_r + p.ankleZ;
   float r_ankle_ang_x = 0;
   float r_ankle_ang_y = 0;
-  float r_ankle_ang_z = ftp.headingR;
+  float r_ankle_ang_z = ftp.heading_r;
 
   RCLCPP_DEBUG(logger, "Sending IKCommand with:");
   RCLCPP_DEBUG(
