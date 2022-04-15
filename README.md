@@ -61,6 +61,11 @@ Start teleop to control the robot:
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=target
 ```
 
+Start debugging with rqt using an layout for debugging the walk:
+```
+rqt -p walk
+```
+
 ### Additional Instructions
 
 To abort the walk immediately:

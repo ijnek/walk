@@ -57,6 +57,9 @@ install(
   DIRECTORY include/
   DESTINATION include)
 install(
+  DIRECTORY perspective/
+  DESTINATION perspective)
+install(
   TARGETS ${PROJECT_NAME}_node
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib

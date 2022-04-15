@@ -140,6 +140,8 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
     return;
   }
 
+  RCLCPP_DEBUG(get_logger(), "Calculating new step!");
+
   this->phase = std::make_unique<biped_interfaces::msg::Phase>(phase);
 
   currTwist =
