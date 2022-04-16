@@ -30,7 +30,6 @@
 #include "maths_functions.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
 #include "step.hpp"
-#include "walk_interfaces/msg/gait.hpp"
 #include "target_gait_calculator.hpp"
 #include "ankle_pose.hpp"
 #include "feet_trajectory.hpp"
@@ -97,6 +96,8 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   pub_current_twist = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
   pub_ready_to_step = create_publisher<std_msgs::msg::Bool>("walk/ready_to_step", 1);
 
+  pub_gait = create_publisher<walk_interfaces::msg::Gait>("walk/gait", 1);
+
   // service_abort = create_service<std_srvs::srv::Empty>(
   //   "abort", std::bind(&Walk::abort, this, _1, _2));
 }
@@ -117,12 +118,10 @@ void Walk::generateCommand()
     pub_ankle_poses->publish(ankle_pose::generate(*anklePoseParams, stepCopy->next()));
   }
 
-  RCLCPP_DEBUG(get_logger(), "reporting current twist");
   pub_current_twist->publish(*currTwist);
 
   std_msgs::msg::Bool ready_to_step;
   ready_to_step.data = stepCopy->done();
-  RCLCPP_DEBUG(get_logger(), "reporting ready to step");
   pub_ready_to_step->publish(ready_to_step);
 }
 
@@ -150,24 +149,13 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
       *twistChangeLimiterParams,
       *currTwist, *std::atomic_load(&targetTwist)));
 
-  std::unique_ptr<walk_interfaces::msg::Gait> gait = std::make_unique<walk_interfaces::msg::Gait>(
-    target_gait_calculator::calculate(*currTwist, *targetGaitCalculatorParams));
-  RCLCPP_DEBUG(get_logger(), "Gait:");
-  RCLCPP_DEBUG(
-    get_logger(), " LSP: (%f, %f, %f, %f, %f, %f)",
-    gait->left_stance_phase_aim.forward_l, gait->left_stance_phase_aim.forward_r,
-    gait->left_stance_phase_aim.left_l, gait->left_stance_phase_aim.left_r,
-    gait->left_stance_phase_aim.heading_l, gait->left_stance_phase_aim.heading_r);
-  RCLCPP_DEBUG(
-    get_logger(), " RSP: (%f, %f, %f, %f, %f, %f)",
-    gait->right_stance_phase_aim.forward_l, gait->right_stance_phase_aim.forward_r,
-    gait->right_stance_phase_aim.left_l, gait->right_stance_phase_aim.left_r,
-    gait->right_stance_phase_aim.heading_l, gait->right_stance_phase_aim.heading_r);
+  auto gait = target_gait_calculator::calculate(*currTwist, *targetGaitCalculatorParams);
+  pub_gait->publish(gait);
 
   std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftpNext =
     std::make_unique<walk_interfaces::msg::FeetTrajectoryPoint>(
     (phase.phase ==
-    phase.LEFT_STANCE) ? gait->left_stance_phase_aim : gait->right_stance_phase_aim);
+    phase.LEFT_STANCE) ? gait.left_stance_phase_aim : gait.right_stance_phase_aim);
 
   RCLCPP_DEBUG(
     get_logger(), "Using %s",

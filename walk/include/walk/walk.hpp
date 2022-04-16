@@ -28,6 +28,7 @@
 #include "walk_interfaces/action/crouch.hpp"
 #include "walk_interfaces/action/stand.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
+#include "walk_interfaces/msg/gait.hpp"
 
 namespace twist_limiter {class Params;}
 namespace twist_change_limiter {class Params;}
@@ -66,6 +67,9 @@ private:
   rclcpp::Publisher<biped_interfaces::msg::AnklePoses>::SharedPtr pub_ankle_poses;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist;
   rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_to_step;
+
+  // Debug publishers
+  rclcpp::Publisher<walk_interfaces::msg::Gait>::SharedPtr pub_gait;
 
   void generateCommand_timer_callback();
   void phase_callback(const biped_interfaces::msg::Phase::SharedPtr msg);
