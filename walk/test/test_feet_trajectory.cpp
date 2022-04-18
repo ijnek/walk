@@ -74,3 +74,20 @@ TEST(TestFeetTrajectory, TestSmoothSteps)
     EXPECT_NEAR(a.heading_r, b.heading_r, 0.1);
   }
 }
+
+TEST(TestFeetTrajectory, TestPointsSize)
+{
+  // In this test, we ensure that the number of points returned matches up
+  // with what we expect from dt and period.
+  float period = 0.3;
+  float dt = 0.01;
+
+  feet_trajectory::Params params{0, period, dt};
+
+  std::vector<walk_interfaces::msg::FeetTrajectoryPoint> pointsStep =
+    feet_trajectory::generate(
+    params, biped_interfaces::msg::Phase{}, walk_interfaces::msg::FeetTrajectoryPoint{},
+    walk_interfaces::msg::FeetTrajectoryPoint{});
+
+  EXPECT_EQ(pointsStep.size(), 31u);  // 31 instead of 30 because it includes t = 0 and t = 0.3
+}
