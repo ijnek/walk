@@ -35,7 +35,7 @@ add_library(${PROJECT_NAME}_node SHARED
   src/twist_limiter.cpp
   src/twist_change_limiter.cpp
   src/feet_trajectory.cpp
-  src/step.cpp
+  src/step_state.cpp
   src/target_gait_calculator.cpp
   src/ankle_pose.cpp)
 

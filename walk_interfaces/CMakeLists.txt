@@ -14,6 +14,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "action/Crouch.action"
   "msg/FeetTrajectoryPoint.msg"
   "msg/Gait.msg"
+  "msg/Step.msg"
 )
 
 ament_export_dependencies(rosidl_default_runtime)

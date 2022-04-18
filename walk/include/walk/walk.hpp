@@ -29,6 +29,7 @@
 #include "walk_interfaces/action/stand.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
 #include "walk_interfaces/msg/gait.hpp"
+#include "walk_interfaces/msg/step.hpp"
 
 namespace twist_limiter {class Params;}
 namespace twist_change_limiter {class Params;}
@@ -36,6 +37,7 @@ namespace ankle_pose {class Params;}
 namespace target_gait_calculator {class Params;}
 namespace feet_trajectory {class Params;}
 class Step;
+class StepState;
 
 namespace walk
 {
@@ -70,6 +72,7 @@ private:
 
   // Debug publishers
   rclcpp::Publisher<walk_interfaces::msg::Gait>::SharedPtr pub_gait;
+  rclcpp::Publisher<walk_interfaces::msg::Step>::SharedPtr pub_step;
 
   void generateCommand_timer_callback();
   void phase_callback(const biped_interfaces::msg::Phase::SharedPtr msg);
@@ -91,7 +94,9 @@ private:
 
   // Following members must be stored and loaded in a thread-safe manner
   std::shared_ptr<geometry_msgs::msg::Twist> targetTwist;
-  std::shared_ptr<Step> step;
+  std::shared_ptr<walk_interfaces::msg::Step> step;
+
+  std::shared_ptr<StepState> stepState;
 };
 
 }  // namespace walk

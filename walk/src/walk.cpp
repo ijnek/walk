@@ -29,7 +29,8 @@
 #include "twist_change_limiter.hpp"
 #include "maths_functions.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
-#include "step.hpp"
+#include "walk_interfaces/msg/step.hpp"
+#include "step_state.hpp"
 #include "target_gait_calculator.hpp"
 #include "ankle_pose.hpp"
 #include "feet_trajectory.hpp"
@@ -84,7 +85,7 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   feetTrajectoryParams = std::make_unique<feet_trajectory::Params>(foot_lift_amp, period, dt);
 
   generateCommand_timer_ = this->create_wall_timer(
-    20ms, std::bind(&Walk::generateCommand_timer_callback, this));
+    std::chrono::duration<float>(dt), std::bind(&Walk::generateCommand_timer_callback, this));
 
   sub_phase = this->create_subscription<biped_interfaces::msg::Phase>(
     "phase", 10, std::bind(&Walk::phase_callback, this, _1));
@@ -97,6 +98,7 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   pub_ready_to_step = create_publisher<std_msgs::msg::Bool>("walk/ready_to_step", 1);
 
   pub_gait = create_publisher<walk_interfaces::msg::Gait>("walk/gait", 1);
+  pub_step = create_publisher<walk_interfaces::msg::Step>("walk/step", 1);
 
   // service_abort = create_service<std_srvs::srv::Empty>(
   //   "abort", std::bind(&Walk::abort, this, _1, _2));
@@ -111,17 +113,17 @@ void Walk::generateCommand()
     return;
   }
 
-  std::shared_ptr<Step> stepCopy = std::atomic_load(&step);
+  std::shared_ptr<StepState> stepStateCopy = std::atomic_load(&stepState);
 
-  if (!stepCopy->done()) {
+  if (!stepStateCopy->done()) {
     RCLCPP_DEBUG(get_logger(), "sending ankle poses");
-    pub_ankle_poses->publish(ankle_pose::generate(*anklePoseParams, stepCopy->next()));
+    pub_ankle_poses->publish(ankle_pose::generate(*anklePoseParams, stepStateCopy->next()));
   }
 
   pub_current_twist->publish(*currTwist);
 
   std_msgs::msg::Bool ready_to_step;
-  ready_to_step.data = stepCopy->done();
+  ready_to_step.data = stepStateCopy->done();
   pub_ready_to_step->publish(ready_to_step);
 }
 
@@ -161,11 +163,16 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
     get_logger(), "Using %s",
     (phase.phase == phase.LEFT_STANCE) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
-  std::shared_ptr<Step> step = std::make_shared<Step>(
+  std::shared_ptr<walk_interfaces::msg::Step> step = std::make_shared<walk_interfaces::msg::Step>(
     feet_trajectory::generate(*feetTrajectoryParams, phase, *ftpCurrent, *ftpNext));
+  pub_step->publish(*step);
+
   ftpCurrent = std::move(ftpNext);
 
+  stepState = std::make_shared<StepState>(*step);
+
   std::atomic_store(&this->step, step);
+  std::atomic_store(&this->stepState, stepState);
 }
 
 void Walk::generateCommand_timer_callback()

@@ -12,22 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef STEP_HPP_
-#define STEP_HPP_
-
 #include <vector>
-#include "walk_interfaces/msg/feet_trajectory_point.hpp"
+#include "step_state.hpp"
 
-class Step
+StepState::StepState(const walk_interfaces::msg::Step step)
+: step(step)
 {
-public:
-  explicit Step(const std::vector<walk_interfaces::msg::FeetTrajectoryPoint> points);
-  bool done();
-  const walk_interfaces::msg::FeetTrajectoryPoint & next();
+}
 
-private:
-  const std::vector<walk_interfaces::msg::FeetTrajectoryPoint> points;
-  unsigned i = 0;
-};
+bool StepState::done()
+{
+  return i == step.points.size();
+}
 
-#endif  // STEP_HPP_
+const walk_interfaces::msg::FeetTrajectoryPoint & StepState::next()
+{
+  return step.points.at(i++);
+}

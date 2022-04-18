@@ -18,7 +18,7 @@
 
 namespace feet_trajectory
 {
-std::vector<walk_interfaces::msg::FeetTrajectoryPoint> generate(
+walk_interfaces::msg::Step generate(
   const feet_trajectory::Params & p, const biped_interfaces::msg::Phase & phase,
   const walk_interfaces::msg::FeetTrajectoryPoint & last,
   const walk_interfaces::msg::FeetTrajectoryPoint & next)
@@ -27,8 +27,8 @@ std::vector<walk_interfaces::msg::FeetTrajectoryPoint> generate(
   float period = p.period;
   float dt = p.dt;
 
-  std::vector<walk_interfaces::msg::FeetTrajectoryPoint> points;
-  points.reserve(period / dt);
+  walk_interfaces::msg::Step step;
+  step.points.reserve(period / dt);
 
   int i = 0;
   for (float t = 0.0; t < period; t += dt, ++i) {
@@ -73,9 +73,9 @@ std::vector<walk_interfaces::msg::FeetTrajectoryPoint> generate(
     ftp.heading_r = heading_r;
     ftp.footh_l = footh_l;
     ftp.footh_r = footh_r;
-    points.push_back(ftp);
+    step.points.push_back(ftp);
   }
 
-  return points;
+  return step;
 }
 }  // namespace feet_trajectory

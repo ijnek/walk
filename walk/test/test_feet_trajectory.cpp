@@ -27,40 +27,40 @@ TEST(TestFeetTrajectory, TestSmoothSteps)
   float dt = 0.01;
   walk_interfaces::msg::FeetTrajectoryPoint init;
 
-  walk_interfaces::msg::FeetTrajectoryPoint step1;
-  step1.forward_l = 0.02;
-  step1.forward_r = -0.02;
-  step1.left_l = 0.01;
-  step1.left_r = -0.01;
-  step1.heading_l = 0.6;
-  step1.heading_r = -0.6;
-  step1.footh_l = 0.0;
-  step1.footh_r = 0.0;
-  walk_interfaces::msg::FeetTrajectoryPoint step2;
-  step2.forward_l = -0.04;
-  step2.forward_r = -0.04;
-  step2.left_l = 0.0;
-  step2.left_r = 0.0;
-  step2.heading_l = -0.1;
-  step2.heading_r = -0.1;
-  step2.footh_l = 0.0;
-  step2.footh_r = 0.0;
+  walk_interfaces::msg::FeetTrajectoryPoint ftp1;
+  ftp1.forward_l = 0.02;
+  ftp1.forward_r = -0.02;
+  ftp1.left_l = 0.01;
+  ftp1.left_r = -0.01;
+  ftp1.heading_l = 0.6;
+  ftp1.heading_r = -0.6;
+  ftp1.footh_l = 0.0;
+  ftp1.footh_r = 0.0;
+  walk_interfaces::msg::FeetTrajectoryPoint ftp2;
+  ftp2.forward_l = -0.04;
+  ftp2.forward_r = -0.04;
+  ftp2.left_l = 0.0;
+  ftp2.left_r = 0.0;
+  ftp2.heading_l = -0.1;
+  ftp2.heading_r = -0.1;
+  ftp2.footh_l = 0.0;
+  ftp2.footh_r = 0.0;
 
   feet_trajectory::Params params{footLiftAmp, period, dt};
 
   biped_interfaces::msg::Phase phase1;
   phase1.phase = biped_interfaces::msg::Phase::RIGHT_SWING;
-  std::vector<walk_interfaces::msg::FeetTrajectoryPoint> pointsStep1 =
-    feet_trajectory::generate(params, phase1, init, step1);
+  walk_interfaces::msg::Step step1 =
+    feet_trajectory::generate(params, phase1, init, ftp1);
 
   biped_interfaces::msg::Phase phase2;
   phase2.phase = biped_interfaces::msg::Phase::LEFT_SWING;
-  std::vector<walk_interfaces::msg::FeetTrajectoryPoint> pointsStep2 =
-    feet_trajectory::generate(params, phase2, step1, step2);
+  walk_interfaces::msg::Step step2 =
+    feet_trajectory::generate(params, phase2, ftp1, ftp2);
 
   std::vector<walk_interfaces::msg::FeetTrajectoryPoint> points;
-  points.insert(points.end(), pointsStep1.begin(), pointsStep1.end());
-  points.insert(points.end(), pointsStep2.begin(), pointsStep2.end());
+  points.insert(points.end(), step1.points.begin(), step1.points.end());
+  points.insert(points.end(), step2.points.begin(), step2.points.end());
 
   for (unsigned i = 0; i < points.size() - 1; ++i) {
     walk_interfaces::msg::FeetTrajectoryPoint & a = points.at(i);
@@ -84,10 +84,10 @@ TEST(TestFeetTrajectory, TestPointsSize)
 
   feet_trajectory::Params params{0, period, dt};
 
-  std::vector<walk_interfaces::msg::FeetTrajectoryPoint> pointsStep =
+  walk_interfaces::msg::Step step =
     feet_trajectory::generate(
     params, biped_interfaces::msg::Phase{}, walk_interfaces::msg::FeetTrajectoryPoint{},
     walk_interfaces::msg::FeetTrajectoryPoint{});
 
-  EXPECT_EQ(pointsStep.size(), 31u);  // 31 instead of 30 because it includes t = 0 and t = 0.3
+  EXPECT_EQ(step.points.size(), 31u);  // 31 instead of 30 because it includes t = 0 and t = 0.3
 }
