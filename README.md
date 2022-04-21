@@ -4,7 +4,7 @@
 
 ROS2 Walking Node
 
-## This package is not ready for usage**
+## This package is not ready for usage
 
 # Compiling
 
