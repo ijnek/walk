@@ -2,7 +2,7 @@
 
 [![Build and Test (rolling)](https://github.com/ijnek/walk/actions/workflows/build_and_test_rolling.yaml/badge.svg)](https://github.com/ijnek/walk/actions/workflows/build_and_test_rolling.yaml)
 
-ROS2 Walking Node
+ROS2 Walking Node to be used across different types of bipeds
 
 ## This package is not ready for usage
 
