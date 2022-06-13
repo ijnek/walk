@@ -29,9 +29,9 @@ protected:
     {"foot_lift_amp", 0.012},
     {"period", 0.25},
     {"dt", 0.01},
-    {"ankle_x", -0.01},
-    {"ankle_y", 0.05},
-    {"ankle_z", -0.18},
+    {"sole_x", -0.01},
+    {"sole_y", 0.05},
+    {"sole_z", -0.18},
     {"max_forward_change", 0.06},
     {"max_left_change", 0.1},
     {"max_turn_change", 1.0},
@@ -41,16 +41,16 @@ protected:
 
   void SetUp()
   {
-    send_ankle_posesCalled = false;
+    send_sole_posesCalled = false;
     report_current_twistCalled = false;
     report_ready_to_stepCalled = false;
     ready_to_stepVal = false;
   }
 
 public:
-  void send_ankle_poses(const biped_interfaces::msg::AnklePoses &)
+  void send_sole_poses(const biped_interfaces::msg::SolePoses &)
   {
-    send_ankle_posesCalled = true;
+    send_sole_posesCalled = true;
   }
 
   void report_current_twist(const geometry_msgs::msg::Twist &)
@@ -64,7 +64,7 @@ public:
     ready_to_stepVal = ready_to_step.data;
   }
 
-  bool send_ankle_posesCalled;
+  bool send_sole_posesCalled;
   bool report_current_twistCalled;
   bool report_ready_to_stepCalled;
   bool ready_to_stepVal;
@@ -74,7 +74,7 @@ public:
 // TEST_F(TestWalk, TestNotDuringWalk)
 // {
 //   walk.generateCommand();
-//   EXPECT_FALSE(send_ankle_posesCalled);
+//   EXPECT_FALSE(send_sole_posesCalled);
 //   EXPECT_FALSE(report_current_twistCalled);
 //   EXPECT_FALSE(ready_to_stepVal);
 // }
@@ -83,7 +83,7 @@ public:
 // {
 //   // walk.crouch();
 //   walk.generateCommand();
-//   EXPECT_TRUE(send_ankle_posesCalled);
+//   EXPECT_TRUE(send_sole_posesCalled);
 //   EXPECT_TRUE(report_current_twistCalled);
 //   EXPECT_TRUE(report_ready_to_stepCalled);
 //   EXPECT_TRUE(ready_to_stepVal);
@@ -94,7 +94,7 @@ public:
 //   geometry_msgs::msg::Twist target;
 //   walk.walk(target);
 //   walk.generateCommand();
-//   EXPECT_TRUE(send_ankle_posesCalled);
+//   EXPECT_TRUE(send_sole_posesCalled);
 //   EXPECT_TRUE(report_current_twistCalled);
 //   EXPECT_TRUE(report_ready_to_stepCalled);
 //   EXPECT_FALSE(ready_to_stepVal);
@@ -106,7 +106,7 @@ public:
 //   // walk.crouch();
 //   // walk.abort();
 //   walk.generateCommand();
-//   EXPECT_FALSE(send_ankle_posesCalled);
+//   EXPECT_FALSE(send_sole_posesCalled);
 //   EXPECT_FALSE(report_current_twistCalled);
 //   EXPECT_FALSE(report_ready_to_stepCalled);
 //   EXPECT_FALSE(ready_to_stepVal);
@@ -118,7 +118,7 @@ public:
 //   walk.walk(target);
 //   // walk.abort();
 //   walk.generateCommand();
-//   EXPECT_FALSE(send_ankle_posesCalled);
+//   EXPECT_FALSE(send_sole_posesCalled);
 //   EXPECT_FALSE(report_current_twistCalled);
 //   EXPECT_FALSE(report_ready_to_stepCalled);
 //   EXPECT_FALSE(ready_to_stepVal);

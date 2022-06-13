@@ -12,32 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ANKLE_POSE_HPP_
-#define ANKLE_POSE_HPP_
+#ifndef SOLE_POSE_HPP_
+#define SOLE_POSE_HPP_
 
-#include "biped_interfaces/msg/ankle_poses.hpp"
+#include "biped_interfaces/msg/sole_poses.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
 
-namespace ankle_pose
+namespace sole_pose
 {
 class Params;
 
-biped_interfaces::msg::AnklePoses generate(
-  const ankle_pose::Params & p,
+biped_interfaces::msg::SolePoses generate(
+  const sole_pose::Params & p,
   const walk_interfaces::msg::FeetTrajectoryPoint & ftp);
 
 class Params
 {
 public:
-  Params(float ankleX, float ankleY, float ankleZ)
-  : ankleX(ankleX), ankleY(ankleY), ankleZ(ankleZ)
+  Params(float soleX, float soleY, float soleZ)
+  : soleX(soleX), soleY(soleY), soleZ(soleZ)
   {
   }
 
-  float ankleX;
-  float ankleY;
-  float ankleZ;
+  float soleX;
+  float soleY;
+  float soleZ;
 };
-}  // namespace ankle_pose
+}  // namespace sole_pose
 
-#endif  // ANKLE_POSE_HPP_
+#endif  // SOLE_POSE_HPP_

@@ -205,7 +205,7 @@
                   "type": "repr"
                 },
                 "topics": {
-                  "repr": "['/motion/ankle_poses/l_ankle/position/z', '/motion/ankle_poses/r_ankle/position/z']",
+                  "repr": "['/motion/sole_poses/l_sole/position/z', '/motion/sole_poses/r_sole/position/z']",
                   "type": "repr"
                 },
                 "x_limits": {

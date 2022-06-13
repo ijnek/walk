@@ -18,7 +18,7 @@
 #include <map>
 #include <memory>
 
-#include "biped_interfaces/msg/ankle_poses.hpp"
+#include "biped_interfaces/msg/sole_poses.hpp"
 #include "biped_interfaces/msg/phase.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -33,7 +33,7 @@
 
 namespace twist_limiter {class Params;}
 namespace twist_change_limiter {class Params;}
-namespace ankle_pose {class Params;}
+namespace sole_pose {class Params;}
 namespace target_gait_calculator {class Params;}
 namespace feet_trajectory {class Params;}
 class Step;
@@ -66,7 +66,7 @@ private:
   // Abort is a service
   // rclcpp::Service<std_srvs::srv::Empty>::SharedPtr service_abort;
 
-  rclcpp::Publisher<biped_interfaces::msg::AnklePoses>::SharedPtr pub_ankle_poses;
+  rclcpp::Publisher<biped_interfaces::msg::SolePoses>::SharedPtr pub_sole_poses;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist;
   rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_to_step;
 
@@ -84,7 +84,7 @@ private:
 
   std::unique_ptr<twist_limiter::Params> twistLimiterParams;
   std::unique_ptr<twist_change_limiter::Params> twistChangeLimiterParams;
-  std::unique_ptr<ankle_pose::Params> anklePoseParams;
+  std::unique_ptr<sole_pose::Params> solePoseParams;
   std::unique_ptr<target_gait_calculator::Params> targetGaitCalculatorParams;
   std::unique_ptr<feet_trajectory::Params> feetTrajectoryParams;
 
