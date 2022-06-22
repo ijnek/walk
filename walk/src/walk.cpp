@@ -32,7 +32,7 @@
 #include "walk_interfaces/msg/step.hpp"
 #include "step_state.hpp"
 #include "target_gait_calculator.hpp"
-#include "ankle_pose.hpp"
+#include "sole_pose.hpp"
 #include "feet_trajectory.hpp"
 
 using namespace std::chrono_literals;
@@ -54,9 +54,9 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   float foot_lift_amp = this->declare_parameter("foot_lift_amp", 0.012);  // how much to raise foot when it is highest (m)  // NOLINT
   float period = this->declare_parameter("period", 0.25);  // time taken for one step, (s)
   float dt = this->declare_parameter("dt", 0.01);  // time taken between each generateCommand call (s)  // NOLINT
-  float ankle_x = this->declare_parameter("ankle_x", -0.01);  // x coordinate of ankle from hip when standing (m)  // NOLINT
-  float ankle_y = this->declare_parameter("ankle_y", 0.05);  // y coordinate of ankle from hip when standing (m)  // NOLINT
-  float ankle_z = this->declare_parameter("ankle_z", -0.18);  // z coordinate of ankle from hip when standing (m)  // NOLINT
+  float sole_x = this->declare_parameter("sole_x", -0.01);  // x coordinate of sole from hip when standing (m)  // NOLINT
+  float sole_y = this->declare_parameter("sole_y", 0.05);  // y coordinate of sole from hip when standing (m)  // NOLINT
+  float sole_z = this->declare_parameter("sole_z", -0.23);  // z coordinate of sole from hip when standing (m)  // NOLINT
   float max_forward_change = this->declare_parameter("max_forward_change", 0.06);  // how much forward can change in one step (m/s)  // NOLINT
   float max_left_change = this->declare_parameter("max_left_change", 0.1);  // how much left can change in one step (m/s)  // NOLINT
   float max_turn_change = this->declare_parameter("max_turn_change", 1.0);  // how much turn can change in one step (rad/s)  // NOLINT
@@ -69,14 +69,14 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   RCLCPP_DEBUG(get_logger(), "  foot_lift_amp : %f", foot_lift_amp);
   RCLCPP_DEBUG(get_logger(), "  period : %f", period);
   RCLCPP_DEBUG(get_logger(), "  dt : %f", dt);
-  RCLCPP_DEBUG(get_logger(), "  ankle_x : %f", ankle_x);
-  RCLCPP_DEBUG(get_logger(), "  ankle_y : %f", ankle_y);
-  RCLCPP_DEBUG(get_logger(), "  ankle_z : %f", ankle_z);
+  RCLCPP_DEBUG(get_logger(), "  sole_x : %f", sole_x);
+  RCLCPP_DEBUG(get_logger(), "  sole_y : %f", sole_y);
+  RCLCPP_DEBUG(get_logger(), "  sole_z : %f", sole_z);
   RCLCPP_DEBUG(get_logger(), "  max_forward_change : %f", max_forward_change);
   RCLCPP_DEBUG(get_logger(), "  max_left_change : %f", max_left_change);
   RCLCPP_DEBUG(get_logger(), "  max_turn_change : %f", max_turn_change);
 
-  anklePoseParams = std::make_unique<ankle_pose::Params>(ankle_x, ankle_y, ankle_z);
+  solePoseParams = std::make_unique<sole_pose::Params>(sole_x, sole_y, sole_z);
   twistLimiterParams = std::make_unique<twist_limiter::Params>(
     max_forward, max_left, max_turn, speed_multiplier);
   twistChangeLimiterParams = std::make_unique<twist_change_limiter::Params>(
@@ -93,7 +93,7 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   sub_target = this->create_subscription<geometry_msgs::msg::Twist>(
     "target", 10, std::bind(&Walk::target_callback, this, _1));
 
-  pub_ankle_poses = create_publisher<biped_interfaces::msg::AnklePoses>("motion/ankle_poses", 1);
+  pub_sole_poses = create_publisher<biped_interfaces::msg::SolePoses>("motion/sole_poses", 1);
   pub_current_twist = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
   pub_ready_to_step = create_publisher<std_msgs::msg::Bool>("walk/ready_to_step", 1);
 
@@ -116,8 +116,8 @@ void Walk::generateCommand()
   std::shared_ptr<StepState> stepStateCopy = std::atomic_load(&stepState);
 
   if (!stepStateCopy->done()) {
-    RCLCPP_DEBUG(get_logger(), "sending ankle poses");
-    pub_ankle_poses->publish(ankle_pose::generate(*anklePoseParams, stepStateCopy->next()));
+    RCLCPP_DEBUG(get_logger(), "sending sole poses");
+    pub_sole_poses->publish(sole_pose::generate(*solePoseParams, stepStateCopy->next()));
   }
 
   pub_current_twist->publish(*currTwist);
