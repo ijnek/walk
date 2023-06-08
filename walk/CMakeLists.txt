@@ -58,7 +58,7 @@ install(
   DESTINATION include)
 install(
   DIRECTORY perspective/
-  DESTINATION perspective)
+  DESTINATION share/${PROJECT_NAME}/perspective)
 install(
   TARGETS ${PROJECT_NAME}_node
   EXPORT export_${PROJECT_NAME}
