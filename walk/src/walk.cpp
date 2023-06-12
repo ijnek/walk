@@ -56,7 +56,7 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   float dt = this->declare_parameter("dt", 0.01);  // time taken between each generateCommand call (s)  // NOLINT
   float sole_x = this->declare_parameter("sole_x", -0.01);  // x coordinate of sole from hip when standing (m)  // NOLINT
   float sole_y = this->declare_parameter("sole_y", 0.05);  // y coordinate of sole from hip when standing (m)  // NOLINT
-  float sole_z = this->declare_parameter("sole_z", -0.23);  // z coordinate of sole from hip when standing (m)  // NOLINT
+  float sole_z = this->declare_parameter("sole_z", -0.315);  // z coordinate of sole from hip when standing (m)  // NOLINT
   float max_forward_change = this->declare_parameter("max_forward_change", 0.06);  // how much forward can change in one step (m/s)  // NOLINT
   float max_left_change = this->declare_parameter("max_left_change", 0.1);  // how much left can change in one step (m/s)  // NOLINT
   float max_turn_change = this->declare_parameter("max_turn_change", 1.0);  // how much turn can change in one step (rad/s)  // NOLINT
