@@ -45,11 +45,11 @@ ros2 topic pub --once /motion/sole_poses biped_interfaces/msg/SolePoses "
 l_sole:
   position:
     y: 0.05
-    z: -0.23
+    z: -0.315
 r_sole:
   position:
     y: -0.05
-    z: -0.23
+    z: -0.315
 "
 ```
 
