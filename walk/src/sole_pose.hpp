@@ -29,14 +29,14 @@ biped_interfaces::msg::SolePoses generate(
 class Params
 {
 public:
-  Params(float soleX, float soleY, float soleZ)
-  : soleX(soleX), soleY(soleY), soleZ(soleZ)
+  Params(float sole_x, float sole_y, float sole_z)
+  : sole_x_(sole_x), sole_y_(sole_y), sole_z_(sole_z)
   {
   }
 
-  float soleX;
-  float soleY;
-  float soleZ;
+  float sole_x_;
+  float sole_y_;
+  float sole_z_;
 };
 }  // namespace sole_pose
 

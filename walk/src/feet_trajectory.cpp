@@ -23,9 +23,9 @@ walk_interfaces::msg::Step generate(
   const walk_interfaces::msg::FeetTrajectoryPoint & last,
   const walk_interfaces::msg::FeetTrajectoryPoint & next)
 {
-  float maxFootHeight = p.footLiftAmp;
-  float period = p.period;
-  float dt = p.dt;
+  float max_foot_height = p.foot_lift_amp_;
+  float period = p.period_;
+  float dt = p.dt_;
 
   walk_interfaces::msg::Step step;
   step.points.reserve(period / dt);
@@ -59,9 +59,9 @@ walk_interfaces::msg::Step generate(
     float footh_r = 0;
 
     if (phase.phase == phase.RIGHT_SWING) {
-      footh_r = maxFootHeight * parabolicReturnMod(t / period);
+      footh_r = max_foot_height * parabolicReturnMod(t / period);
     } else {
-      footh_l = maxFootHeight * parabolicReturnMod(t / period);
+      footh_l = max_foot_height * parabolicReturnMod(t / period);
     }
 
     walk_interfaces::msg::FeetTrajectoryPoint ftp;

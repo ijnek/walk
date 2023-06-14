@@ -24,7 +24,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "std_msgs/msg/bool.hpp"
-#include "std_srvs/srv/empty.hpp"
 #include "walk_interfaces/action/crouch.hpp"
 #include "walk_interfaces/action/stand.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
@@ -50,53 +49,46 @@ public:
 
   explicit Walk(const rclcpp::NodeOptions & options = rclcpp::NodeOptions{});
   virtual ~Walk();
-  void generateCommand();
-  void walk(const geometry_msgs::msg::Twist & target);
-  void notifyPhase(const biped_interfaces::msg::Phase & phase);
-  // void reset();
 
 private:
   // TODO(ijnek): Replace this timer with an input signal
-  rclcpp::TimerBase::SharedPtr generateCommand_timer_;
+  rclcpp::TimerBase::SharedPtr generate_command_timer_;
 
-  // Twist is a subscription
-  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_target;
-  rclcpp::Subscription<biped_interfaces::msg::Phase>::SharedPtr sub_phase;
+  // Subscriptions
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_target_;
+  rclcpp::Subscription<biped_interfaces::msg::Phase>::SharedPtr sub_phase_;
 
-  // Abort is a service
-  // rclcpp::Service<std_srvs::srv::Empty>::SharedPtr service_abort;
-
-  rclcpp::Publisher<biped_interfaces::msg::SolePoses>::SharedPtr pub_sole_poses;
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist;
-  rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_to_step;
+  // Publishers
+  rclcpp::Publisher<biped_interfaces::msg::SolePoses>::SharedPtr pub_sole_poses_;
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist_;
+  rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_to_step_;
 
   // Debug publishers
-  rclcpp::Publisher<walk_interfaces::msg::Gait>::SharedPtr pub_gait;
-  rclcpp::Publisher<walk_interfaces::msg::Step>::SharedPtr pub_step;
+  rclcpp::Publisher<walk_interfaces::msg::Gait>::SharedPtr pub_gait_;
+  rclcpp::Publisher<walk_interfaces::msg::Step>::SharedPtr pub_step_;
 
-  void generateCommand_timer_callback();
-  void phase_callback(const biped_interfaces::msg::Phase::SharedPtr msg);
-  void target_callback(const geometry_msgs::msg::Twist::SharedPtr msg);
+  void walk(const geometry_msgs::msg::Twist & commanded_twist);
+  void notifyPhase(const biped_interfaces::msg::Phase & phase);
+  void generateCommand();
+  void phaseCallback(const biped_interfaces::msg::Phase::SharedPtr msg);
+  void targetCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
 
-  // void abort(
-  //   const std::shared_ptr<std_srvs::srv::Empty::Request>,
-  //   std::shared_ptr<std_srvs::srv::Empty::Response>);
+  // Parameters
+  std::unique_ptr<twist_limiter::Params> twist_limiter_params_;
+  std::unique_ptr<twist_change_limiter::Params> twist_change_limiter_params_;
+  std::unique_ptr<sole_pose::Params> sole_pose_params_;
+  std::unique_ptr<target_gait_calculator::Params> target_gait_calculator_params_;
+  std::unique_ptr<feet_trajectory::Params> feet_trajectory_params_;
 
-  std::unique_ptr<twist_limiter::Params> twistLimiterParams;
-  std::unique_ptr<twist_change_limiter::Params> twistChangeLimiterParams;
-  std::unique_ptr<sole_pose::Params> solePoseParams;
-  std::unique_ptr<target_gait_calculator::Params> targetGaitCalculatorParams;
-  std::unique_ptr<feet_trajectory::Params> feetTrajectoryParams;
-
-  std::unique_ptr<biped_interfaces::msg::Phase> phase;
-  std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftpCurrent;
-  std::unique_ptr<geometry_msgs::msg::Twist> currTwist;
+  // State variables
+  std::unique_ptr<biped_interfaces::msg::Phase> phase_;
+  std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftp_current_;
+  std::unique_ptr<geometry_msgs::msg::Twist> curr_twist_;
 
   // Following members must be stored and loaded in a thread-safe manner
-  std::shared_ptr<geometry_msgs::msg::Twist> targetTwist;
-  std::shared_ptr<walk_interfaces::msg::Step> step;
-
-  std::shared_ptr<StepState> stepState;
+  std::shared_ptr<geometry_msgs::msg::Twist> target_twist_;
+  std::shared_ptr<walk_interfaces::msg::Step> step_;
+  std::shared_ptr<StepState> step_state_;
 };
 
 }  // namespace walk
