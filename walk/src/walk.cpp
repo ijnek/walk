@@ -137,7 +137,7 @@ void Walk::walk(const geometry_msgs::msg::Twist & twist)
 void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 {
   if (this->phase && phase.phase == this->phase->phase) {
-    RCLCPP_WARN(get_logger(), "Notified of a phase, but no change has taken place. Ignoring.");
+    RCLCPP_DEBUG(get_logger(), "Notified of a phase, but no change has taken place. Ignoring.");
     return;
   }
 
