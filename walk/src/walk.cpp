@@ -85,14 +85,16 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   feetTrajectoryParams = std::make_unique<feet_trajectory::Params>(foot_lift_amp, period, dt);
 
   generateCommand_timer_ = this->create_wall_timer(
-    std::chrono::duration<float>(dt), std::bind(&Walk::generateCommand_timer_callback, this));
+    std::chrono::duration<float>(dt), std::bind(&Walk::generateCommand_timer_callback, this));//call to generateCommand_timer_callback which in turn then calls generateCommand
 
   sub_phase = this->create_subscription<biped_interfaces::msg::Phase>(
-    "phase", 10, std::bind(&Walk::phase_callback, this, _1));
+    "phase", 10, std::bind(&Walk::phase_callback, this, _1));//entry to topic "phase" and call to phase_callback method.
+    //_1 is a placeholder from the std::placeholders package and replaces the first argument when calling bind(arg1)
 
   sub_target = this->create_subscription<geometry_msgs::msg::Twist>(
-    "target", 10, std::bind(&Walk::target_callback, this, _1));
-
+    "target", 10, std::bind(&Walk::target_callback, this, _1));//entry to topic "target" and call to target_callback method
+    
+//creating some publisher to some topics 
   pub_sole_poses = create_publisher<biped_interfaces::msg::SolePoses>("motion/sole_poses", 1);
   pub_current_twist = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
   pub_ready_to_step = create_publisher<std_msgs::msg::Bool>("walk/ready_to_step", 1);
@@ -102,10 +104,11 @@ Walk::Walk(const rclcpp::NodeOptions & options)
 
   // service_abort = create_service<std_srvs::srv::Empty>(
   //   "abort", std::bind(&Walk::abort, this, _1, _2));
-}
+}//end of walk constructor
 
 Walk::~Walk() {}
 
+//is called by the generateCommand_timer_callback method
 void Walk::generateCommand()
 {
   if (!step) {
@@ -114,28 +117,36 @@ void Walk::generateCommand()
   }
 
   std::shared_ptr<StepState> stepStateCopy = std::atomic_load(&stepState);
-
+  //stepStateCopy->done returns true if the internal variable i of the object of type stepState is equal to step.points.size();(see code from step_state.cpp)
+  //Step is a message from the walk_interfaces package that has within it an array of FeetTrajectoryPoints called points
   if (!stepStateCopy->done()) {
     RCLCPP_DEBUG(get_logger(), "sending sole poses");
     pub_sole_poses->publish(sole_pose::generate(*solePoseParams, stepStateCopy->next()));
+  //next scrolls the above array points to the next step by incrementing i,which is the variable that tells us what step we are at
   }
 
   pub_current_twist->publish(*currTwist);
 
   std_msgs::msg::Bool ready_to_step;
   ready_to_step.data = stepStateCopy->done();
+  //if we are ready to walk we will post it in the appropriate topic
   pub_ready_to_step->publish(ready_to_step);
 }
 
+//it is called by the target_callback method
 void Walk::walk(const geometry_msgs::msg::Twist & twist)
 {
+//we help with the limit method of the twist_limiter.cpp file to see if twist provided by target_callback does not exceed twistLimiterParams
+///that is, the twist limit between the forward walk and the side walk
   auto limitedTwist =
     std::make_shared<geometry_msgs::msg::Twist>(twist_limiter::limit(*twistLimiterParams, twist));
   std::atomic_store(&this->targetTwist, std::move(limitedTwist));
 }
 
+//called by the phase method phase_callback
 void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
-{
+{//this->phase->phase is an int32 of biped_interface.This if was what generated the warnings
+//which we then downgraded to RCLCPP_DEBUG
   if (this->phase && phase.phase == this->phase->phase) {
     RCLCPP_DEBUG(get_logger(), "Notified of a phase, but no change has taken place. Ignoring.");
     return;
@@ -151,9 +162,11 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
       *twistChangeLimiterParams,
       *currTwist, *std::atomic_load(&targetTwist)));
 
+  //calculating the gait with the calculate method in the target_gait_calculator.cpp file and publishing the gait
   auto gait = target_gait_calculator::calculate(*currTwist, *targetGaitCalculatorParams);
   pub_gait->publish(gait);
 
+  //choosing the next step based on whether we finished stepping to the right or left
   std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftpNext =
     std::make_unique<walk_interfaces::msg::FeetTrajectoryPoint>(
     (phase.phase ==
@@ -162,31 +175,32 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
   RCLCPP_DEBUG(
     get_logger(), "Using %s",
     (phase.phase == phase.LEFT_STANCE) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
-
+  //generate a new step thanks to the generate method of feet_trajectory.cpp and publish it 
   std::shared_ptr<walk_interfaces::msg::Step> step = std::make_shared<walk_interfaces::msg::Step>(
     feet_trajectory::generate(*feetTrajectoryParams, phase, *ftpCurrent, *ftpNext));
   pub_step->publish(*step);
 
   ftpCurrent = std::move(ftpNext);
-
+  //updating the step state of the walk this object
   stepState = std::make_shared<StepState>(*step);
 
   std::atomic_store(&this->step, step);
   std::atomic_store(&this->stepState, stepState);
 }
-
+//it is called every tenth of a second by the constructor of Walk line 88
 void Walk::generateCommand_timer_callback()
 {
   RCLCPP_DEBUG(get_logger(), "generateCommand_timer_callback()");
   generateCommand();
 }
-
+//it is called by the walk constructor line 91
 void Walk::phase_callback(const biped_interfaces::msg::Phase::SharedPtr msg)
 {
   RCLCPP_DEBUG(get_logger(), "phase_callback called");
   notifyPhase(*msg);
 }
 
+//it is called by the constructor of walk line 95
 void Walk::target_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
 {
   RCLCPP_DEBUG(
@@ -199,4 +213,4 @@ void Walk::target_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
 }  // namespace walk
 
 #include "rclcpp_components/register_node_macro.hpp"
-RCLCPP_COMPONENTS_REGISTER_NODE(walk::Walk)
+RCLCPP_COMPONENTS_REGISTER_NODE(walk::Walk)//I believe it is in place of main , initialize the node and then call the constructor of the walk class
