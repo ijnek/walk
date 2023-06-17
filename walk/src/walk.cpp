@@ -35,9 +35,6 @@
 #include "sole_pose.hpp"
 #include "feet_trajectory.hpp"
 
-using namespace std::chrono_literals;
-using namespace std::placeholders;
-
 namespace walk
 {
 
@@ -88,10 +85,10 @@ Walk::Walk(const rclcpp::NodeOptions & options)
     std::chrono::duration<float>(dt), std::bind(&Walk::generateCommand, this));
 
   sub_phase_ = create_subscription<biped_interfaces::msg::Phase>(
-    "phase", 10, std::bind(&Walk::notifyPhase, this, _1));
+    "phase", 10, std::bind(&Walk::notifyPhase, this, std::placeholders::_1));
 
   sub_target_ = create_subscription<geometry_msgs::msg::Twist>(
-    "target", 10, std::bind(&Walk::walk, this, _1));
+    "target", 10, std::bind(&Walk::walk, this, std::placeholders::_1));
 
   pub_sole_poses_ = create_publisher<biped_interfaces::msg::SolePoses>("motion/sole_poses", 1);
   pub_current_twist_ = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
