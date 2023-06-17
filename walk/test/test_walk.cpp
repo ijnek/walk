@@ -41,52 +41,52 @@ protected:
 
   void SetUp()
   {
-    send_sole_posesCalled = false;
-    report_current_twistCalled = false;
-    report_ready_to_stepCalled = false;
-    ready_to_stepVal = false;
+    send_sole_poses_called = false;
+    report_current_twist_called = false;
+    report_ready_to_step_called = false;
+    ready_to_step_val = false;
   }
 
 public:
   void send_sole_poses(const biped_interfaces::msg::SolePoses &)
   {
-    send_sole_posesCalled = true;
+    send_sole_poses_called = true;
   }
 
   void report_current_twist(const geometry_msgs::msg::Twist &)
   {
-    report_current_twistCalled = true;
+    report_current_twist_called = true;
   }
 
   void report_ready_to_step(const std_msgs::msg::Bool & ready_to_step)
   {
-    report_ready_to_stepCalled = true;
-    ready_to_stepVal = ready_to_step.data;
+    report_ready_to_step_called = true;
+    ready_to_step_val = ready_to_step.data;
   }
 
-  bool send_sole_posesCalled;
-  bool report_current_twistCalled;
-  bool report_ready_to_stepCalled;
-  bool ready_to_stepVal;
+  bool send_sole_poses_called;
+  bool report_current_twist_called;
+  bool report_ready_to_step_called;
+  bool ready_to_step_val;
   walk::Walk walk;
 };
 
 // TEST_F(TestWalk, TestNotDuringWalk)
 // {
 //   walk.generateCommand();
-//   EXPECT_FALSE(send_sole_posesCalled);
-//   EXPECT_FALSE(report_current_twistCalled);
-//   EXPECT_FALSE(ready_to_stepVal);
+//   EXPECT_FALSE(send_sole_poses_called);
+//   EXPECT_FALSE(report_current_twist_called);
+//   EXPECT_FALSE(ready_to_step_val);
 // }
 
 // TEST_F(TestWalk, TestCrouch)
 // {
 //   // walk.crouch();
 //   walk.generateCommand();
-//   EXPECT_TRUE(send_sole_posesCalled);
-//   EXPECT_TRUE(report_current_twistCalled);
-//   EXPECT_TRUE(report_ready_to_stepCalled);
-//   EXPECT_TRUE(ready_to_stepVal);
+//   EXPECT_TRUE(send_sole_poses_called);
+//   EXPECT_TRUE(report_current_twist_called);
+//   EXPECT_TRUE(report_ready_to_step_called);
+//   EXPECT_TRUE(ready_to_step_val);
 // }
 
 // TEST_F(TestWalk, TestWalk)
@@ -94,10 +94,10 @@ public:
 //   geometry_msgs::msg::Twist target;
 //   walk.walk(target);
 //   walk.generateCommand();
-//   EXPECT_TRUE(send_sole_posesCalled);
-//   EXPECT_TRUE(report_current_twistCalled);
-//   EXPECT_TRUE(report_ready_to_stepCalled);
-//   EXPECT_FALSE(ready_to_stepVal);
+//   EXPECT_TRUE(send_sole_poses_called);
+//   EXPECT_TRUE(report_current_twist_called);
+//   EXPECT_TRUE(report_ready_to_step_called);
+//   EXPECT_FALSE(ready_to_step_val);
 // }
 
 // TEST_F(TestWalk, TestCrouchToAbort)
@@ -106,10 +106,10 @@ public:
 //   // walk.crouch();
 //   // walk.abort();
 //   walk.generateCommand();
-//   EXPECT_FALSE(send_sole_posesCalled);
-//   EXPECT_FALSE(report_current_twistCalled);
-//   EXPECT_FALSE(report_ready_to_stepCalled);
-//   EXPECT_FALSE(ready_to_stepVal);
+//   EXPECT_FALSE(send_sole_poses_called);
+//   EXPECT_FALSE(report_current_twist_called);
+//   EXPECT_FALSE(report_ready_to_step_called);
+//   EXPECT_FALSE(ready_to_step_val);
 // }
 
 // TEST_F(TestWalk, TestWalkToAbort)
@@ -118,10 +118,10 @@ public:
 //   walk.walk(target);
 //   // walk.abort();
 //   walk.generateCommand();
-//   EXPECT_FALSE(send_sole_posesCalled);
-//   EXPECT_FALSE(report_current_twistCalled);
-//   EXPECT_FALSE(report_ready_to_stepCalled);
-//   EXPECT_FALSE(ready_to_stepVal);
+//   EXPECT_FALSE(send_sole_poses_called);
+//   EXPECT_FALSE(report_current_twist_called);
+//   EXPECT_FALSE(report_ready_to_step_called);
+//   EXPECT_FALSE(ready_to_step_val);
 // }
 
 // TEST_F(TestWalk, Test1)

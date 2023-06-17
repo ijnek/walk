@@ -22,7 +22,7 @@ TEST(TestFeetTrajectory, TestSmoothSteps)
 {
   // In this test, we ensure that all consecutive points in the trajectory are within
   // a small margin, and there are no large changes in value.
-  float footLiftAmp = 0.012;
+  float foot_lift_amp = 0.012;
   float period = 0.3;
   float dt = 0.01;
   walk_interfaces::msg::FeetTrajectoryPoint init;
@@ -46,7 +46,7 @@ TEST(TestFeetTrajectory, TestSmoothSteps)
   ftp2.footh_l = 0.0;
   ftp2.footh_r = 0.0;
 
-  feet_trajectory::Params params{footLiftAmp, period, dt};
+  feet_trajectory::Params params{foot_lift_amp, period, dt};
 
   biped_interfaces::msg::Phase phase1;
   phase1.phase = biped_interfaces::msg::Phase::RIGHT_SWING;

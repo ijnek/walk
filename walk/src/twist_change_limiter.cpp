@@ -34,31 +34,31 @@ geometry_msgs::msg::Twist limit(
     target.linear.x, target.linear.y, target.linear.z,
     target.angular.x, target.angular.y, target.angular.z);
 
-  geometry_msgs::msg::Twist nextStepTarget = target;
-  double & forward = nextStepTarget.linear.x;
-  double & left = nextStepTarget.linear.y;
-  double & turn = nextStepTarget.angular.z;
+  geometry_msgs::msg::Twist next_step_target = target;
+  double & forward = next_step_target.linear.x;
+  double & left = next_step_target.linear.y;
+  double & turn = next_step_target.angular.z;
 
-  const double & lastForward = current.linear.x;
-  const double & lastLeft = current.linear.y;
-  const double & lastTurn = current.angular.z;
+  const double & last_forward = current.linear.x;
+  const double & last_left = current.linear.y;
+  const double & last_turn = current.angular.z;
 
-  if (abs(forward - lastForward) > p.maxForwardChange) {
-    forward = lastForward + (forward - lastForward) / abs(forward - lastForward) *
-      p.maxForwardChange;
+  if (abs(forward - last_forward) > p.max_forward_change_) {
+    forward = last_forward + (forward - last_forward) / abs(forward - last_forward) *
+      p.max_forward_change_;
   }
-  if (abs(left - lastLeft) > p.maxLeftChange) {
-    left = lastLeft + (left - lastLeft) / abs(left - lastLeft) * p.maxLeftChange;
+  if (abs(left - last_left) > p.max_left_change_) {
+    left = last_left + (left - last_left) / abs(left - last_left) * p.max_left_change_;
   }
-  if (abs(turn - lastTurn) > p.maxTurnChange) {
-    turn = lastTurn + (turn - lastTurn) / abs(turn - lastTurn) * p.maxTurnChange;
+  if (abs(turn - last_turn) > p.max_turn_change_) {
+    turn = last_turn + (turn - last_turn) / abs(turn - last_turn) * p.max_turn_change_;
   }
 
   RCLCPP_DEBUG(
     logger, " result twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
-    nextStepTarget.linear.x, nextStepTarget.linear.y, nextStepTarget.linear.z,
-    nextStepTarget.angular.x, nextStepTarget.angular.y, nextStepTarget.angular.z);
+    next_step_target.linear.x, next_step_target.linear.y, next_step_target.linear.z,
+    next_step_target.angular.x, next_step_target.angular.y, next_step_target.angular.z);
 
-  return nextStepTarget;
+  return next_step_target;
 }
 }  // namespace twist_change_limiter

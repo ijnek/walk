@@ -35,31 +35,28 @@
 #include "sole_pose.hpp"
 #include "feet_trajectory.hpp"
 
-using namespace std::chrono_literals;
-using namespace std::placeholders;
-
 namespace walk
 {
 
 Walk::Walk(const rclcpp::NodeOptions & options)
 : Node("Walk", options),
-  ftpCurrent(std::make_unique<walk_interfaces::msg::FeetTrajectoryPoint>()),
-  currTwist(std::make_unique<geometry_msgs::msg::Twist>()),
-  targetTwist(std::make_shared<geometry_msgs::msg::Twist>())
+  ftp_current_(std::make_unique<walk_interfaces::msg::FeetTrajectoryPoint>()),
+  curr_twist_(std::make_unique<geometry_msgs::msg::Twist>()),
+  target_twist_(std::make_shared<geometry_msgs::msg::Twist>())
 {
-  float max_forward = this->declare_parameter("max_forward", 0.3);  // max forward velocity (m/s)
-  float max_left = this->declare_parameter("max_left", 0.2);  // max side velocity (m/s)
-  float max_turn = this->declare_parameter("max_turn", 2.0);  // max turn velocity (rad/s)
-  float speed_multiplier = this->declare_parameter("speed_multiplier", 1.0);  // how much to multiple speed by (0.0 - 1.0)  // NOLINT
-  float foot_lift_amp = this->declare_parameter("foot_lift_amp", 0.012);  // how much to raise foot when it is highest (m)  // NOLINT
-  float period = this->declare_parameter("period", 0.25);  // time taken for one step, (s)
-  float dt = this->declare_parameter("dt", 0.01);  // time taken between each generateCommand call (s)  // NOLINT
-  float sole_x = this->declare_parameter("sole_x", -0.01);  // x coordinate of sole from hip when standing (m)  // NOLINT
-  float sole_y = this->declare_parameter("sole_y", 0.05);  // y coordinate of sole from hip when standing (m)  // NOLINT
-  float sole_z = this->declare_parameter("sole_z", -0.315);  // z coordinate of sole from hip when standing (m)  // NOLINT
-  float max_forward_change = this->declare_parameter("max_forward_change", 0.06);  // how much forward can change in one step (m/s)  // NOLINT
-  float max_left_change = this->declare_parameter("max_left_change", 0.1);  // how much left can change in one step (m/s)  // NOLINT
-  float max_turn_change = this->declare_parameter("max_turn_change", 1.0);  // how much turn can change in one step (rad/s)  // NOLINT
+  float max_forward = declare_parameter("max_forward", 0.3);  // max forward velocity (m/s)
+  float max_left = declare_parameter("max_left", 0.2);  // max side velocity (m/s)
+  float max_turn = declare_parameter("max_turn", 2.0);  // max turn velocity (rad/s)
+  float speed_multiplier = declare_parameter("speed_multiplier", 1.0);  // how much to multiple speed by (0.0 - 1.0)  // NOLINT
+  float foot_lift_amp = declare_parameter("foot_lift_amp", 0.012);  // how much to raise foot when it is highest (m)  // NOLINT
+  float period = declare_parameter("period", 0.25);  // time taken for one step, (s)
+  float dt = declare_parameter("dt", 0.01);  // time taken between each generateCommand call (s)  // NOLINT
+  float sole_x = declare_parameter("sole_x", -0.01);  // x coordinate of sole from hip when standing (m)  // NOLINT
+  float sole_y = declare_parameter("sole_y", 0.05);  // y coordinate of sole from hip when standing (m)  // NOLINT
+  float sole_z = declare_parameter("sole_z", -0.315);  // z coordinate of sole from hip when standing (m)  // NOLINT
+  float max_forward_change = declare_parameter("max_forward_change", 0.06);  // how much forward can change in one step (m/s)  // NOLINT
+  float max_left_change = declare_parameter("max_left_change", 0.1);  // how much left can change in one step (m/s)  // NOLINT
+  float max_turn_change = declare_parameter("max_turn_change", 1.0);  // how much turn can change in one step (rad/s)  // NOLINT
 
   RCLCPP_DEBUG(get_logger(), "Parameters: ");
   RCLCPP_DEBUG(get_logger(), "  max_forward : %f", max_forward);
@@ -76,85 +73,91 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   RCLCPP_DEBUG(get_logger(), "  max_left_change : %f", max_left_change);
   RCLCPP_DEBUG(get_logger(), "  max_turn_change : %f", max_turn_change);
 
-  solePoseParams = std::make_unique<sole_pose::Params>(sole_x, sole_y, sole_z);
-  twistLimiterParams = std::make_unique<twist_limiter::Params>(
+  sole_pose_params_ = std::make_unique<sole_pose::Params>(sole_x, sole_y, sole_z);
+  twist_limiter_params_ = std::make_unique<twist_limiter::Params>(
     max_forward, max_left, max_turn, speed_multiplier);
-  twistChangeLimiterParams = std::make_unique<twist_change_limiter::Params>(
+  twist_change_limiter_params_ = std::make_unique<twist_change_limiter::Params>(
     max_forward_change, max_left_change, max_turn_change);
-  targetGaitCalculatorParams = std::make_unique<target_gait_calculator::Params>(period);
-  feetTrajectoryParams = std::make_unique<feet_trajectory::Params>(foot_lift_amp, period, dt);
+  target_gait_calculator_params_ = std::make_unique<target_gait_calculator::Params>(period);
+  feet_trajectory_params_ = std::make_unique<feet_trajectory::Params>(foot_lift_amp, period, dt);
 
-  generateCommand_timer_ = this->create_wall_timer(
-    std::chrono::duration<float>(dt), std::bind(&Walk::generateCommand_timer_callback, this));
+  generate_command_timer_ = create_wall_timer(
+    std::chrono::duration<float>(dt), std::bind(&Walk::generateCommand, this));
 
-  sub_phase = this->create_subscription<biped_interfaces::msg::Phase>(
-    "phase", 10, std::bind(&Walk::phase_callback, this, _1));
+  sub_phase_ = create_subscription<biped_interfaces::msg::Phase>(
+    "phase", 10, std::bind(&Walk::notifyPhase, this, std::placeholders::_1));
 
-  sub_target = this->create_subscription<geometry_msgs::msg::Twist>(
-    "target", 10, std::bind(&Walk::target_callback, this, _1));
+  sub_target_ = create_subscription<geometry_msgs::msg::Twist>(
+    "target", 10, std::bind(&Walk::walk, this, std::placeholders::_1));
 
-  pub_sole_poses = create_publisher<biped_interfaces::msg::SolePoses>("motion/sole_poses", 1);
-  pub_current_twist = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
-  pub_ready_to_step = create_publisher<std_msgs::msg::Bool>("walk/ready_to_step", 1);
+  pub_sole_poses_ = create_publisher<biped_interfaces::msg::SolePoses>("motion/sole_poses", 1);
+  pub_current_twist_ = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
+  pub_ready_to_step_ = create_publisher<std_msgs::msg::Bool>("walk/ready_to_step", 1);
 
-  pub_gait = create_publisher<walk_interfaces::msg::Gait>("walk/gait", 1);
-  pub_step = create_publisher<walk_interfaces::msg::Step>("walk/step", 1);
-
-  // service_abort = create_service<std_srvs::srv::Empty>(
-  //   "abort", std::bind(&Walk::abort, this, _1, _2));
+  pub_gait_ = create_publisher<walk_interfaces::msg::Gait>("walk/gait", 1);
+  pub_step_ = create_publisher<walk_interfaces::msg::Step>("walk/step", 1);
 }
 
 Walk::~Walk() {}
 
 void Walk::generateCommand()
 {
-  if (!step) {
+  RCLCPP_DEBUG(get_logger(), "generateCommand()");
+
+  if (!step_) {
     RCLCPP_ERROR(get_logger(), "No step calculated yet, can't generate command!");
     return;
   }
 
-  std::shared_ptr<StepState> stepStateCopy = std::atomic_load(&stepState);
+  std::shared_ptr<StepState> step_state_copy = std::atomic_load(&step_state_);
 
-  if (!stepStateCopy->done()) {
+  if (!step_state_copy->done()) {
     RCLCPP_DEBUG(get_logger(), "sending sole poses");
-    pub_sole_poses->publish(sole_pose::generate(*solePoseParams, stepStateCopy->next()));
+    pub_sole_poses_->publish(sole_pose::generate(*sole_pose_params_, step_state_copy->next()));
   }
 
-  pub_current_twist->publish(*currTwist);
+  pub_current_twist_->publish(*curr_twist_);
 
   std_msgs::msg::Bool ready_to_step;
-  ready_to_step.data = stepStateCopy->done();
-  pub_ready_to_step->publish(ready_to_step);
+  ready_to_step.data = step_state_copy->done();
+  pub_ready_to_step_->publish(ready_to_step);
 }
 
-void Walk::walk(const geometry_msgs::msg::Twist & twist)
+void Walk::walk(const geometry_msgs::msg::Twist & commanded_twist)
 {
-  auto limitedTwist =
-    std::make_shared<geometry_msgs::msg::Twist>(twist_limiter::limit(*twistLimiterParams, twist));
-  std::atomic_store(&this->targetTwist, std::move(limitedTwist));
+  RCLCPP_DEBUG(
+    get_logger(), "walk() called with commanded_twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
+    commanded_twist.linear.x, commanded_twist.linear.y, commanded_twist.linear.z,
+    commanded_twist.angular.x, commanded_twist.angular.y, commanded_twist.angular.z);
+
+  auto limitedTwist = std::make_shared<geometry_msgs::msg::Twist>(
+    twist_limiter::limit(*twist_limiter_params_, commanded_twist));
+  std::atomic_store(&target_twist_, std::move(limitedTwist));
 }
 
 void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 {
-  if (this->phase && phase.phase == this->phase->phase) {
+  RCLCPP_DEBUG(get_logger(), "notifyPhase called");
+
+  if (phase_ && phase.phase == phase_->phase) {
     RCLCPP_DEBUG(get_logger(), "Notified of a phase, but no change has taken place. Ignoring.");
     return;
   }
 
   RCLCPP_DEBUG(get_logger(), "Calculating new step!");
 
-  this->phase = std::make_unique<biped_interfaces::msg::Phase>(phase);
+  phase_ = std::make_unique<biped_interfaces::msg::Phase>(phase);
 
-  currTwist =
+  curr_twist_ =
     std::make_unique<geometry_msgs::msg::Twist>(
     twist_change_limiter::limit(
-      *twistChangeLimiterParams,
-      *currTwist, *std::atomic_load(&targetTwist)));
+      *twist_change_limiter_params_,
+      *curr_twist_, *std::atomic_load(&target_twist_)));
 
-  auto gait = target_gait_calculator::calculate(*currTwist, *targetGaitCalculatorParams);
-  pub_gait->publish(gait);
+  auto gait = target_gait_calculator::calculate(*curr_twist_, *target_gait_calculator_params_);
+  pub_gait_->publish(gait);
 
-  std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftpNext =
+  std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftp_next =
     std::make_unique<walk_interfaces::msg::FeetTrajectoryPoint>(
     (phase.phase ==
     phase.LEFT_STANCE) ? gait.left_stance_phase_aim : gait.right_stance_phase_aim);
@@ -164,36 +167,15 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
     (phase.phase == phase.LEFT_STANCE) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
   std::shared_ptr<walk_interfaces::msg::Step> step = std::make_shared<walk_interfaces::msg::Step>(
-    feet_trajectory::generate(*feetTrajectoryParams, phase, *ftpCurrent, *ftpNext));
-  pub_step->publish(*step);
+    feet_trajectory::generate(*feet_trajectory_params_, phase, *ftp_current_, *ftp_next));
+  pub_step_->publish(*step);
 
-  ftpCurrent = std::move(ftpNext);
+  ftp_current_ = std::move(ftp_next);
 
-  stepState = std::make_shared<StepState>(*step);
+  auto step_state = std::make_shared<StepState>(*step);
 
-  std::atomic_store(&this->step, step);
-  std::atomic_store(&this->stepState, stepState);
-}
-
-void Walk::generateCommand_timer_callback()
-{
-  RCLCPP_DEBUG(get_logger(), "generateCommand_timer_callback()");
-  generateCommand();
-}
-
-void Walk::phase_callback(const biped_interfaces::msg::Phase::SharedPtr msg)
-{
-  RCLCPP_DEBUG(get_logger(), "phase_callback called");
-  notifyPhase(*msg);
-}
-
-void Walk::target_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
-{
-  RCLCPP_DEBUG(
-    get_logger(), "target_callback() called with twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
-    msg->linear.x, msg->linear.y, msg->linear.z,
-    msg->angular.x, msg->angular.y, msg->angular.z);
-  walk(*msg);
+  std::atomic_store(&step_, step);
+  std::atomic_store(&step_state_, step_state);
 }
 
 }  // namespace walk

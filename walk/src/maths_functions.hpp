@@ -15,7 +15,7 @@
 #ifndef MATHS_FUNCTIONS_HPP_
 #define MATHS_FUNCTIONS_HPP_
 
-float parabolicStep(float dt, float time, float period, float deadTimeFraction = 0);
+float parabolicStep(float dt, float time, float period, float dead_time_fraction = 0);
 float parabolicReturnMod(float f);
 float linearStep(float time, float period);
 

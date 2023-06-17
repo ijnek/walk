@@ -33,32 +33,32 @@ geometry_msgs::msg::Twist limit(
     target.linear.x, target.linear.y, target.linear.z,
     target.angular.x, target.angular.y, target.angular.z);
 
-  geometry_msgs::msg::Twist nextStepTarget = target;
-  ellipsoidClamp(p, nextStepTarget);
+  geometry_msgs::msg::Twist next_step_target = target;
+  ellipsoidClamp(p, next_step_target);
 
   RCLCPP_DEBUG(
     logger, " result twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
-    nextStepTarget.linear.x, nextStepTarget.linear.y, nextStepTarget.linear.z,
-    nextStepTarget.angular.x, nextStepTarget.angular.y, nextStepTarget.angular.z);
+    next_step_target.linear.x, next_step_target.linear.y, next_step_target.linear.z,
+    next_step_target.angular.x, next_step_target.angular.y, next_step_target.angular.z);
 
-  return nextStepTarget;
+  return next_step_target;
 }
 
 void ellipsoidClamp(const twist_limiter::Params & p, geometry_msgs::msg::Twist & target)
 {
-  // limit max depending on speedMultiplier
-  float m_forward = p.maxForward * p.speedMultiplier;
-  float m_left = p.maxLeft * p.speedMultiplier;
-  float m_turn = p.maxTurn * p.speedMultiplier;
+  // limit max depending on speed_multiplier_
+  float m_forward = p.max_forward_ * p.speed_multiplier_;
+  float m_left = p.max_left_ * p.speed_multiplier_;
+  float m_turn = p.max_turn_ * p.speed_multiplier_;
 
   // Values in range [-1..1]
-  float forwardAmount = target.linear.x / m_forward;
-  float leftAmount = target.linear.y / m_left;
-  float turnAmount = target.angular.z / m_turn;
+  float forward_amount = target.linear.x / m_forward;
+  float left_amount = target.linear.y / m_left;
+  float turn_amount = target.angular.z / m_turn;
 
-  float x = abs(forwardAmount);
-  float y = abs(leftAmount);
-  float z = abs(turnAmount);
+  float x = abs(forward_amount);
+  float y = abs(left_amount);
+  float z = abs(turn_amount);
 
   // see if the point we are given is already inside the allowed walk params volume
   if (evaluateWalkVolume(x, y, z) > 1.0) {
@@ -68,9 +68,9 @@ void ellipsoidClamp(const twist_limiter::Params & p, geometry_msgs::msg::Twist &
 
     // This is basically a binary search to find the point on the surface.
     for (unsigned i = 0; i < 10; i++) {
-      x = abs(forwardAmount) * scale;
-      y = abs(leftAmount) * scale;
-      z = abs(turnAmount) * scale;
+      x = abs(forward_amount) * scale;
+      y = abs(left_amount) * scale;
+      z = abs(turn_amount) * scale;
 
       if (evaluateWalkVolume(x, y, z) > 1.0) {
         float newScale = (scale + low) / 2.0;
@@ -83,14 +83,14 @@ void ellipsoidClamp(const twist_limiter::Params & p, geometry_msgs::msg::Twist &
       }
     }
 
-    forwardAmount *= scale;
-    leftAmount *= scale;
-    turnAmount *= scale;
+    forward_amount *= scale;
+    left_amount *= scale;
+    turn_amount *= scale;
   }
 
-  target.linear.x = m_forward * forwardAmount;
-  target.linear.y = m_left * leftAmount;
-  target.angular.z = m_turn * turnAmount;
+  target.linear.x = m_forward * forward_amount;
+  target.linear.y = m_left * left_amount;
+  target.angular.z = m_turn * turn_amount;
 }
 
 // x = forward, y = left, z = turn

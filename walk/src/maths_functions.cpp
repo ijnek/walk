@@ -14,21 +14,21 @@
 
 #include "maths_functions.hpp"
 
-float parabolicStep(float dt, float time, float period, float deadTimeFraction)
+float parabolicStep(float dt, float time, float period, float dead_time_fraction)
 {
   // normalised [0,1] step up
-  float deadTime = period * deadTimeFraction / 2;
-  if (time < deadTime + dt / 2) {
+  float dead_time = period * dead_time_fraction / 2;
+  if (time < dead_time + dt / 2) {
     return 0;
   }
-  if (time > period - deadTime - dt / 2) {
+  if (time > period - dead_time - dt / 2) {
     return 1;
   }
-  float timeFraction = (time - deadTime) / (period - 2 * deadTime);
+  float time_fraction = (time - dead_time) / (period - 2 * dead_time);
   if (time < period / 2) {
-    return 2.0 * timeFraction * timeFraction;
+    return 2.0 * time_fraction * time_fraction;
   }
-  return 4 * timeFraction - 2 * timeFraction * timeFraction - 1;
+  return 4 * time_fraction - 2 * time_fraction * time_fraction - 1;
 }
 
 float parabolicReturnMod(float f)  // normalised [0,1] up and down

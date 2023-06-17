@@ -30,14 +30,16 @@ geometry_msgs::msg::Twist limit(
 class Params
 {
 public:
-  Params(float maxForwardChange, float maxLeftChange, float maxTurnChange)
-  : maxForwardChange(maxForwardChange), maxLeftChange(maxLeftChange), maxTurnChange(maxTurnChange)
+  Params(float max_forward_change, float max_left_change, float max_turn_change)
+  : max_forward_change_(max_forward_change),
+    max_left_change_(max_left_change),
+    max_turn_change_(max_turn_change)
   {
   }
 
-  float maxForwardChange;  // how much forward can change in one step (m/s)
-  float maxLeftChange;     // how much left can change in one step (m/s)
-  float maxTurnChange;     // how much turn can change in one step (rad/s)
+  float max_forward_change_;  // how much forward can change in one step (m/s)
+  float max_left_change_;     // how much left can change in one step (m/s)
+  float max_turn_change_;     // how much turn can change in one step (rad/s)
 };
 }   // namespace twist_change_limiter
 

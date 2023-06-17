@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <vector>
 #include "step_state.hpp"
 
-StepState::StepState(const walk_interfaces::msg::Step step)
+StepState::StepState(const walk_interfaces::msg::Step & step)
 : step(step)
 {
 }

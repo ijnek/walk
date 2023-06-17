@@ -15,13 +15,12 @@
 #ifndef STEP_STATE_HPP_
 #define STEP_STATE_HPP_
 
-#include <vector>
 #include "walk_interfaces/msg/step.hpp"
 
 class StepState
 {
 public:
-  explicit StepState(const walk_interfaces::msg::Step step);
+  explicit StepState(const walk_interfaces::msg::Step & step);
   bool done();
   const walk_interfaces::msg::FeetTrajectoryPoint & next();
 
