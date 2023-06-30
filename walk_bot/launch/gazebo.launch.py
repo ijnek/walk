@@ -19,7 +19,7 @@ def generate_launch_description():
     # Ideally, we wouldn't want to infer the gazebo version from the ros distro.
     if ros_distro == 'humble':
         gazebo_version = 'fortress'
-    elif ros_distro == 'humble':
+    elif ros_distro == 'iron':
         gazebo_version = 'fortress'
     elif ros_distro == 'rolling':
         gazebo_version = 'fortress'

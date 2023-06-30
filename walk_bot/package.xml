@@ -8,11 +8,16 @@
   <license>TODO: License declaration</license>
 
   <build_depend>ros_environment</build_depend>
-
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>biped_interfaces</depend>
+  <depend>sensor_msgs</depend>
+
   <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
   <exec_depend>rviz2</exec_depend>
+  <exec_depend>sole_poses_ims</exec_depend>
+  <exec_depend>walk</exec_depend>
   <exec_depend>xacro</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>

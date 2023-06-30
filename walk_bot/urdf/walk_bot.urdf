@@ -27,157 +27,157 @@
 
   <link name="l_hip1">
     <inertial>
-    <mass value="1.02"/>
-    <inertia
-      ixx="0.02459393"
-      ixy="0.0"
-      ixz="0.0"
-      iyy="0.02553566"
-      iyz="-0.00002695"
-      izz="0.00164881"/>
-    <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
+      <mass value="0.001"/>
+      <inertia
+        ixx="0.01"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
+      <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
   </inertial>
   </link>
   <link name="r_hip1">
     <inertial>
-    <mass value="1.02"/>
-    <inertia
-      ixx="0.02459393"
-      ixy="0.0"
-      ixz="0.0"
-      iyy="0.02553566"
-      iyz="-0.00002695"
-      izz="0.00164881"/>
-    <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
+      <mass value="0.001"/>
+      <inertia
+        ixx="0.01"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
+      <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
   <link name="l_hip2">
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
   <link name="r_hip2">
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
   <link name="l_hip3">
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
   <link name="r_hip3">
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
   <link name="l_ankle1">
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
   <link name="r_ankle1">
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
   <link name="l_ankle2">
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
   <link name="r_ankle2">
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
   <link name="l_ankle3">
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
   <link name="r_ankle3">
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
@@ -194,14 +194,14 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
@@ -217,93 +217,103 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="1.02"/>
+      <mass value="0.001"/>
       <inertia
-        ixx="0.02459393"
+        ixx="0.01"
         ixy="0.0"
         ixz="0.0"
-        iyy="0.02553566"
-        iyz="-0.00002695"
-        izz="0.00164881"/>
+        iyy="0.01"
+        iyz="0.0"
+        izz="0.01"/>
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
 
   <!-- Joints -->
-  <joint name="l_hip_roll" type="continuous">
+  <joint name="l_hip_roll" type="revolute">
     <parent link="base_link"/>
     <child link="l_hip1"/>
     <axis xyz="1 0 0"/>
     <origin rpy="0 0 0" xyz="0 0.1 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
-  <joint name="r_hip_roll" type="continuous">
+  <joint name="r_hip_roll" type="revolute">
     <parent link="base_link"/>
     <child link="r_hip1"/>
     <axis xyz="1 0 0"/>
     <origin rpy="0 0 0" xyz="0 -0.1 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
-  <joint name="l_hip_pitch" type="continuous">
+  <joint name="l_hip_pitch" type="revolute">
     <parent link="l_hip1"/>
     <child link="l_hip2"/>
     <axis xyz="0 1 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
-  <joint name="r_hip_pitch" type="continuous">
+  <joint name="r_hip_pitch" type="revolute">
     <parent link="r_hip1"/>
     <child link="r_hip2"/>
     <axis xyz="0 1 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
-  <joint name="l_hip_yaw" type="continuous">
+  <joint name="l_hip_yaw" type="revolute">
     <parent link="l_hip2"/>
     <child link="l_hip3"/>
     <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
-  <joint name="r_hip_yaw" type="continuous">
+  <joint name="r_hip_yaw" type="revolute">
     <parent link="r_hip2"/>
     <child link="r_hip3"/>
     <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
   <joint name="l_leg_extension" type="prismatic">
     <parent link="l_hip3"/>
     <child link="l_ankle1"/>
-    <limit effort="1000.0" lower="-0.4" upper="-0.2" velocity="1.0"/>
+    <limit effort="1000.0" lower="-0.4" upper="-0.2" velocity="1000.0"/>
     <axis xyz="0 0 1"/>
   </joint>
 
   <joint name="r_leg_extension" type="prismatic">
     <parent link="r_hip3"/>
     <child link="r_ankle1"/>
-    <limit effort="1000.0" lower="-0.4" upper="-0.2" velocity="1.0"/>
+    <limit effort="1000.0" lower="-0.4" upper="-0.2" velocity="1000.0"/>
     <axis xyz="0 0 1"/>
   </joint>
 
-  <joint name="l_ankle_roll" type="continuous">
+  <joint name="l_ankle_roll" type="revolute">
     <parent link="l_ankle1"/>
     <child link="l_ankle2"/>
     <axis xyz="1 0 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
-  <joint name="r_ankle_roll" type="continuous">
+  <joint name="r_ankle_roll" type="revolute">
     <parent link="r_ankle1"/>
     <child link="r_ankle2"/>
     <axis xyz="1 0 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
-  <joint name="l_ankle_pitch" type="continuous">
+  <joint name="l_ankle_pitch" type="revolute">
     <parent link="l_ankle2"/>
     <child link="l_ankle3"/>
     <axis xyz="0 1 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
-  <joint name="r_ankle_pitch" type="continuous">
+  <joint name="r_ankle_pitch" type="revolute">
     <parent link="r_ankle2"/>
     <child link="r_ankle3"/>
     <axis xyz="0 1 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
   <joint name="l_sole_offset" type="fixed">
@@ -321,7 +331,7 @@
   <gazebo>
     <plugin
         filename="libignition-gazebo-joint-state-publisher-system.so"
-        name="gz::sim::systems::JointStatePublisher">
+        name="ignition::gazebo::systems::JointStatePublisher">
       <topic>joint_states</topic>
       <joint_name>l_hip_roll</joint_name>
       <joint_name>r_hip_roll</joint_name>
@@ -335,6 +345,114 @@
       <joint_name>r_ankle_roll</joint_name>
       <joint_name>l_ankle_pitch</joint_name>
       <joint_name>r_ankle_pitch</joint_name>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>l_hip_roll</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>r_hip_roll</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>l_hip_pitch</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>r_hip_pitch</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>l_hip_yaw</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>r_hip_yaw</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>l_leg_extension</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>r_leg_extension</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>l_ankle_roll</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>r_ankle_roll</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>l_ankle_pitch</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>r_ankle_pitch</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
     </plugin>
   </gazebo>
 </robot>
