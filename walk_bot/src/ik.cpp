@@ -32,6 +32,8 @@ void IK::ikCallback(const biped_interfaces::msg::SolePoses & msg)
   RCLCPP_INFO(get_logger(), "in callback!");
 
   sensor_msgs::msg::JointState joint_command;
+  joint_command.header.stamp = now();
+
   joint_command.name.push_back("l_hip_roll");
   joint_command.name.push_back("r_hip_roll");
   joint_command.name.push_back("l_hip_pitch");
@@ -51,8 +53,8 @@ void IK::ikCallback(const biped_interfaces::msg::SolePoses & msg)
   joint_command.position.push_back(0.0);
   joint_command.position.push_back(0.0);
   joint_command.position.push_back(0.0);
-  joint_command.position.push_back(0.4);  // 0.4
-  joint_command.position.push_back(0.4);  // 0.4
+  joint_command.position.push_back(-0.4);  // -0.4
+  joint_command.position.push_back(-0.4);  // -0.4
   joint_command.position.push_back(0.0);
   joint_command.position.push_back(0.0);
   joint_command.position.push_back(0.0);
