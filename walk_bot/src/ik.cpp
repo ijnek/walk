@@ -34,17 +34,26 @@ void IK::ikCallback(const biped_interfaces::msg::SolePoses & msg)
   sensor_msgs::msg::JointState joint_command;
   joint_command.header.stamp = now();
 
+  float l_leg_length = std::hypot(msg.l_sole.position.x, msg.l_sole.position.y, msg.l_sole.position.z);
+  float r_leg_length = std::hypot(msg.r_sole.position.x, msg.r_sole.position.y, msg.r_sole.position.z);
+
+  float l_theta = atan2(msg.l_sole.position.y, -msg.l_sole.position.z);
+  float r_theta = atan2(msg.r_sole.position.y, -msg.r_sole.position.z);
+
+  float l_phi = std::asin(-msg.l_sole.position.x / l_leg_length);
+  float r_phi = std::asin(-msg.r_sole.position.x / r_leg_length);
+
   joint_command.name.push_back("l_hip_roll");
-  joint_command.position.push_back(0.0);
+  joint_command.position.push_back(l_theta);
 
   joint_command.name.push_back("r_hip_roll");
-  joint_command.position.push_back(0.0);
+  joint_command.position.push_back(r_theta);
 
   joint_command.name.push_back("l_hip_pitch");
-  joint_command.position.push_back(0.0);
+  joint_command.position.push_back(l_phi);
 
   joint_command.name.push_back("r_hip_pitch");
-  joint_command.position.push_back(0.0);
+  joint_command.position.push_back(r_phi);
 
   joint_command.name.push_back("l_hip_yaw");
   joint_command.position.push_back(0.0);
@@ -53,10 +62,10 @@ void IK::ikCallback(const biped_interfaces::msg::SolePoses & msg)
   joint_command.position.push_back(0.0);
 
   joint_command.name.push_back("l_leg_extension");
-  joint_command.position.push_back(-0.4);  // -0.4
+  joint_command.position.push_back(l_leg_length);
 
   joint_command.name.push_back("r_leg_extension");
-  joint_command.position.push_back(-0.4);  // -0.4
+  joint_command.position.push_back(r_leg_length);
 
   joint_command.name.push_back("l_ankle_roll");
   joint_command.position.push_back(0.0);
