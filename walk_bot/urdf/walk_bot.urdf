@@ -155,32 +155,6 @@
       <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
     </inertial>
   </link>
-  <link name="l_ankle3">
-    <inertial>
-      <mass value="0.001"/>
-      <inertia
-        ixx="0.01"
-        ixy="0.0"
-        ixz="0.0"
-        iyy="0.01"
-        iyz="0.0"
-        izz="0.01"/>
-      <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
-    </inertial>
-  </link>
-  <link name="r_ankle3">
-    <inertial>
-      <mass value="0.001"/>
-      <inertia
-        ixx="0.01"
-        ixy="0.0"
-        ixz="0.0"
-        iyy="0.01"
-        iyz="0.0"
-        izz="0.01"/>
-      <origin rpy="0 0 0" xyz="0.0 0.045 0.27"/>
-    </inertial>
-  </link>
 
   <link name="l_sole">
     <visual>
@@ -304,28 +278,16 @@
 
   <joint name="l_ankle_pitch" type="revolute">
     <parent link="l_ankle2"/>
-    <child link="l_ankle3"/>
+    <child link="l_sole"/>
     <axis xyz="0 1 0"/>
     <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
   <joint name="r_ankle_pitch" type="revolute">
     <parent link="r_ankle2"/>
-    <child link="r_ankle3"/>
+    <child link="r_sole"/>
     <axis xyz="0 1 0"/>
     <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
-  </joint>
-
-  <joint name="l_sole_offset" type="fixed">
-    <parent link="l_ankle3"/>
-    <child link="l_sole"/>
-    <origin xyz="0.05 0 0"/>
-  </joint>
-
-  <joint name="r_sole_offset" type="fixed">
-    <parent link="r_ankle3"/>
-    <child link="r_sole"/>
-    <origin xyz="0.05 0 0"/>
   </joint>
 
   <gazebo>
