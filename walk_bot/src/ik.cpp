@@ -35,29 +35,39 @@ void IK::ikCallback(const biped_interfaces::msg::SolePoses & msg)
   joint_command.header.stamp = now();
 
   joint_command.name.push_back("l_hip_roll");
-  joint_command.name.push_back("r_hip_roll");
-  joint_command.name.push_back("l_hip_pitch");
-  joint_command.name.push_back("r_hip_pitch");
-  joint_command.name.push_back("l_hip_yaw");
-  joint_command.name.push_back("r_hip_yaw");
-  joint_command.name.push_back("l_leg_extension");
-  joint_command.name.push_back("r_leg_extension");
-  joint_command.name.push_back("l_ankle_roll");
-  joint_command.name.push_back("r_ankle_roll");
-  joint_command.name.push_back("l_ankle_pitch");
-  joint_command.name.push_back("r_ankle_pitch");
+  joint_command.position.push_back(0.0);
 
+  joint_command.name.push_back("r_hip_roll");
   joint_command.position.push_back(0.0);
+
+  joint_command.name.push_back("l_hip_pitch");
   joint_command.position.push_back(0.0);
+
+  joint_command.name.push_back("r_hip_pitch");
   joint_command.position.push_back(0.0);
+
+  joint_command.name.push_back("l_hip_yaw");
   joint_command.position.push_back(0.0);
+
+  joint_command.name.push_back("r_hip_yaw");
   joint_command.position.push_back(0.0);
-  joint_command.position.push_back(0.0);
+
+  joint_command.name.push_back("l_leg_extension");
   joint_command.position.push_back(-0.4);  // -0.4
+
+  joint_command.name.push_back("r_leg_extension");
   joint_command.position.push_back(-0.4);  // -0.4
+
+  joint_command.name.push_back("l_ankle_roll");
   joint_command.position.push_back(0.0);
+
+  joint_command.name.push_back("r_ankle_roll");
   joint_command.position.push_back(0.0);
+
+  joint_command.name.push_back("l_ankle_pitch");
   joint_command.position.push_back(0.0);
+
+  joint_command.name.push_back("r_ankle_pitch");
   joint_command.position.push_back(0.0);
 
   pub_joint_command_->publish(joint_command);

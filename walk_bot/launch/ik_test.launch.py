@@ -38,9 +38,9 @@ def generate_launch_description():
       package='sole_poses_ims',
       executable='sole_poses_ims',
       parameters=[{
-        'l_sole_default_y': 0.0,
+        'l_sole_default_y': 0.1,
         'l_sole_default_z': -0.4,
-        'r_sole_default_y': 0.0,
+        'r_sole_default_y': -0.1,
         'r_sole_default_z': -0.4,
       }],
     )
