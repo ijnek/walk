@@ -11,12 +11,16 @@ find_package(biped_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 
 set(THIS_PACKAGE_INCLUDE_DEPENDS
   biped_interfaces
   rclcpp
   rclcpp_components
-  sensor_msgs)
+  sensor_msgs
+  tf2
+  tf2_geometry_msgs)
 
 # Build
 add_library(ik_node SHARED
