@@ -204,33 +204,33 @@
   </link>
 
   <!-- Joints -->
-  <joint name="l_hip_roll" type="revolute">
+  <joint name="l_hip_pitch" type="revolute">
     <parent link="base_link"/>
     <child link="l_hip1"/>
-    <axis xyz="1 0 0"/>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
-  </joint>
-
-  <joint name="r_hip_roll" type="revolute">
-    <parent link="base_link"/>
-    <child link="r_hip1"/>
-    <axis xyz="1 0 0"/>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
-  </joint>
-
-  <joint name="l_hip_pitch" type="revolute">
-    <parent link="l_hip1"/>
-    <child link="l_hip2"/>
     <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
     <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
   <joint name="r_hip_pitch" type="revolute">
+    <parent link="base_link"/>
+    <child link="r_hip1"/>
+    <axis xyz="0 1 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
+  </joint>
+
+  <joint name="l_hip_roll" type="revolute">
+    <parent link="l_hip1"/>
+    <child link="l_hip2"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
+  </joint>
+
+  <joint name="r_hip_roll" type="revolute">
     <parent link="r_hip1"/>
     <child link="r_hip2"/>
-    <axis xyz="0 1 0"/>
+    <axis xyz="1 0 0"/>
     <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="1000.0"/>
   </joint>
 
@@ -295,10 +295,10 @@
         filename="libignition-gazebo-joint-state-publisher-system.so"
         name="ignition::gazebo::systems::JointStatePublisher">
       <topic>joint_states</topic>
-      <joint_name>l_hip_roll</joint_name>
-      <joint_name>r_hip_roll</joint_name>
       <joint_name>l_hip_pitch</joint_name>
       <joint_name>r_hip_pitch</joint_name>
+      <joint_name>l_hip_roll</joint_name>
+      <joint_name>r_hip_roll</joint_name>
       <joint_name>l_leg_extension</joint_name>
       <joint_name>r_leg_extension</joint_name>
       <joint_name>l_ankle_yaw</joint_name>
@@ -312,24 +312,6 @@
     <plugin
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
-      <joint_name>l_hip_roll</joint_name>
-      <p_gain>10</p_gain>
-      <i_gain>0</i_gain>
-      <d_gain>2</d_gain>
-    </plugin>
-
-    <plugin
-      filename="libignition-gazebo-joint-position-controller-system"
-      name="ignition::gazebo::systems::JointPositionController">
-      <joint_name>r_hip_roll</joint_name>
-      <p_gain>10</p_gain>
-      <i_gain>0</i_gain>
-      <d_gain>2</d_gain>
-    </plugin>
-
-    <plugin
-      filename="libignition-gazebo-joint-position-controller-system"
-      name="ignition::gazebo::systems::JointPositionController">
       <joint_name>l_hip_pitch</joint_name>
       <p_gain>10</p_gain>
       <i_gain>0</i_gain>
@@ -340,6 +322,24 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>r_hip_pitch</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>l_hip_roll</joint_name>
+      <p_gain>10</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>2</d_gain>
+    </plugin>
+
+    <plugin
+      filename="libignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>r_hip_roll</joint_name>
       <p_gain>10</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
