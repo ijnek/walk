@@ -22,7 +22,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   tf2
   tf2_geometry_msgs)
 
-# Build
+# Build ik
 add_library(ik_node SHARED
   src/ik.cpp)
 
@@ -35,9 +35,22 @@ rclcpp_components_register_node(ik_node
   EXECUTABLE ik)
 
 ament_target_dependencies(ik_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
-
 ament_export_targets(export_ik HAS_LIBRARY_TARGET)
-ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
+
+# Build phase provider
+add_library(phase_provider_node SHARED
+  src/phase_provider.cpp)
+
+target_include_directories(phase_provider_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+rclcpp_components_register_node(phase_provider_node
+  PLUGIN "walk_bot::PhaseProvider"
+  EXECUTABLE phase_provider)
+
+ament_target_dependencies(phase_provider_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
+ament_export_targets(export_phase_provider HAS_LIBRARY_TARGET)
 
 # Install
 install(
@@ -50,8 +63,17 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
   INCLUDES DESTINATION include)
+install(
+    TARGETS phase_provider_node
+    EXPORT export_phase_provider
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include)
 install(DIRECTORY gui_config launch rviz urdf world
   DESTINATION share/${PROJECT_NAME}/)
+
+ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
 
 # Test
 if(BUILD_TESTING)
