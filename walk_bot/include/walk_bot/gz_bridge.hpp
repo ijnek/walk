@@ -28,7 +28,6 @@ public:
   explicit GzBridge(const rclcpp::NodeOptions & options = rclcpp::NodeOptions{});
 
 private:
-
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr sub_joint_command_;
 
   ignition::transport::Node gz_node_;

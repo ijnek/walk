@@ -37,10 +37,11 @@ PhaseProvider::PhaseProvider(const rclcpp::NodeOptions & options)
 void PhaseProvider::timerCallback()
 {
   // Change phase
-  if (phase_.phase == biped_interfaces::msg::Phase::LEFT_STANCE)
+  if (phase_.phase == biped_interfaces::msg::Phase::LEFT_STANCE) {
     phase_.phase = biped_interfaces::msg::Phase::RIGHT_STANCE;
-  else if (phase_.phase == biped_interfaces::msg::Phase::RIGHT_STANCE)
+  } else if (phase_.phase == biped_interfaces::msg::Phase::RIGHT_STANCE) {
     phase_.phase = biped_interfaces::msg::Phase::LEFT_STANCE;
+  }
 
   // Publish phase
   phase_pub_->publish(phase_);

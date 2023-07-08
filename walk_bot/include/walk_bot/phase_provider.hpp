@@ -27,7 +27,6 @@ public:
   explicit PhaseProvider(const rclcpp::NodeOptions & options = rclcpp::NodeOptions{});
 
 private:
-
   double period_;
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<biped_interfaces::msg::Phase>::SharedPtr phase_pub_;

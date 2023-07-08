@@ -28,7 +28,6 @@ public:
   explicit IK(const rclcpp::NodeOptions & options = rclcpp::NodeOptions{});
 
 private:
-
   rclcpp::Subscription<biped_interfaces::msg::SolePoses>::SharedPtr sub_sole_poses_;
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr pub_joint_command_;
 
