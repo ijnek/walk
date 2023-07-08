@@ -45,6 +45,11 @@ def generate_launch_description():
         default_value=PathJoinSubstitution(
             [FindPackageShare('walk_bot'), 'urdf', 'walk_bot.urdf']))
 
+    z_arg = DeclareLaunchArgument(
+        name='z',
+        description='Initial base_link height in metres',
+        default_value='0.3')
+
     # Gazebo with world
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -52,7 +57,7 @@ def generate_launch_description():
                 [FindPackageShare('ros_gz_sim'), 'launch', 'gz_sim.launch.py'])),
         launch_arguments={
             'gz_args': [
-                '-r ',  # Run simulation on start.
+                # '-r ',  # Run simulation on start.
                 LaunchConfiguration('world'),
                 ' --gui-config ',
                 LaunchConfiguration('gui_config'),
@@ -66,7 +71,7 @@ def generate_launch_description():
         executable='create',
         arguments=[
             '-string', Command(['xacro ', LaunchConfiguration('xacro_path')]),
-            '-z', '0.2'])
+            '-z', LaunchConfiguration('z')])
 
     # ROS <-> GZ Bridge
     bridge = Node(
@@ -80,11 +85,16 @@ def generate_launch_description():
                 ],
     )
 
+    # ROS <-> GZ Bridge for Joint Command
+    joint_command_bridge = Node(package='walk_bot', executable='gz_bridge')
+
     return LaunchDescription([
         world_arg,
         gui_config_arg,
         xacro_path_arg,
+        z_arg,
         gazebo,
         create_node,
         bridge,
+        joint_command_bridge,
     ])

@@ -17,14 +17,6 @@ def generate_launch_description():
         )
     )
 
-    gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            PathJoinSubstitution(
-                [FindPackageShare('walk_bot'), 'launch', 'gazebo.launch.py']
-            )
-        )
-    )
-
     walk_node = Node(package='walk', executable='walk')
     ik_node = Node(
         package='walk_bot',
@@ -47,7 +39,6 @@ def generate_launch_description():
     return LaunchDescription([
         period_launch_arg,
         description_launch,
-        #   gazebo_launch,
         walk_node,
         ik_node,
         phase_provider_node,

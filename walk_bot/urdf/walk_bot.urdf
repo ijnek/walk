@@ -313,7 +313,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>l_hip_pitch</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>1000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -322,7 +322,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>r_hip_pitch</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>1000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -331,7 +331,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>l_hip_roll</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>1000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -340,7 +340,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>r_hip_roll</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>1000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -349,7 +349,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>l_leg_extension</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>10000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -358,7 +358,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>r_leg_extension</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>10000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -367,7 +367,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>l_ankle_yaw</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>1000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -376,7 +376,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>r_ankle_yaw</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>1000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -385,7 +385,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>l_ankle_pitch</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>1000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -394,7 +394,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>r_ankle_pitch</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>1000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -403,7 +403,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>l_ankle_roll</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>1000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>
@@ -412,7 +412,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>r_ankle_roll</joint_name>
-      <p_gain>10</p_gain>
+      <p_gain>1000</p_gain>
       <i_gain>0</i_gain>
       <d_gain>2</d_gain>
     </plugin>

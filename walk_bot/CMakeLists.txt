@@ -14,6 +14,20 @@ find_package(sensor_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 
+# Garden
+if("$ENV{GZ_VERSION}" STREQUAL "garden")
+  find_package(gz-transport12 REQUIRED)
+  set(GZ_TRANSPORT_VER ${gz-transport12_VERSION_MAJOR})
+  set(GZ_TARGET_PREFIX gz)
+  message(STATUS "Compiling against Gazebo Garden")
+# Fortress (Default)
+else()
+  find_package(ignition-transport11 REQUIRED)
+  set(GZ_TRANSPORT_VER ${ignition-transport11_VERSION_MAJOR})
+  set(GZ_TARGET_PREFIX ignition)
+  message(STATUS "Compiling against Ignition Fortress")
+endif()
+
 set(THIS_PACKAGE_INCLUDE_DEPENDS
   biped_interfaces
   rclcpp
@@ -52,6 +66,22 @@ rclcpp_components_register_node(phase_provider_node
 ament_target_dependencies(phase_provider_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
 ament_export_targets(export_phase_provider HAS_LIBRARY_TARGET)
 
+# Build gz bridge
+add_library(gz_bridge_node SHARED
+  src/gz_bridge.cpp)
+
+target_include_directories(gz_bridge_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+rclcpp_components_register_node(gz_bridge_node
+  PLUGIN "walk_bot::GzBridge"
+  EXECUTABLE gz_bridge)
+
+ament_target_dependencies(gz_bridge_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
+target_link_libraries(gz_bridge_node ${GZ_TARGET_PREFIX}-transport${GZ_TRANSPORT_VER}::core)
+ament_export_targets(export_gz_bridge HAS_LIBRARY_TARGET)
+
 # Install
 install(
   DIRECTORY include/
@@ -64,12 +94,19 @@ install(
   RUNTIME DESTINATION bin
   INCLUDES DESTINATION include)
 install(
-    TARGETS phase_provider_node
-    EXPORT export_phase_provider
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include)
+  TARGETS phase_provider_node
+  EXPORT export_phase_provider
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include)
+install(
+  TARGETS gz_bridge_node
+  EXPORT export_gz_bridge
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include)
 install(DIRECTORY gui_config launch rviz urdf world
   DESTINATION share/${PROJECT_NAME}/)
 
