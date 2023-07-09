@@ -71,7 +71,7 @@ def generate_launch_description():
                 [FindPackageShare('ros_gz_sim'), 'launch', 'gz_sim.launch.py'])),
         launch_arguments={
             'gz_args': [
-                # '-r ',  # Run simulation on start.
+                '-r ',  # Run simulation on start.
                 LaunchConfiguration('world'),
                 ' --gui-config ',
                 LaunchConfiguration('gui_config'),

@@ -22,7 +22,7 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-    period_launch_arg = DeclareLaunchArgument('period', default_value='0.25')
+    period_launch_arg = DeclareLaunchArgument('period', default_value='0.30')
 
     description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
