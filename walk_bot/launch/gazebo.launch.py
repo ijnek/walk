@@ -73,8 +73,8 @@ def generate_launch_description():
             'gz_args': [
                 '-r ',  # Run simulation on start.
                 LaunchConfiguration('world'),
-                ' --gui-config ',
-                LaunchConfiguration('gui_config'),
+                ' --gui-config ', LaunchConfiguration('gui_config'),
+                ' -v', '4',  # Increase log level to debug
             ]
         }.items())
 

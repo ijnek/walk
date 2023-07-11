@@ -290,7 +290,23 @@
     <limit effort="20.0" lower="-3.14" upper="3.14" velocity="2.0"/>
   </joint>
 
+  <gazebo reference="l_sole">
+    <sensor name='sensor_contact' type='contact'>
+      <contact>
+        <collision>l_sole_collision</collision>
+        <topic>/contact_example</topic>
+      </contact>
+      <always_on>1</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+    </sensor>
+  </gazebo>
+
   <gazebo>
+    <plugin
+      filename="ignition-gazebo-contact-system"
+      name="ignition::gazebo::systems::Contact"/>
+
     <plugin
         filename="libignition-gazebo-joint-state-publisher-system.so"
         name="ignition::gazebo::systems::JointStatePublisher">
