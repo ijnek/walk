@@ -23,7 +23,7 @@ PhaseProvider::PhaseProvider(const rclcpp::NodeOptions & options)
   declare_parameter("period", 0.5);
   rclcpp::Parameter period_param = get_parameter("period");
   period_ = period_param.as_double();
-  RCLCPP_INFO_STREAM(get_logger(), "PERIOD: " << period_);
+  RCLCPP_DEBUG_STREAM(get_logger(), "PERIOD: " << period_);
 
   phase_.phase = biped_interfaces::msg::Phase::LEFT_STANCE;
 
