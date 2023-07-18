@@ -23,6 +23,7 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
+#include "rcl_interfaces/msg/set_parameters_result.hpp"
 #include "std_msgs/msg/bool.hpp"
 #include "walk_interfaces/action/crouch.hpp"
 #include "walk_interfaces/action/stand.hpp"
@@ -72,6 +73,8 @@ private:
   void generateCommand();
   void phaseCallback(const biped_interfaces::msg::Phase::SharedPtr msg);
   void targetCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
+  rcl_interfaces::msg::SetParametersResult parametersCallback(
+    const std::vector<rclcpp::Parameter> &parameters);
 
   // Parameters
   std::unique_ptr<twist_limiter::Params> twist_limiter_params_;
@@ -89,6 +92,9 @@ private:
   std::shared_ptr<geometry_msgs::msg::Twist> target_twist_;
   std::shared_ptr<walk_interfaces::msg::Step> step_;
   std::shared_ptr<StepState> step_state_;
+
+  // Parameter Change Callback
+  OnSetParametersCallbackHandle::SharedPtr on_set_parameters_callback_handle_;
 };
 
 }  // namespace walk

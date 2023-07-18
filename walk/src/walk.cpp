@@ -96,13 +96,17 @@ Walk::Walk(const rclcpp::NodeOptions & options)
 
   pub_gait_ = create_publisher<walk_interfaces::msg::Gait>("walk/gait", 1);
   pub_step_ = create_publisher<walk_interfaces::msg::Step>("walk/step", 1);
+
+  // Register parameter change callback
+  on_set_parameters_callback_handle_ = add_on_set_parameters_callback(
+    std::bind(&Walk::parametersCallback, this, std::placeholders::_1));
 }
 
 Walk::~Walk() {}
 
 void Walk::generateCommand()
 {
-  RCLCPP_DEBUG(get_logger(), "generateCommand()");
+  // RCLCPP_DEBUG(get_logger(), "generateCommand()");
 
   if (!step_) {
     RCLCPP_INFO_THROTTLE(
@@ -114,7 +118,7 @@ void Walk::generateCommand()
   std::shared_ptr<StepState> step_state_copy = std::atomic_load(&step_state_);
 
   if (!step_state_copy->done()) {
-    RCLCPP_DEBUG(get_logger(), "sending sole poses");
+    // RCLCPP_DEBUG(get_logger(), "sending sole poses");
     pub_sole_poses_->publish(sole_pose::generate(*sole_pose_params_, step_state_copy->next()));
   }
 
@@ -127,10 +131,10 @@ void Walk::generateCommand()
 
 void Walk::walk(const geometry_msgs::msg::Twist & commanded_twist)
 {
-  RCLCPP_DEBUG(
-    get_logger(), "walk() called with commanded_twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
-    commanded_twist.linear.x, commanded_twist.linear.y, commanded_twist.linear.z,
-    commanded_twist.angular.x, commanded_twist.angular.y, commanded_twist.angular.z);
+  // RCLCPP_DEBUG(
+  //   get_logger(), "walk() called with commanded_twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
+  //   commanded_twist.linear.x, commanded_twist.linear.y, commanded_twist.linear.z,
+  //   commanded_twist.angular.x, commanded_twist.angular.y, commanded_twist.angular.z);
 
   auto limitedTwist = std::make_shared<geometry_msgs::msg::Twist>(
     twist_limiter::limit(*twist_limiter_params_, commanded_twist));
@@ -139,14 +143,14 @@ void Walk::walk(const geometry_msgs::msg::Twist & commanded_twist)
 
 void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 {
-  RCLCPP_DEBUG(get_logger(), "notifyPhase called");
+  // RCLCPP_DEBUG(get_logger(), "notifyPhase called");
 
   if (phase_ && phase.phase == phase_->phase) {
     RCLCPP_DEBUG(get_logger(), "Notified of a phase, but no change has taken place. Ignoring.");
     return;
   }
 
-  RCLCPP_DEBUG(get_logger(), "Calculating new step!");
+  // RCLCPP_DEBUG(get_logger(), "Calculating new step!");
 
   phase_ = std::make_unique<biped_interfaces::msg::Phase>(phase);
 
@@ -164,9 +168,9 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
     (phase.phase ==
     phase.LEFT_STANCE) ? gait.left_stance_phase_aim : gait.right_stance_phase_aim);
 
-  RCLCPP_DEBUG(
-    get_logger(), "Using %s",
-    (phase.phase == phase.LEFT_STANCE) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
+  // RCLCPP_DEBUG(
+  //   get_logger(), "Using %s",
+  //   (phase.phase == phase.LEFT_STANCE) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
   std::shared_ptr<walk_interfaces::msg::Step> step = std::make_shared<walk_interfaces::msg::Step>(
     feet_trajectory::generate(*feet_trajectory_params_, phase, *ftp_current_, *ftp_next));
@@ -178,6 +182,49 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 
   std::atomic_store(&step_, step);
   std::atomic_store(&step_state_, step_state);
+}
+
+rcl_interfaces::msg::SetParametersResult Walk::parametersCallback(
+  const std::vector<rclcpp::Parameter> &parameters)
+{
+  RCLCPP_DEBUG(this->get_logger(), "Parameter updated:");
+  rcl_interfaces::msg::SetParametersResult result;
+  result.successful = true;
+  result.reason = "success";
+  for (const auto &param: parameters)
+  {
+    RCLCPP_DEBUG_STREAM(this->get_logger(), "- " << param.get_name() << " (" << param.get_type_name() << ")" << " = " << param.value_to_string());
+
+    auto name = param.get_name();
+    if (name == "max_forward")
+      twist_limiter_params_->max_forward_ = param.as_double();
+    else if (name == "max_left")
+      twist_limiter_params_->max_left_ = param.as_double();
+    else if (name == "max_turn")
+      twist_limiter_params_->max_turn_ = param.as_double();
+    else if (name == "speed_multiplier")
+      twist_limiter_params_->speed_multiplier_ = param.as_double();
+    else if (name == "foot_lift_amp")
+      feet_trajectory_params_->foot_lift_amp_ = param.as_double();
+    else if (name == "period")
+      feet_trajectory_params_->period_ = param.as_double();
+    else if (name == "dt")
+      feet_trajectory_params_->dt_ = param.as_double();
+    else if (name == "sole_x")
+      sole_pose_params_->sole_x_ = param.as_double();
+    else if (name == "sole_y")
+      sole_pose_params_->sole_y_ = param.as_double();
+    else if (name == "sole_z")
+      sole_pose_params_->sole_z_ = param.as_double();
+    else if (name == "max_forward_change")
+      twist_change_limiter_params_->max_forward_change_ = param.as_double();
+    else if (name == "max_left_change")
+      twist_change_limiter_params_->max_left_change_ = param.as_double();
+    else if (name == "max_turn_change")
+      twist_change_limiter_params_->max_turn_change_ = param.as_double();
+  }
+
+  return result;
 }
 
 }  // namespace walk

@@ -54,7 +54,7 @@ def generate_launch_description():
     return LaunchDescription([
         period_launch_arg,
         description_launch,
-        walk_node,
+        # walk_node,
         ik_node,
         phase_provider_node,
         rviz_node,
