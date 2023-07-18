@@ -355,7 +355,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>l_leg_extension</joint_name>
-      <p_gain>1000</p_gain>
+      <p_gain>100000</p_gain>
       <i_gain>10</i_gain>
       <d_gain>10</d_gain>
     </plugin>
@@ -364,7 +364,7 @@
       filename="libignition-gazebo-joint-position-controller-system"
       name="ignition::gazebo::systems::JointPositionController">
       <joint_name>r_leg_extension</joint_name>
-      <p_gain>1000</p_gain>
+      <p_gain>100000</p_gain>
       <i_gain>10</i_gain>
       <d_gain>10</d_gain>
     </plugin>
