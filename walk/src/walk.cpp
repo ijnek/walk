@@ -105,7 +105,8 @@ void Walk::generateCommand()
   RCLCPP_DEBUG(get_logger(), "generateCommand()");
 
   if (!step_) {
-    RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 1000,  // ms
+    RCLCPP_INFO_THROTTLE(
+      get_logger(), *get_clock(), 1000,  // ms
       "No step calculated yet, can't generate command!");
     return;
   }
