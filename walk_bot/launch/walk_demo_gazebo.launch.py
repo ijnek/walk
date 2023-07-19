@@ -40,7 +40,10 @@ def generate_launch_description():
         )
     )
 
-    walk_node = Node(package='walk', executable='walk')
+    walk_node = Node(
+        package='walk',
+        executable='walk',
+        parameters=[{'period': LaunchConfiguration('period')}])
     ik_node = Node(package='walk_bot', executable='ik')
     phase_provider_node = Node(
         package='walk_bot',
