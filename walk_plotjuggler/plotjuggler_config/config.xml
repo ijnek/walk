@@ -1,330 +1,342 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <root>
- <tabbed_widget name="Main Window" parent="main_window">
-  <Tab containers="1" tab_name="Target Twist">
+ <tabbed_widget parent="main_window" name="Main Window">
+  <Tab tab_name="Target Twist" containers="1">
    <Container>
-    <DockSplitter count="3" orientation="-" sizes="0.346154;0.346154;0.307692">
+    <DockSplitter orientation="-" count="3" sizes="0.349901;0.349901;0.300199">
      <DockArea name="...">
-      <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-       <range left="0.000000" top="0.100000" bottom="-0.100000" right="0.000000"/>
+      <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+       <range top="0.100000" left="89.342798" right="94.255569" bottom="-0.100000"/>
        <limitY/>
-       <curve color="#17becf" name="/target/linear/x"/>
+       <curve name="/target/linear/x" color="#17becf"/>
       </plot>
      </DockArea>
      <DockArea name="...">
-      <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-       <range left="0.000000" top="0.100000" bottom="-0.100000" right="0.000000"/>
+      <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+       <range top="0.100000" left="89.342798" right="94.255569" bottom="-0.100000"/>
        <limitY/>
-       <curve color="#bcbd22" name="/target/linear/y"/>
+       <curve name="/target/linear/y" color="#bcbd22"/>
       </plot>
      </DockArea>
      <DockArea name="...">
-      <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-       <range left="0.000000" top="0.100000" bottom="-0.100000" right="0.000000"/>
+      <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+       <range top="0.100000" left="89.342798" right="94.255569" bottom="-0.100000"/>
        <limitY/>
-       <curve color="#1f77b4" name="/target/angular/z"/>
+       <curve name="/target/angular/z" color="#1f77b4"/>
       </plot>
      </DockArea>
     </DockSplitter>
    </Container>
   </Tab>
-  <Tab containers="1" tab_name="Current Twist">
+  <Tab tab_name="Current Twist" containers="1">
    <Container>
-    <DockSplitter count="3" orientation="-" sizes="0.346154;0.346154;0.307692">
+    <DockSplitter orientation="-" count="3" sizes="0.349901;0.349901;0.300199">
      <DockArea name="...">
-      <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-       <range left="46.400005" top="0.100000" bottom="-0.100000" right="51.399976"/>
+      <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+       <range top="0.100000" left="89.301388" right="94.297096" bottom="-0.100000"/>
        <limitY/>
-       <curve color="#f14cc1" name="/walk/current_twist/linear/x"/>
+       <curve name="/walk/current_twist/linear/x" color="#f14cc1"/>
       </plot>
      </DockArea>
      <DockArea name="...">
-      <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-       <range left="46.400005" top="0.100000" bottom="-0.100000" right="51.399976"/>
+      <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+       <range top="0.100000" left="89.301388" right="94.297096" bottom="-0.100000"/>
        <limitY/>
-       <curve color="#9467bd" name="/walk/current_twist/linear/y"/>
+       <curve name="/walk/current_twist/linear/y" color="#9467bd"/>
       </plot>
      </DockArea>
      <DockArea name="...">
-      <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-       <range left="46.400005" top="0.100000" bottom="-0.100000" right="51.399976"/>
+      <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+       <range top="0.100000" left="89.301388" right="94.297096" bottom="-0.100000"/>
        <limitY/>
-       <curve color="#1ac938" name="/walk/current_twist/angular/z"/>
+       <curve name="/walk/current_twist/angular/z" color="#1ac938"/>
       </plot>
      </DockArea>
     </DockSplitter>
    </Container>
   </Tab>
-  <Tab containers="1" tab_name="Sole Poses">
+  <Tab tab_name="Sole Poses" containers="1">
    <Container>
-    <DockSplitter count="2" orientation="-" sizes="0.5;0.5">
-     <DockSplitter count="3" orientation="|" sizes="0.336735;0.336735;0.326531">
+    <DockSplitter orientation="-" count="2" sizes="0.500497;0.499503">
+     <DockSplitter orientation="|" count="3" sizes="0.337304;0.336677;0.326019">
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.399964" top="0.090000" bottom="-0.110000" right="51.399951"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.090000" left="89.301352" right="94.297046" bottom="-0.110000"/>
         <limitY/>
-        <curve color="#9467bd" name="/motion/sole_poses/l_sole/position/x"/>
+        <curve name="/motion/sole_poses/l_sole/position/x" color="#9467bd"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.399964" top="0.150000" bottom="-0.050000" right="51.399951"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.150000" left="89.301352" right="94.297046" bottom="-0.050000"/>
         <limitY/>
-        <curve color="#17becf" name="/motion/sole_poses/l_sole/position/y"/>
+        <curve name="/motion/sole_poses/l_sole/position/y" color="#17becf"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.399964" top="-0.302720" bottom="-0.315300" right="51.399951"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="-0.302720" left="89.301352" right="94.297046" bottom="-0.315300"/>
         <limitY/>
-        <curve color="#1f77b4" name="/motion/sole_poses/l_sole/position/z"/>
-       </plot>
-      </DockArea>
-     </DockSplitter>
-     <DockSplitter count="3" orientation="|" sizes="0.336735;0.336735;0.326531">
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.399964" top="0.090000" bottom="-0.110000" right="51.399951"/>
-        <limitY/>
-        <curve color="#bcbd22" name="/motion/sole_poses/r_sole/position/x"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.399964" top="0.050000" bottom="-0.150000" right="51.399951"/>
-        <limitY/>
-        <curve color="#1f77b4" name="/motion/sole_poses/r_sole/position/y"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.399964" top="-0.302720" bottom="-0.315300" right="51.399951"/>
-        <limitY/>
-        <curve color="#d62728" name="/motion/sole_poses/r_sole/position/z"/>
+        <curve name="/motion/sole_poses/l_sole/position/z" color="#1f77b4"/>
        </plot>
       </DockArea>
      </DockSplitter>
-    </DockSplitter>
-   </Container>
-  </Tab>
-  <Tab containers="1" tab_name="Gait">
-   <Container>
-    <DockSplitter count="4" orientation="-" sizes="0.249751;0.250746;0.249751;0.249751">
-     <DockSplitter count="4" orientation="|" sizes="0.251568;0.248432;0.250941;0.249059">
+     <DockSplitter orientation="|" count="3" sizes="0.337931;0.337931;0.324138">
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.090000" left="89.301352" right="94.297046" bottom="-0.110000"/>
         <limitY/>
-        <curve color="#1f77b4" name="/walk/gait/left_stance_phase_aim/footh_l"/>
+        <curve name="/motion/sole_poses/r_sole/position/x" color="#bcbd22"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.050000" left="89.301352" right="94.297046" bottom="-0.150000"/>
         <limitY/>
-        <curve color="#d62728" name="/walk/gait/left_stance_phase_aim/forward_l"/>
+        <curve name="/motion/sole_poses/r_sole/position/y" color="#1f77b4"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="-0.302720" left="89.301352" right="94.297046" bottom="-0.315300"/>
         <limitY/>
-        <curve color="#1ac938" name="/walk/gait/left_stance_phase_aim/heading_l"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#ff7f0e" name="/walk/gait/left_stance_phase_aim/left_l"/>
-       </plot>
-      </DockArea>
-     </DockSplitter>
-     <DockSplitter count="4" orientation="|" sizes="0.251568;0.248432;0.250941;0.249059">
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#f14cc1" name="/walk/gait/left_stance_phase_aim/footh_r"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#9467bd" name="/walk/gait/left_stance_phase_aim/forward_r"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#17becf" name="/walk/gait/left_stance_phase_aim/heading_r"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#bcbd22" name="/walk/gait/left_stance_phase_aim/left_r"/>
-       </plot>
-      </DockArea>
-     </DockSplitter>
-     <DockSplitter count="4" orientation="|" sizes="0.251568;0.248432;0.250941;0.249059">
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#1f77b4" name="/walk/gait/right_stance_phase_aim/footh_l"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#d62728" name="/walk/gait/right_stance_phase_aim/forward_l"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#1ac938" name="/walk/gait/right_stance_phase_aim/heading_l"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#ff7f0e" name="/walk/gait/right_stance_phase_aim/left_l"/>
-       </plot>
-      </DockArea>
-     </DockSplitter>
-     <DockSplitter count="4" orientation="|" sizes="0.251568;0.248432;0.250941;0.249059">
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#f14cc1" name="/walk/gait/right_stance_phase_aim/footh_r"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#9467bd" name="/walk/gait/right_stance_phase_aim/forward_r"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#17becf" name="/walk/gait/right_stance_phase_aim/heading_r"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.550976" top="0.100000" bottom="-0.100000" right="51.350956"/>
-        <limitY/>
-        <curve color="#bcbd22" name="/walk/gait/right_stance_phase_aim/left_r"/>
+        <curve name="/motion/sole_poses/r_sole/position/z" color="#d62728"/>
        </plot>
       </DockArea>
      </DockSplitter>
     </DockSplitter>
    </Container>
   </Tab>
-  <Tab containers="1" tab_name="Joint States">
+  <Tab tab_name="Gait" containers="1">
    <Container>
-    <DockSplitter count="4" orientation="-" sizes="0.249751;0.250746;0.249751;0.249751">
-     <DockSplitter count="3" orientation="|" sizes="0.333542;0.332915;0.333542">
+    <DockSplitter orientation="-" count="4" sizes="0.249751;0.250746;0.249751;0.249751">
+     <DockSplitter orientation="|" count="4" sizes="0.250314;0.249686;0.250314;0.249686">
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="0.317918" bottom="0.304838" right="51.404830"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
         <limitY/>
-        <curve color="#ff7f0e" name="/joint_states/l_leg_extension/position"/>
+        <curve name="/walk/gait/left_stance_phase_aim/footh_l" color="#1f77b4"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="0.034049" bottom="0.029911" right="51.404830"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
         <limitY/>
-        <curve color="#d62728" name="/joint_states/l_hip_pitch/position"/>
+        <curve name="/walk/gait/left_stance_phase_aim/forward_l" color="#d62728"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="0.165613" bottom="0.154802" right="51.404830"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
         <limitY/>
-        <curve color="#1ac938" name="/joint_states/l_hip_roll/position"/>
-       </plot>
-      </DockArea>
-     </DockSplitter>
-     <DockSplitter count="3" orientation="|" sizes="0.333542;0.332915;0.333542">
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="0.008809" bottom="0.001558" right="51.404830"/>
-        <limitY/>
-        <curve color="#bcbd22" name="/joint_states/l_ankle_yaw/position"/>
+        <curve name="/walk/gait/left_stance_phase_aim/heading_l" color="#1ac938"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="0.034049" bottom="0.029911" right="51.404830"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
         <limitY/>
-        <curve color="#d62728" name="/joint_states/l_hip_pitch/position"/>
-       </plot>
-      </DockArea>
-      <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="0.165613" bottom="0.154802" right="51.404830"/>
-        <limitY/>
-        <curve color="#1ac938" name="/joint_states/l_hip_roll/position"/>
+        <curve name="/walk/gait/left_stance_phase_aim/left_l" color="#ff7f0e"/>
        </plot>
       </DockArea>
      </DockSplitter>
-     <DockSplitter count="3" orientation="|" sizes="0.333542;0.332915;0.333542">
+     <DockSplitter orientation="|" count="4" sizes="0.250314;0.249686;0.250314;0.249686">
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="0.317906" bottom="0.304847" right="51.404830"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
         <limitY/>
-        <curve color="#f14cc1" name="/joint_states/r_leg_extension/position"/>
+        <curve name="/walk/gait/left_stance_phase_aim/footh_r" color="#f14cc1"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="0.034291" bottom="0.030105" right="51.404830"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
         <limitY/>
-        <curve color="#9467bd" name="/joint_states/r_hip_pitch/position"/>
+        <curve name="/walk/gait/left_stance_phase_aim/forward_r" color="#9467bd"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="-0.154723" bottom="-0.165495" right="51.404830"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
         <limitY/>
-        <curve color="#17becf" name="/joint_states/r_hip_roll/position"/>
+        <curve name="/walk/gait/left_stance_phase_aim/heading_r" color="#17becf"/>
+       </plot>
+      </DockArea>
+      <DockArea name="...">
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
+        <limitY/>
+        <curve name="/walk/gait/left_stance_phase_aim/left_r" color="#bcbd22"/>
        </plot>
       </DockArea>
      </DockSplitter>
-     <DockSplitter count="3" orientation="|" sizes="0.333542;0.332915;0.333542">
+     <DockSplitter orientation="|" count="4" sizes="0.250314;0.249686;0.250314;0.249686">
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="-0.001759" bottom="-0.008593" right="51.404830"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
         <limitY/>
-        <curve color="#1f77b4" name="/joint_states/r_ankle_yaw/position"/>
+        <curve name="/walk/gait/right_stance_phase_aim/footh_l" color="#1f77b4"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="-0.028080" bottom="-0.035445" right="51.404830"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
         <limitY/>
-        <curve color="#1ac938" name="/joint_states/r_ankle_pitch/position"/>
+        <curve name="/walk/gait/right_stance_phase_aim/forward_l" color="#d62728"/>
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_x="false" flip_y="false" mode="TimeSeries" style="Lines">
-        <range left="46.405713" top="0.166978" bottom="0.150685" right="51.404830"/>
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
         <limitY/>
-        <curve color="#d62728" name="/joint_states/r_ankle_roll/position"/>
+        <curve name="/walk/gait/right_stance_phase_aim/heading_l" color="#1ac938"/>
+       </plot>
+      </DockArea>
+      <DockArea name="...">
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
+        <limitY/>
+        <curve name="/walk/gait/right_stance_phase_aim/left_l" color="#ff7f0e"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockSplitter orientation="|" count="4" sizes="0.250314;0.249686;0.250314;0.249686">
+      <DockArea name="...">
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
+        <limitY/>
+        <curve name="/walk/gait/right_stance_phase_aim/footh_r" color="#f14cc1"/>
+       </plot>
+      </DockArea>
+      <DockArea name="...">
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
+        <limitY/>
+        <curve name="/walk/gait/right_stance_phase_aim/forward_r" color="#9467bd"/>
+       </plot>
+      </DockArea>
+      <DockArea name="...">
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
+        <limitY/>
+        <curve name="/walk/gait/right_stance_phase_aim/heading_r" color="#17becf"/>
+       </plot>
+      </DockArea>
+      <DockArea name="...">
+       <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.100000" left="89.253213" right="94.053126" bottom="-0.100000"/>
+        <limitY/>
+        <curve name="/walk/gait/right_stance_phase_aim/left_r" color="#bcbd22"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="Joint Command / States" containers="1">
+   <Container>
+    <DockSplitter orientation="-" count="4" sizes="0.249751;0.250746;0.249751;0.249751">
+     <DockSplitter orientation="|" count="3" sizes="0.334169;0.331661;0.334169">
+      <DockArea name="L Leg Extension">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.319450" left="89.300269" right="94.300165" bottom="0.304771"/>
+        <limitY/>
+        <curve name="/joint_states/l_leg_extension/position" color="#00ffff"/>
+        <curve name="/joint_command/l_leg_extension/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+      <DockArea name="L Hip Pitch">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.033738" left="89.300269" right="94.300165" bottom="0.030422"/>
+        <limitY/>
+        <curve name="/joint_states/l_hip_pitch/position" color="#00ffff"/>
+        <curve name="/joint_command/l_hip_pitch/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+      <DockArea name="L Hip Roll">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.165390" left="89.300269" right="94.300165" bottom="0.154959"/>
+        <limitY/>
+        <curve name="/joint_states/l_hip_roll/position" color="#00ffff"/>
+        <curve name="/joint_command/l_hip_roll/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockSplitter orientation="|" count="3" sizes="0.334169;0.331661;0.334169">
+      <DockArea name="L Ankle Yaw">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.008815" left="89.300269" right="94.300165" bottom="0.001394"/>
+        <limitY/>
+        <curve name="/joint_states/l_ankle_yaw/position" color="#00ffff"/>
+        <curve name="/joint_command/l_ankle_yaw/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+      <DockArea name="L Ankle Pitch">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="-0.029328" left="89.300269" right="94.300165" bottom="-0.035288"/>
+        <limitY/>
+        <curve name="/joint_states/l_ankle_pitch/position" color="#00ffff"/>
+        <curve name="/joint_command/l_ankle_pitch/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+      <DockArea name="L ankle Roll">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="-0.150474" left="89.300269" right="94.300165" bottom="-0.165912"/>
+        <limitY/>
+        <curve name="/joint_states/l_ankle_roll/position" color="#00ffff"/>
+        <curve name="/joint_command/l_ankle_roll/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockSplitter orientation="|" count="3" sizes="0.334169;0.331661;0.334169">
+      <DockArea name="R Leg Extension">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.319446" left="89.300269" right="94.300165" bottom="0.304914"/>
+        <limitY/>
+        <curve name="/joint_states/r_leg_extension/position" color="#00ffff"/>
+        <curve name="/joint_command/r_leg_extension/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+      <DockArea name="R Hip Pitch">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.033735" left="89.300269" right="94.300165" bottom="0.030330"/>
+        <limitY/>
+        <curve name="/joint_states/r_hip_pitch/position" color="#00ffff"/>
+        <curve name="/joint_command/r_hip_pitch/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+      <DockArea name="R Hip Roll">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="-0.154858" left="89.300269" right="94.300165" bottom="-0.165518"/>
+        <limitY/>
+        <curve name="/joint_states/r_hip_roll/position" color="#00ffff"/>
+        <curve name="/joint_command/r_hip_roll/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockSplitter orientation="|" count="3" sizes="0.334169;0.331661;0.334169">
+      <DockArea name="R Ankle Yaw">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="-0.001525" left="89.300269" right="94.300165" bottom="-0.008264"/>
+        <limitY/>
+        <curve name="/joint_states/r_ankle_yaw/position" color="#00ffff"/>
+        <curve name="/joint_command/r_ankle_yaw/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+      <DockArea name="R Ankle Pitch">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="-0.029184" left="89.300269" right="94.300165" bottom="-0.035558"/>
+        <limitY/>
+        <curve name="/joint_states/r_ankle_pitch/position" color="#00ffff"/>
+        <curve name="/joint_command/r_ankle_pitch/position" color="#0000ff"/>
+       </plot>
+      </DockArea>
+      <DockArea name="R Ankle Roll">
+       <plot style="LinesAndDots" flip_x="false" mode="TimeSeries" flip_y="false">
+        <range top="0.165813" left="89.300269" right="94.300165" bottom="0.150523"/>
+        <limitY/>
+        <curve name="/joint_states/r_ankle_roll/position" color="#00ffff"/>
+        <curve name="/joint_command/r_ankle_roll/position" color="#0000ff"/>
        </plot>
       </DockArea>
      </DockSplitter>
@@ -338,7 +350,7 @@
  <!-- - - - - - - - - - - - - - - -->
  <Plugins>
   <plugin ID="DataLoad CSV">
-   <default delimiter="0" time_axis=""/>
+   <default time_axis="" delimiter="0"/>
   </plugin>
   <plugin ID="DataLoad MCAP"/>
   <plugin ID="DataLoad ROS2 bags">
