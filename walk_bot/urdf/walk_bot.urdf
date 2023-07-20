@@ -291,14 +291,32 @@
   </joint>
 
   <gazebo reference="l_sole">
-    <sensor name='sensor_contact' type='contact'>
+    <sensor name="sensor_contact" type="contact">
       <contact>
         <collision>l_sole_collision</collision>
-        <topic>/contact_example</topic>
+        <topic>/l_sole_contact</topic>
       </contact>
       <always_on>1</always_on>
       <update_rate>100</update_rate>
       <visualize>true</visualize>
+      <plugin
+        filename="ignition-gazebo-contact-system"
+        name="ignition::gazebo::systems::Contact"/>
+    </sensor>
+  </gazebo>
+
+    <gazebo reference="r_sole">
+    <sensor name="sensor_contact" type="contact">
+      <contact>
+        <collision>r_sole_collision</collision>
+        <topic>/r_sole_contact</topic>
+      </contact>
+      <always_on>1</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <plugin
+        filename="ignition-gazebo-contact-system"
+        name="ignition::gazebo::systems::Contact"/>
     </sensor>
   </gazebo>
 
