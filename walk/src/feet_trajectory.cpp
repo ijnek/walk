@@ -23,7 +23,6 @@ walk_interfaces::msg::Step generate(
   const walk_interfaces::msg::FeetTrajectoryPoint & last,
   const walk_interfaces::msg::FeetTrajectoryPoint & next)
 {
-  float max_foot_height = p.foot_lift_amp_;
   float period = p.period_;
   float dt = p.dt_;
 
@@ -35,26 +34,35 @@ walk_interfaces::msg::Step generate(
     float forward_l = 0.0;
     float forward_r = 0.0;
 
+    float forward_l_diff = next.forward_l - last.forward_l;
+    float forward_r_diff = next.forward_r - last.forward_r;
+    float left_l_diff = next.left_l - last.left_l;
+    float left_r_diff = next.left_r - last.left_r;
+    float heading_l_diff = next.heading_l - last.heading_l;
+    float heading_r_diff = next.heading_r - last.heading_r;
+
     if (phase.phase == phase.RIGHT_SWING) {
       forward_l = last.forward_l +
-        (next.forward_l - last.forward_l) * linearStep(t, period);
+        forward_l_diff * linearStep(t, period);
       forward_r = last.forward_r +
-        (next.forward_r - last.forward_r) * parabolicStep(dt, t, period, 0);
+        forward_r_diff * parabolicStep(dt, t, period, 0);
     } else {
       forward_l = last.forward_l +
-        (next.forward_l - last.forward_l) * parabolicStep(dt, t, period, 0);
+        forward_l_diff * parabolicStep(dt, t, period, 0);
       forward_r = last.forward_r +
-        (next.forward_r - last.forward_r) * linearStep(t, period);
+        forward_r_diff * linearStep(t, period);
     }
 
-    float left_l = last.left_l + (next.left_l - last.left_l) * parabolicStep(dt, t, period, 0.2);
-    float left_r = last.left_r + (next.left_r - last.left_r) * parabolicStep(dt, t, period, 0.2);
+    float left_l = last.left_l + left_l_diff * parabolicStep(dt, t, period, 0.2);
+    float left_r = last.left_r + left_r_diff * parabolicStep(dt, t, period, 0.2);
 
-    float heading_l = last.heading_l +
-      (next.heading_l - last.heading_l) * parabolicStep(dt, t, period, 0.0);
-    float heading_r = last.heading_r +
-      (next.heading_r - last.heading_r) * parabolicStep(dt, t, period, 0.0);
+    float heading_l = last.heading_l + heading_l_diff * parabolicStep(dt, t, period, 0.0);
+    float heading_r = last.heading_r + heading_r_diff * parabolicStep(dt, t, period, 0.0);
 
+    float max_foot_height =
+      p.foot_lift_amp_ +
+      abs(forward_r_diff) * p.footh_forward_multiplier_ +
+      abs(left_r_diff) * p.footh_left_multiplier_;
     float footh_l = 0;
     float footh_r = 0;
 

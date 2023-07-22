@@ -32,13 +32,19 @@ walk_interfaces::msg::Step generate(
 class Params
 {
 public:
-  explicit Params(float foot_lift_amp, float period, float dt)
-  : foot_lift_amp_(foot_lift_amp), period_(period), dt_(dt)
+  explicit Params(
+    float foot_lift_amp, float period, float dt, float footh_forward_multiplier,
+    float footh_left_multiplier)
+  : foot_lift_amp_(foot_lift_amp), period_(period), dt_(dt),
+    footh_forward_multiplier_(footh_forward_multiplier),
+    footh_left_multiplier_(footh_left_multiplier)
   {}
 
   float foot_lift_amp_;
   float period_;
   float dt_;
+  float footh_forward_multiplier_;
+  float footh_left_multiplier_;
 };
 }  // namespace feet_trajectory
 

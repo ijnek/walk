@@ -57,6 +57,8 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   float max_forward_change = declare_parameter("max_forward_change", 0.06);  // how much forward can change in one step (m/s)  // NOLINT
   float max_left_change = declare_parameter("max_left_change", 0.1);  // how much left can change in one step (m/s)  // NOLINT
   float max_turn_change = declare_parameter("max_turn_change", 1.0);  // how much turn can change in one step (rad/s)  // NOLINT
+  float footh_forward_multiplier = declare_parameter("footh_forward_multiplier", 0.1);  // how much extra height to add to the swing foot, as a multiplier of the magnitude of the step in the forward/backward direction.  // NOLINT
+  float footh_left_multiplier = declare_parameter("footh_left_multiplier", 0.3);  // how much extra height to add to the swing foot, as a multiplier of the magnitude of the step in the left/right direction.  // NOLINT
 
   RCLCPP_DEBUG(get_logger(), "Parameters: ");
   RCLCPP_DEBUG(get_logger(), "  max_forward : %f", max_forward);
@@ -72,6 +74,8 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   RCLCPP_DEBUG(get_logger(), "  max_forward_change : %f", max_forward_change);
   RCLCPP_DEBUG(get_logger(), "  max_left_change : %f", max_left_change);
   RCLCPP_DEBUG(get_logger(), "  max_turn_change : %f", max_turn_change);
+  RCLCPP_DEBUG(get_logger(), "  footh_forward_multiplier : %f", footh_forward_multiplier);
+  RCLCPP_DEBUG(get_logger(), "  footh_left_multiplier : %f", footh_left_multiplier);
 
   sole_pose_params_ = std::make_unique<sole_pose::Params>(sole_x, sole_y, sole_z);
   twist_limiter_params_ = std::make_unique<twist_limiter::Params>(
@@ -79,7 +83,8 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   twist_change_limiter_params_ = std::make_unique<twist_change_limiter::Params>(
     max_forward_change, max_left_change, max_turn_change);
   target_gait_calculator_params_ = std::make_unique<target_gait_calculator::Params>(period);
-  feet_trajectory_params_ = std::make_unique<feet_trajectory::Params>(foot_lift_amp, period, dt);
+  feet_trajectory_params_ = std::make_unique<feet_trajectory::Params>(
+    foot_lift_amp, period, dt, footh_forward_multiplier, footh_left_multiplier);
 
   generate_command_timer_ = create_wall_timer(
     std::chrono::duration<float>(dt), std::bind(&Walk::generateCommand, this));
