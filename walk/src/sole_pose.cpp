@@ -25,7 +25,8 @@ geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, d
 
 biped_interfaces::msg::SolePoses generate(
   const sole_pose::Params & p,
-  const walk_interfaces::msg::FeetTrajectoryPoint & ftp)
+  const walk_interfaces::msg::FeetTrajectoryPoint & ftp,
+  const nao_sensor_msgs::msg::Gyroscope & gyroscope)
 {
   auto logger = rclcpp::get_logger("sole_pose::generate");
 
@@ -33,14 +34,14 @@ biped_interfaces::msg::SolePoses generate(
   float l_sole_pos_x = ftp.forward_l + p.sole_x_;
   float l_sole_pos_y = ftp.left_l + p.sole_y_;
   float l_sole_pos_z = ftp.footh_l + p.sole_z_;
-  float l_sole_ang_x = 0;
+  float l_sole_ang_x = gyroscope.y / 25;
   float l_sole_ang_y = 0;
   float l_sole_ang_z = ftp.heading_l;
 
   float r_sole_pos_x = ftp.forward_r + p.sole_x_;
   float r_sole_pos_y = ftp.left_r - p.sole_y_;
   float r_sole_pos_z = ftp.footh_r + p.sole_z_;
-  float r_sole_ang_x = 0;
+  float r_sole_ang_x = gyroscope.y / 25;
   float r_sole_ang_y = 0;
   float r_sole_ang_z = ftp.heading_r;
 
