@@ -46,7 +46,7 @@ TEST(TestFeetTrajectory, TestSmoothSteps)
   ftp2.footh_l = 0.0;
   ftp2.footh_r = 0.0;
 
-  feet_trajectory::Params params{foot_lift_amp, period, dt};
+  feet_trajectory::Params params{foot_lift_amp, period, dt, 0, 0};
 
   biped_interfaces::msg::Phase phase1;
   phase1.phase = biped_interfaces::msg::Phase::RIGHT_SWING;
@@ -82,7 +82,7 @@ TEST(TestFeetTrajectory, TestPointsSize)
   float period = 0.3;
   float dt = 0.01;
 
-  feet_trajectory::Params params{0, period, dt};
+  feet_trajectory::Params params{0, period, dt, 0, 0};
 
   walk_interfaces::msg::Step step =
     feet_trajectory::generate(
