@@ -124,7 +124,7 @@ void Walk::generateCommand()
   if (!step_state_copy->done()) {
     RCLCPP_DEBUG(get_logger(), "sending sole poses");
     pub_sole_poses_->publish(
-      sole_pose::generate(*sole_pose_params_, step_state_copy->next(), filtered_gyro_y_));
+      sole_pose::generate(*sole_pose_params_, step_state_copy->next(), phase_, filtered_gyro_y_));
   }
 
   pub_current_twist_->publish(*curr_twist_);
@@ -150,14 +150,14 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 {
   RCLCPP_DEBUG(get_logger(), "notifyPhase called");
 
-  if (phase_ && phase.phase == phase_->phase) {
+  if (phase.phase == phase_.phase) {
     RCLCPP_DEBUG(get_logger(), "Notified of a phase, but no change has taken place. Ignoring.");
     return;
   }
 
   RCLCPP_DEBUG(get_logger(), "Calculating new step!");
 
-  phase_ = std::make_unique<biped_interfaces::msg::Phase>(phase);
+  phase_ = phase;
 
   curr_twist_ =
     std::make_unique<geometry_msgs::msg::Twist>(

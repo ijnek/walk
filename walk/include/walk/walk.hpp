@@ -84,7 +84,7 @@ private:
   std::unique_ptr<feet_trajectory::Params> feet_trajectory_params_;
 
   // State variables
-  std::unique_ptr<biped_interfaces::msg::Phase> phase_;
+  biped_interfaces::msg::Phase phase_;
   std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftp_current_;
   std::unique_ptr<geometry_msgs::msg::Twist> curr_twist_;
   float filtered_gyro_y_ = 0.0;
