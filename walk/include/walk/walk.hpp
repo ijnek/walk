@@ -23,13 +23,13 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
+#include "sensor_msgs/msg/imu.hpp"
 #include "std_msgs/msg/bool.hpp"
 #include "walk_interfaces/action/crouch.hpp"
 #include "walk_interfaces/action/stand.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
 #include "walk_interfaces/msg/gait.hpp"
 #include "walk_interfaces/msg/step.hpp"
-#include "nao_sensor_msgs/msg/gyroscope.hpp"
 
 namespace twist_limiter {class Params;}
 namespace twist_change_limiter {class Params;}
@@ -58,7 +58,7 @@ private:
   // Subscriptions
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_target_;
   rclcpp::Subscription<biped_interfaces::msg::Phase>::SharedPtr sub_phase_;
-  rclcpp::Subscription<nao_sensor_msgs::msg::Gyroscope>::SharedPtr sub_gyroscope_;
+  rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr sub_imu_;
 
   // Publishers
   rclcpp::Publisher<biped_interfaces::msg::SolePoses>::SharedPtr pub_sole_poses_;
@@ -71,7 +71,7 @@ private:
 
   void walk(const geometry_msgs::msg::Twist & commanded_twist);
   void notifyPhase(const biped_interfaces::msg::Phase & phase);
-  void gyroscope(const nao_sensor_msgs::msg::Gyroscope & gyroscope);
+  void imuCallback(const sensor_msgs::msg::Imu & imu);
   void generateCommand();
   void phaseCallback(const biped_interfaces::msg::Phase::SharedPtr msg);
   void targetCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
@@ -87,7 +87,7 @@ private:
   std::unique_ptr<biped_interfaces::msg::Phase> phase_;
   std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftp_current_;
   std::unique_ptr<geometry_msgs::msg::Twist> curr_twist_;
-  std::unique_ptr<nao_sensor_msgs::msg::Gyroscope> gyroscope_;
+  sensor_msgs::msg::Imu imu_;
 
   // Following members must be stored and loaded in a thread-safe manner
   std::shared_ptr<geometry_msgs::msg::Twist> target_twist_;

@@ -95,8 +95,8 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   sub_target_ = create_subscription<geometry_msgs::msg::Twist>(
     "target", 10, std::bind(&Walk::walk, this, std::placeholders::_1));
 
-  sub_gyroscope_ = create_subscription<nao_sensor_msgs::msg::Gyroscope>(
-    "sensors/gyroscope", 10, std::bind(&Walk::gyroscope, this, std::placeholders::_1));
+  sub_imu_ = create_subscription<sensor_msgs::msg::Imu>(
+    "imu", 10, std::bind(&Walk::imuCallback, this, std::placeholders::_1));
 
   pub_sole_poses_ = create_publisher<biped_interfaces::msg::SolePoses>("motion/sole_poses", 1);
   pub_current_twist_ = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
@@ -123,7 +123,7 @@ void Walk::generateCommand()
 
   if (!step_state_copy->done()) {
     RCLCPP_DEBUG(get_logger(), "sending sole poses");
-    pub_sole_poses_->publish(sole_pose::generate(*sole_pose_params_, step_state_copy->next(), *gyroscope_));
+    pub_sole_poses_->publish(sole_pose::generate(*sole_pose_params_, step_state_copy->next(), imu_));
   }
 
   pub_current_twist_->publish(*curr_twist_);
@@ -188,9 +188,9 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
   std::atomic_store(&step_state_, step_state);
 }
 
-void Walk::gyroscope(const nao_sensor_msgs::msg::Gyroscope & gyroscope)
+void Walk::imuCallback(const sensor_msgs::msg::Imu & imu)
 {
-  gyroscope_ = std::make_unique<nao_sensor_msgs::msg::Gyroscope>(gyroscope);
+  imu_ = imu;
 }
 
 }  // namespace walk

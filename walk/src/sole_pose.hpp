@@ -16,8 +16,8 @@
 #define SOLE_POSE_HPP_
 
 #include "biped_interfaces/msg/sole_poses.hpp"
+#include "sensor_msgs/msg/imu.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
-#include "nao_sensor_msgs/msg/gyroscope.hpp"
 
 namespace sole_pose
 {
@@ -26,7 +26,7 @@ class Params;
 biped_interfaces::msg::SolePoses generate(
   const sole_pose::Params & p,
   const walk_interfaces::msg::FeetTrajectoryPoint & ftp,
-  const nao_sensor_msgs::msg::Gyroscope & gyroscope);
+  const sensor_msgs::msg::Imu & imu);
 
 class Params
 {
