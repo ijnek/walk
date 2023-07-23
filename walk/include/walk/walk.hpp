@@ -87,7 +87,7 @@ private:
   std::unique_ptr<biped_interfaces::msg::Phase> phase_;
   std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftp_current_;
   std::unique_ptr<geometry_msgs::msg::Twist> curr_twist_;
-  sensor_msgs::msg::Imu imu_;
+  float filtered_gyro_y_ = 0.0;
 
   // Following members must be stored and loaded in a thread-safe manner
   std::shared_ptr<geometry_msgs::msg::Twist> target_twist_;

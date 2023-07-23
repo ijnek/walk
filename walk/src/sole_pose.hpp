@@ -26,7 +26,7 @@ class Params;
 biped_interfaces::msg::SolePoses generate(
   const sole_pose::Params & p,
   const walk_interfaces::msg::FeetTrajectoryPoint & ftp,
-  const sensor_msgs::msg::Imu & imu);
+  float filtered_gyro_y);
 
 class Params
 {

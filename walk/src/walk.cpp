@@ -51,7 +51,7 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   float foot_lift_amp = declare_parameter("foot_lift_amp", 0.012);  // how much to raise foot when it is highest (m)  // NOLINT
   float period = declare_parameter("period", 0.25);  // time taken for one step, (s)
   float dt = declare_parameter("dt", 0.01);  // time taken between each generateCommand call (s)  // NOLINT
-  float sole_x = declare_parameter("sole_x", -0.01);  // x coordinate of sole from hip when standing (m)  // NOLINT
+  float sole_x = declare_parameter("sole_x", -0.022);  // x coordinate of sole from hip when standing (m)  // NOLINT
   float sole_y = declare_parameter("sole_y", 0.05);  // y coordinate of sole from hip when standing (m)  // NOLINT
   float sole_z = declare_parameter("sole_z", -0.315);  // z coordinate of sole from hip when standing (m)  // NOLINT
   float max_forward_change = declare_parameter("max_forward_change", 0.06);  // how much forward can change in one step (m/s)  // NOLINT
@@ -123,7 +123,7 @@ void Walk::generateCommand()
 
   if (!step_state_copy->done()) {
     RCLCPP_DEBUG(get_logger(), "sending sole poses");
-    pub_sole_poses_->publish(sole_pose::generate(*sole_pose_params_, step_state_copy->next(), imu_));
+    pub_sole_poses_->publish(sole_pose::generate(*sole_pose_params_, step_state_copy->next(), filtered_gyro_y_));
   }
 
   pub_current_twist_->publish(*curr_twist_);
@@ -190,7 +190,7 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 
 void Walk::imuCallback(const sensor_msgs::msg::Imu & imu)
 {
-  imu_ = imu;
+  filtered_gyro_y_ = 0.8 * filtered_gyro_y_ + 0.2 * imu.angular_velocity.y;
 }
 
 }  // namespace walk

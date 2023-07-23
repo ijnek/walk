@@ -26,23 +26,25 @@ geometry_msgs::msg::Quaternion rpy_to_geometry_quat(double roll, double pitch, d
 biped_interfaces::msg::SolePoses generate(
   const sole_pose::Params & p,
   const walk_interfaces::msg::FeetTrajectoryPoint & ftp,
-  const sensor_msgs::msg::Imu & imu)
+  float filtered_gyro_y)
 {
   auto logger = rclcpp::get_logger("sole_pose::generate");
+
+  float balance_adjustment_y = filtered_gyro_y * 0.07;
 
   // Evaluate position and angle of both feet
   float l_sole_pos_x = ftp.forward_l + p.sole_x_;
   float l_sole_pos_y = ftp.left_l + p.sole_y_;
   float l_sole_pos_z = ftp.footh_l + p.sole_z_;
   float l_sole_ang_x = 0;
-  float l_sole_ang_y = imu.angular_velocity.y / 25;
+  float l_sole_ang_y = balance_adjustment_y;
   float l_sole_ang_z = ftp.heading_l;
 
   float r_sole_pos_x = ftp.forward_r + p.sole_x_;
   float r_sole_pos_y = ftp.left_r - p.sole_y_;
   float r_sole_pos_z = ftp.footh_r + p.sole_z_;
   float r_sole_ang_x = 0;
-  float r_sole_ang_y = imu.angular_velocity.y / 25;
+  float r_sole_ang_y = balance_adjustment_y;
   float r_sole_ang_z = ftp.heading_r;
 
   RCLCPP_DEBUG(logger, "Sending IKCommand with:");
