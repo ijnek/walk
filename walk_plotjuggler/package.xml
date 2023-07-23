@@ -4,8 +4,8 @@
   <name>walk_plotjuggler</name>
   <version>0.0.0</version>
   <description>Package containing plot juggler configuration for debugging the walk</description>
-  <maintainer email="kenjibrameld@gmail.com">vscode</maintainer>
-  <license>TODO: License declaration</license>
+  <maintainer email="kenjibrameld@gmail.com">ijnek</maintainer>
+  <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
