@@ -15,6 +15,7 @@
 #include <vector>
 #include "feet_trajectory.hpp"
 #include "maths_functions.hpp"
+#include "rclcpp/rclcpp.hpp"
 
 namespace feet_trajectory
 {

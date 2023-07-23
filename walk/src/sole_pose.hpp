@@ -15,7 +15,9 @@
 #ifndef SOLE_POSE_HPP_
 #define SOLE_POSE_HPP_
 
+#include "biped_interfaces/msg/phase.hpp"
 #include "biped_interfaces/msg/sole_poses.hpp"
+#include "sensor_msgs/msg/imu.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
 
 namespace sole_pose
@@ -24,7 +26,9 @@ class Params;
 
 biped_interfaces::msg::SolePoses generate(
   const sole_pose::Params & p,
-  const walk_interfaces::msg::FeetTrajectoryPoint & ftp);
+  const walk_interfaces::msg::FeetTrajectoryPoint & ftp,
+  const biped_interfaces::msg::Phase & phase,
+  float filtered_gyro_y);
 
 class Params
 {

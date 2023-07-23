@@ -51,7 +51,7 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   float foot_lift_amp = declare_parameter("foot_lift_amp", 0.012);  // how much to raise foot when it is highest (m)  // NOLINT
   float period = declare_parameter("period", 0.25);  // time taken for one step, (s)
   float dt = declare_parameter("dt", 0.01);  // time taken between each generateCommand call (s)  // NOLINT
-  float sole_x = declare_parameter("sole_x", -0.01);  // x coordinate of sole from hip when standing (m)  // NOLINT
+  float sole_x = declare_parameter("sole_x", -0.022);  // x coordinate of sole from hip when standing (m)  // NOLINT
   float sole_y = declare_parameter("sole_y", 0.05);  // y coordinate of sole from hip when standing (m)  // NOLINT
   float sole_z = declare_parameter("sole_z", -0.315);  // z coordinate of sole from hip when standing (m)  // NOLINT
   float max_forward_change = declare_parameter("max_forward_change", 0.06);  // how much forward can change in one step (m/s)  // NOLINT
@@ -95,6 +95,9 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   sub_target_ = create_subscription<geometry_msgs::msg::Twist>(
     "target", 10, std::bind(&Walk::walk, this, std::placeholders::_1));
 
+  sub_imu_ = create_subscription<sensor_msgs::msg::Imu>(
+    "imu", 10, std::bind(&Walk::imuCallback, this, std::placeholders::_1));
+
   pub_sole_poses_ = create_publisher<biped_interfaces::msg::SolePoses>("motion/sole_poses", 1);
   pub_current_twist_ = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
   pub_ready_to_step_ = create_publisher<std_msgs::msg::Bool>("walk/ready_to_step", 1);
@@ -120,7 +123,8 @@ void Walk::generateCommand()
 
   if (!step_state_copy->done()) {
     RCLCPP_DEBUG(get_logger(), "sending sole poses");
-    pub_sole_poses_->publish(sole_pose::generate(*sole_pose_params_, step_state_copy->next()));
+    pub_sole_poses_->publish(
+      sole_pose::generate(*sole_pose_params_, step_state_copy->next(), phase_, filtered_gyro_y_));
   }
 
   pub_current_twist_->publish(*curr_twist_);
@@ -146,14 +150,14 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 {
   RCLCPP_DEBUG(get_logger(), "notifyPhase called");
 
-  if (phase_ && phase.phase == phase_->phase) {
+  if (phase.phase == phase_.phase) {
     RCLCPP_DEBUG(get_logger(), "Notified of a phase, but no change has taken place. Ignoring.");
     return;
   }
 
   RCLCPP_DEBUG(get_logger(), "Calculating new step!");
 
-  phase_ = std::make_unique<biped_interfaces::msg::Phase>(phase);
+  phase_ = phase;
 
   curr_twist_ =
     std::make_unique<geometry_msgs::msg::Twist>(
@@ -183,6 +187,11 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 
   std::atomic_store(&step_, step);
   std::atomic_store(&step_state_, step_state);
+}
+
+void Walk::imuCallback(const sensor_msgs::msg::Imu & imu)
+{
+  filtered_gyro_y_ = 0.8 * filtered_gyro_y_ + 0.2 * imu.angular_velocity.y;
 }
 
 }  // namespace walk

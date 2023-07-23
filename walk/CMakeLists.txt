@@ -12,6 +12,7 @@ find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(walk_interfaces REQUIRED)
 find_package(biped_interfaces REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(tf2 REQUIRED)
@@ -23,6 +24,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   rclcpp_components
   walk_interfaces
   biped_interfaces
+  sensor_msgs
   std_srvs
   std_msgs
   tf2
