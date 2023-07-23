@@ -123,7 +123,8 @@ void Walk::generateCommand()
 
   if (!step_state_copy->done()) {
     RCLCPP_DEBUG(get_logger(), "sending sole poses");
-    pub_sole_poses_->publish(sole_pose::generate(*sole_pose_params_, step_state_copy->next(), filtered_gyro_y_));
+    pub_sole_poses_->publish(
+      sole_pose::generate(*sole_pose_params_, step_state_copy->next(), filtered_gyro_y_));
   }
 
   pub_current_twist_->publish(*curr_twist_);
