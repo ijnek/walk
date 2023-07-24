@@ -39,10 +39,7 @@ namespace walk
 {
 
 Walk::Walk(const rclcpp::NodeOptions & options)
-: Node("Walk", options),
-  ftp_current_(std::make_unique<walk_interfaces::msg::FeetTrajectoryPoint>()),
-  curr_twist_(std::make_unique<geometry_msgs::msg::Twist>()),
-  target_twist_(std::make_shared<geometry_msgs::msg::Twist>())
+: Node("Walk", options)
 {
   float max_forward = declare_parameter("max_forward", 0.3);  // max forward velocity (m/s)
   float max_left = declare_parameter("max_left", 0.2);  // max side velocity (m/s)
@@ -119,18 +116,16 @@ void Walk::generateCommand()
     return;
   }
 
-  std::shared_ptr<StepState> step_state_copy = std::atomic_load(&step_state_);
-
-  if (!step_state_copy->done()) {
+  if (!step_state_->done()) {
     RCLCPP_DEBUG(get_logger(), "sending sole poses");
     pub_sole_poses_->publish(
-      sole_pose::generate(*sole_pose_params_, step_state_copy->next(), phase_, filtered_gyro_y_));
+      sole_pose::generate(*sole_pose_params_, step_state_->next(), phase_, filtered_gyro_y_));
   }
 
-  pub_current_twist_->publish(*curr_twist_);
+  pub_current_twist_->publish(curr_twist_);
 
   std_msgs::msg::Bool ready_to_step;
-  ready_to_step.data = step_state_copy->done();
+  ready_to_step.data = step_state_->done();
   pub_ready_to_step_->publish(ready_to_step);
 }
 
@@ -141,9 +136,7 @@ void Walk::walk(const geometry_msgs::msg::Twist & commanded_twist)
     commanded_twist.linear.x, commanded_twist.linear.y, commanded_twist.linear.z,
     commanded_twist.angular.x, commanded_twist.angular.y, commanded_twist.angular.z);
 
-  auto limitedTwist = std::make_shared<geometry_msgs::msg::Twist>(
-    twist_limiter::limit(*twist_limiter_params_, commanded_twist));
-  std::atomic_store(&target_twist_, std::move(limitedTwist));
+  target_twist_ = twist_limiter::limit(*twist_limiter_params_, commanded_twist);
 }
 
 void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
@@ -159,34 +152,26 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 
   phase_ = phase;
 
-  curr_twist_ =
-    std::make_unique<geometry_msgs::msg::Twist>(
-    twist_change_limiter::limit(
-      *twist_change_limiter_params_,
-      *curr_twist_, *std::atomic_load(&target_twist_)));
+  curr_twist_ = twist_change_limiter::limit(
+    *twist_change_limiter_params_, curr_twist_, target_twist_);
 
-  auto gait = target_gait_calculator::calculate(*curr_twist_, *target_gait_calculator_params_);
+  auto gait = target_gait_calculator::calculate(curr_twist_, *target_gait_calculator_params_);
   pub_gait_->publish(gait);
 
-  std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftp_next =
-    std::make_unique<walk_interfaces::msg::FeetTrajectoryPoint>(
-    (phase.phase ==
-    phase.LEFT_STANCE) ? gait.left_stance_phase_aim : gait.right_stance_phase_aim);
+  auto ftp_next = walk_interfaces::msg::FeetTrajectoryPoint(
+    (phase.phase == phase.LEFT_STANCE) ? gait.left_stance_phase_aim : gait.right_stance_phase_aim);
 
   RCLCPP_DEBUG(
     get_logger(), "Using %s",
     (phase.phase == phase.LEFT_STANCE) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
-  std::shared_ptr<walk_interfaces::msg::Step> step = std::make_shared<walk_interfaces::msg::Step>(
-    feet_trajectory::generate(*feet_trajectory_params_, phase, *ftp_current_, *ftp_next));
-  pub_step_->publish(*step);
+  step_ = std::make_unique<walk_interfaces::msg::Step>(
+    feet_trajectory::generate(
+      *feet_trajectory_params_, phase, ftp_current_, ftp_next));
+  step_state_ = std::make_unique<StepState>(*step_);
+  pub_step_->publish(*step_);
 
   ftp_current_ = std::move(ftp_next);
-
-  auto step_state = std::make_shared<StepState>(*step);
-
-  std::atomic_store(&step_, step);
-  std::atomic_store(&step_state_, step_state);
 }
 
 void Walk::imuCallback(const sensor_msgs::msg::Imu & imu)

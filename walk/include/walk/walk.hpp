@@ -85,14 +85,13 @@ private:
 
   // State variables
   biped_interfaces::msg::Phase phase_;
-  std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftp_current_;
-  std::unique_ptr<geometry_msgs::msg::Twist> curr_twist_;
+  walk_interfaces::msg::FeetTrajectoryPoint ftp_current_;
+  geometry_msgs::msg::Twist curr_twist_;
   float filtered_gyro_y_ = 0.0;
 
-  // Following members must be stored and loaded in a thread-safe manner
-  std::shared_ptr<geometry_msgs::msg::Twist> target_twist_;
-  std::shared_ptr<walk_interfaces::msg::Step> step_;
-  std::shared_ptr<StepState> step_state_;
+  geometry_msgs::msg::Twist target_twist_;
+  std::unique_ptr<walk_interfaces::msg::Step> step_;
+  std::unique_ptr<StepState> step_state_;
 };
 
 }  // namespace walk
