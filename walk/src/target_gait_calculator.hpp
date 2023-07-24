@@ -29,7 +29,7 @@ walk_interfaces::msg::Gait calculate(
 class Params
 {
 public:
-  Params(double period)
+  explicit Params(double period)
   : period(period)
   {}
 

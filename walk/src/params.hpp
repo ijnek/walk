@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef PARAMS_HPP_
+#define PARAMS_HPP_
+
+#include <vector>
+
 #include "feet_trajectory.hpp"
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
 #include "sole_pose.hpp"
@@ -25,7 +30,7 @@ namespace walk
 class Params
 {
 public:
-  Params(rclcpp::Node & node);
+  explicit Params(rclcpp::Node & node);
 
   feet_trajectory::Params feet_trajectory_;
   sole_pose::Params sole_pose_;
@@ -44,3 +49,5 @@ private:
 };
 
 }  // namespace walk
+
+#endif  // PARAMS_HPP_

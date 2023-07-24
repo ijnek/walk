@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <vector>
 #include "params.hpp"
 
 namespace walk
@@ -76,7 +77,7 @@ rcl_interfaces::msg::SetParametersResult Params::parametersCallback(
   rcl_interfaces::msg::SetParametersResult result;
   result.successful = true;
   result.reason = "success";
-  for (const auto & param: parameters) {
+  for (const auto & param : parameters) {
     RCLCPP_DEBUG_STREAM(
       logger,
       "- " << param.get_name() << " (" << param.get_type_name() << ")" << " = " <<
