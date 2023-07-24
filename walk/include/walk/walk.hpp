@@ -31,11 +31,7 @@
 #include "walk_interfaces/msg/gait.hpp"
 #include "walk_interfaces/msg/step.hpp"
 
-namespace twist_limiter {class Params;}
-namespace twist_change_limiter {class Params;}
-namespace sole_pose {class Params;}
-namespace target_gait_calculator {class Params;}
-namespace feet_trajectory {class Params;}
+namespace walk {class Params;}
 class Step;
 class StepState;
 
@@ -77,11 +73,7 @@ private:
   void targetCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
 
   // Parameters
-  std::unique_ptr<twist_limiter::Params> twist_limiter_params_;
-  std::unique_ptr<twist_change_limiter::Params> twist_change_limiter_params_;
-  std::unique_ptr<sole_pose::Params> sole_pose_params_;
-  std::unique_ptr<target_gait_calculator::Params> target_gait_calculator_params_;
-  std::unique_ptr<feet_trajectory::Params> feet_trajectory_params_;
+  std::unique_ptr<Params> params_;
 
   // State variables
   biped_interfaces::msg::Phase phase_;

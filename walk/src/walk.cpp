@@ -24,6 +24,7 @@
 
 #include <memory>
 #include <utility>
+
 #include "walk/walk.hpp"
 #include "twist_limiter.hpp"
 #include "twist_change_limiter.hpp"
@@ -34,6 +35,7 @@
 #include "target_gait_calculator.hpp"
 #include "sole_pose.hpp"
 #include "feet_trajectory.hpp"
+#include "params.hpp"
 
 namespace walk
 {
@@ -41,50 +43,11 @@ namespace walk
 Walk::Walk(const rclcpp::NodeOptions & options)
 : Node("Walk", options)
 {
-  float max_forward = declare_parameter("max_forward", 0.3);  // max forward velocity (m/s)
-  float max_left = declare_parameter("max_left", 0.2);  // max side velocity (m/s)
-  float max_turn = declare_parameter("max_turn", 2.0);  // max turn velocity (rad/s)
-  float speed_multiplier = declare_parameter("speed_multiplier", 1.0);  // how much to multiple speed by (0.0 - 1.0)  // NOLINT
-  float foot_lift_amp = declare_parameter("foot_lift_amp", 0.012);  // how much to raise foot when it is highest (m)  // NOLINT
-  float period = declare_parameter("period", 0.25);  // time taken for one step, (s)
-  float dt = declare_parameter("dt", 0.01);  // time taken between each generateCommand call (s)  // NOLINT
-  float sole_x = declare_parameter("sole_x", -0.022);  // x coordinate of sole from hip when standing (m)  // NOLINT
-  float sole_y = declare_parameter("sole_y", 0.05);  // y coordinate of sole from hip when standing (m)  // NOLINT
-  float sole_z = declare_parameter("sole_z", -0.315);  // z coordinate of sole from hip when standing (m)  // NOLINT
-  float max_forward_change = declare_parameter("max_forward_change", 0.06);  // how much forward can change in one step (m/s)  // NOLINT
-  float max_left_change = declare_parameter("max_left_change", 0.1);  // how much left can change in one step (m/s)  // NOLINT
-  float max_turn_change = declare_parameter("max_turn_change", 1.0);  // how much turn can change in one step (rad/s)  // NOLINT
-  float footh_forward_multiplier = declare_parameter("footh_forward_multiplier", 0.1);  // how much extra height to add to the swing foot, as a multiplier of the magnitude of the step in the forward/backward direction.  // NOLINT
-  float footh_left_multiplier = declare_parameter("footh_left_multiplier", 0.3);  // how much extra height to add to the swing foot, as a multiplier of the magnitude of the step in the left/right direction.  // NOLINT
-
-  RCLCPP_DEBUG(get_logger(), "Parameters: ");
-  RCLCPP_DEBUG(get_logger(), "  max_forward : %f", max_forward);
-  RCLCPP_DEBUG(get_logger(), "  max_left : %f", max_left);
-  RCLCPP_DEBUG(get_logger(), "  max_turn : %f", max_turn);
-  RCLCPP_DEBUG(get_logger(), "  speed_multiplier : %f", speed_multiplier);
-  RCLCPP_DEBUG(get_logger(), "  foot_lift_amp : %f", foot_lift_amp);
-  RCLCPP_DEBUG(get_logger(), "  period : %f", period);
-  RCLCPP_DEBUG(get_logger(), "  dt : %f", dt);
-  RCLCPP_DEBUG(get_logger(), "  sole_x : %f", sole_x);
-  RCLCPP_DEBUG(get_logger(), "  sole_y : %f", sole_y);
-  RCLCPP_DEBUG(get_logger(), "  sole_z : %f", sole_z);
-  RCLCPP_DEBUG(get_logger(), "  max_forward_change : %f", max_forward_change);
-  RCLCPP_DEBUG(get_logger(), "  max_left_change : %f", max_left_change);
-  RCLCPP_DEBUG(get_logger(), "  max_turn_change : %f", max_turn_change);
-  RCLCPP_DEBUG(get_logger(), "  footh_forward_multiplier : %f", footh_forward_multiplier);
-  RCLCPP_DEBUG(get_logger(), "  footh_left_multiplier : %f", footh_left_multiplier);
-
-  sole_pose_params_ = std::make_unique<sole_pose::Params>(sole_x, sole_y, sole_z);
-  twist_limiter_params_ = std::make_unique<twist_limiter::Params>(
-    max_forward, max_left, max_turn, speed_multiplier);
-  twist_change_limiter_params_ = std::make_unique<twist_change_limiter::Params>(
-    max_forward_change, max_left_change, max_turn_change);
-  target_gait_calculator_params_ = std::make_unique<target_gait_calculator::Params>(period);
-  feet_trajectory_params_ = std::make_unique<feet_trajectory::Params>(
-    foot_lift_amp, period, dt, footh_forward_multiplier, footh_left_multiplier);
+  params_ = std::make_unique<Params>(*this);
 
   generate_command_timer_ = create_wall_timer(
-    std::chrono::duration<float>(dt), std::bind(&Walk::generateCommand, this));
+    std::chrono::duration<float>(params_->feet_trajectory_.dt_),
+    std::bind(&Walk::generateCommand, this));
 
   sub_phase_ = create_subscription<biped_interfaces::msg::Phase>(
     "phase", 10, std::bind(&Walk::notifyPhase, this, std::placeholders::_1));
@@ -119,7 +82,7 @@ void Walk::generateCommand()
   if (!step_state_->done()) {
     RCLCPP_DEBUG(get_logger(), "sending sole poses");
     pub_sole_poses_->publish(
-      sole_pose::generate(*sole_pose_params_, step_state_->next(), phase_, filtered_gyro_y_));
+      sole_pose::generate(params_->sole_pose_, step_state_->next(), phase_, filtered_gyro_y_));
   }
 
   pub_current_twist_->publish(curr_twist_);
@@ -136,7 +99,7 @@ void Walk::walk(const geometry_msgs::msg::Twist & commanded_twist)
     commanded_twist.linear.x, commanded_twist.linear.y, commanded_twist.linear.z,
     commanded_twist.angular.x, commanded_twist.angular.y, commanded_twist.angular.z);
 
-  target_twist_ = twist_limiter::limit(*twist_limiter_params_, commanded_twist);
+  target_twist_ = twist_limiter::limit(params_->twist_limiter_, commanded_twist);
 }
 
 void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
@@ -153,9 +116,9 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
   phase_ = phase;
 
   curr_twist_ = twist_change_limiter::limit(
-    *twist_change_limiter_params_, curr_twist_, target_twist_);
+    params_->twist_change_limiter_, curr_twist_, target_twist_);
 
-  auto gait = target_gait_calculator::calculate(curr_twist_, *target_gait_calculator_params_);
+  auto gait = target_gait_calculator::calculate(curr_twist_, params_->target_gait_calculator_);
   pub_gait_->publish(gait);
 
   auto ftp_next = walk_interfaces::msg::FeetTrajectoryPoint(
@@ -167,7 +130,7 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 
   step_ = std::make_unique<walk_interfaces::msg::Step>(
     feet_trajectory::generate(
-      *feet_trajectory_params_, phase, ftp_current_, ftp_next));
+      params_->feet_trajectory_, phase, ftp_current_, ftp_next));
   step_state_ = std::make_unique<StepState>(*step_);
   pub_step_->publish(*step_);
 

@@ -39,7 +39,8 @@ add_library(${PROJECT_NAME}_node SHARED
   src/feet_trajectory.cpp
   src/step_state.cpp
   src/target_gait_calculator.cpp
-  src/sole_pose.cpp)
+  src/sole_pose.cpp
+  src/params.cpp)
 
 target_include_directories(${PROJECT_NAME}_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
