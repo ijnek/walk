@@ -29,7 +29,7 @@ geometry_msgs::msg::Twist limit(
 class Params
 {
 public:
-  Params(float max_forward, float max_left, float max_turn, float speed_multiplier)
+  Params(double max_forward, double max_left, double max_turn, double speed_multiplier)
   : max_forward_(max_forward),
     max_left_(max_left),
     max_turn_(max_turn),
@@ -37,10 +37,12 @@ public:
   {
   }
 
-  float max_forward_;        // max forward velocity (m/s)
-  float max_left_;           // max side velocity (m/s)
-  float max_turn_;           // max turn velocity (rad/s)
-  float speed_multiplier_;   // how much to multiple speed by (0.0 - 1.0)
+  Params() {}
+
+  double max_forward_;        // max forward velocity (m/s)
+  double max_left_;           // max side velocity (m/s)
+  double max_turn_;           // max turn velocity (rad/s)
+  double speed_multiplier_;   // how much to multiple speed by (0.0 - 1.0)
 };
 }   // namespace twist_limiter
 

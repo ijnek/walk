@@ -31,11 +31,7 @@
 #include "walk_interfaces/msg/gait.hpp"
 #include "walk_interfaces/msg/step.hpp"
 
-namespace twist_limiter {class Params;}
-namespace twist_change_limiter {class Params;}
-namespace sole_pose {class Params;}
-namespace target_gait_calculator {class Params;}
-namespace feet_trajectory {class Params;}
+namespace walk {class Params;}
 class Step;
 class StepState;
 
@@ -77,22 +73,17 @@ private:
   void targetCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
 
   // Parameters
-  std::unique_ptr<twist_limiter::Params> twist_limiter_params_;
-  std::unique_ptr<twist_change_limiter::Params> twist_change_limiter_params_;
-  std::unique_ptr<sole_pose::Params> sole_pose_params_;
-  std::unique_ptr<target_gait_calculator::Params> target_gait_calculator_params_;
-  std::unique_ptr<feet_trajectory::Params> feet_trajectory_params_;
+  std::unique_ptr<Params> params_;
 
   // State variables
   biped_interfaces::msg::Phase phase_;
-  std::unique_ptr<walk_interfaces::msg::FeetTrajectoryPoint> ftp_current_;
-  std::unique_ptr<geometry_msgs::msg::Twist> curr_twist_;
+  walk_interfaces::msg::FeetTrajectoryPoint ftp_current_;
+  geometry_msgs::msg::Twist curr_twist_;
   float filtered_gyro_y_ = 0.0;
 
-  // Following members must be stored and loaded in a thread-safe manner
-  std::shared_ptr<geometry_msgs::msg::Twist> target_twist_;
-  std::shared_ptr<walk_interfaces::msg::Step> step_;
-  std::shared_ptr<StepState> step_state_;
+  geometry_msgs::msg::Twist target_twist_;
+  std::unique_ptr<walk_interfaces::msg::Step> step_;
+  std::unique_ptr<StepState> step_state_;
 };
 
 }  // namespace walk

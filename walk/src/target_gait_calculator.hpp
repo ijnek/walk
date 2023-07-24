@@ -29,11 +29,13 @@ walk_interfaces::msg::Gait calculate(
 class Params
 {
 public:
-  explicit Params(float period)
+  explicit Params(double period)
   : period(period)
   {}
 
-  float period;
+  Params() {}
+
+  double period;
 };
 }  // namespace target_gait_calculator
 
