@@ -41,7 +41,7 @@ namespace walk
 {
 
 Walk::Walk(const rclcpp::NodeOptions & options)
-: Node("Walk", options)
+: rclcpp_lifecycle::LifecycleNode("Walk", options)
 {
   params_ = std::make_unique<Params>(*this);
 
@@ -57,6 +57,14 @@ Walk::Walk(const rclcpp::NodeOptions & options)
 
   sub_imu_ = create_subscription<sensor_msgs::msg::Imu>(
     "imu", 10, std::bind(&Walk::imuCallback, this, std::placeholders::_1));
+
+  // sub_abort_ = create_subscription<std_msgs::msg::Bool>(
+  //   "abort", 10, [this](const std_msgs::msg::Bool::SharedPtr msg) {
+  //     if (msg->data) {
+  //       RCLCPP_INFO(get_logger(), "Aborting walk!");
+  //       step_state_->abort();
+  //     }
+  //   });
 
   pub_sole_poses_ = create_publisher<biped_interfaces::msg::SolePoses>("motion/sole_poses", 1);
   pub_current_twist_ = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
