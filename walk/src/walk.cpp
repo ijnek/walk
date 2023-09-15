@@ -151,7 +151,7 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 
 void Walk::imuCallback(const sensor_msgs::msg::Imu & imu)
 {
-  filtered_gyro_y_ = 0.8 * filtered_gyro_y_ + 0.2 * imu.angular_velocity.y;
+  filtered_gyro_y_ = imu.angular_velocity.y;
 }
 
 rclcpp_action::GoalResponse Walk::handleGoalWalk(
