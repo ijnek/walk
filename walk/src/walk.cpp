@@ -158,7 +158,7 @@ rclcpp_action::GoalResponse Walk::handleGoalWalk(
   const rclcpp_action::GoalUUID & uuid,
   std::shared_ptr<const walk_interfaces::action::Walk::Goal> goal)
 {
-  RCLCPP_INFO(get_logger(), "Received goal request");
+  // RCLCPP_INFO(get_logger(), "Received goal request");
   (void)uuid;
   (void)goal;
   active_ = true;
@@ -167,7 +167,7 @@ rclcpp_action::GoalResponse Walk::handleGoalWalk(
 rclcpp_action::CancelResponse Walk::handleCancelWalk(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<walk_interfaces::action::Walk>> goal_handle)
 {
-  RCLCPP_INFO(get_logger(), "Received request to cancel goal");
+  // RCLCPP_INFO(get_logger(), "Received request to cancel goal");
   (void)goal_handle;
   active_ = false;
   goal_handle_.reset();
