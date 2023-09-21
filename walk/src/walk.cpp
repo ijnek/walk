@@ -78,7 +78,7 @@ Walk::~Walk() {}
 
 void Walk::generateCommand()
 {
-  RCLCPP_DEBUG(get_logger(), "generateCommand()");
+  // RCLCPP_DEBUG(get_logger(), "generateCommand()");
 
   if (!active_)
     return;
@@ -105,7 +105,6 @@ void Walk::generateCommand()
 
 void Walk::walk(const geometry_msgs::msg::Twist & commanded_twist)
 {
-  active_ = true;
   RCLCPP_DEBUG(
     get_logger(), "walk() called with commanded_twist:  %.3f, %.3f, %.3f, %.3f, %.3f, %.3f",
     commanded_twist.linear.x, commanded_twist.linear.y, commanded_twist.linear.z,
