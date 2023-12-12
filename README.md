@@ -31,7 +31,7 @@ ros2 run rcss3d_nao rcss3d_nao
 
 Start inverse kinematics of robot:
 ```
-ros2 run nao_ik ik_node
+ros2 run nao_ik nao_ik
 ```
 
 Start the phase provider:
