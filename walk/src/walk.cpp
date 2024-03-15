@@ -25,6 +25,7 @@
 #include <memory>
 #include <utility>
 
+#include "rclcpp_action/rclcpp_action.hpp"
 #include "walk/walk.hpp"
 #include "twist_limiter.hpp"
 #include "twist_change_limiter.hpp"
@@ -62,6 +63,13 @@ Walk::Walk(const rclcpp::NodeOptions & options)
   pub_current_twist_ = create_publisher<geometry_msgs::msg::Twist>("walk/current_twist", 1);
   pub_ready_to_step_ = create_publisher<std_msgs::msg::Bool>("walk/ready_to_step", 1);
 
+  action_server_walk_ = rclcpp_action::create_server<walk_interfaces::action::Walk>(
+    this,
+    "walk",
+    std::bind(&Walk::handleGoalWalk, this, std::placeholders::_1, std::placeholders::_2),
+    std::bind(&Walk::handleCancelWalk, this, std::placeholders::_1),
+    std::bind(&Walk::handleAcceptedWalk, this, std::placeholders::_1));
+
   pub_gait_ = create_publisher<walk_interfaces::msg::Gait>("walk/gait", 1);
   pub_step_ = create_publisher<walk_interfaces::msg::Step>("walk/step", 1);
 }
@@ -70,7 +78,10 @@ Walk::~Walk() {}
 
 void Walk::generateCommand()
 {
-  RCLCPP_DEBUG(get_logger(), "generateCommand()");
+  // RCLCPP_DEBUG(get_logger(), "generateCommand()");
+
+  if (!active_)
+    return;
 
   if (!step_) {
     RCLCPP_INFO_THROTTLE(
@@ -139,8 +150,35 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
 
 void Walk::imuCallback(const sensor_msgs::msg::Imu & imu)
 {
-  filtered_gyro_y_ = 0.8 * filtered_gyro_y_ + 0.2 * imu.angular_velocity.y;
+  filtered_gyro_y_ = imu.angular_velocity.y;
 }
+
+rclcpp_action::GoalResponse Walk::handleGoalWalk(
+  const rclcpp_action::GoalUUID & uuid,
+  std::shared_ptr<const walk_interfaces::action::Walk::Goal> goal)
+{
+  // RCLCPP_INFO(get_logger(), "Received goal request");
+  (void)uuid;
+  (void)goal;
+  active_ = true;
+  return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+}
+rclcpp_action::CancelResponse Walk::handleCancelWalk(
+  const std::shared_ptr<rclcpp_action::ServerGoalHandle<walk_interfaces::action::Walk>> goal_handle)
+{
+  // RCLCPP_INFO(get_logger(), "Received request to cancel goal");
+  (void)goal_handle;
+  active_ = false;
+  goal_handle_.reset();
+  return rclcpp_action::CancelResponse::ACCEPT;
+}
+void Walk::handleAcceptedWalk(
+  const std::shared_ptr<rclcpp_action::ServerGoalHandle<walk_interfaces::action::Walk>> goal_handle)
+{
+  target_twist_ = twist_limiter::limit(params_->twist_limiter_, goal_handle->get_goal()->twist);
+  goal_handle_ = goal_handle;
+}
+
 
 }  // namespace walk
 

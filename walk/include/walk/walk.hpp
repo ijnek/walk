@@ -27,6 +27,7 @@
 #include "std_msgs/msg/bool.hpp"
 #include "walk_interfaces/action/crouch.hpp"
 #include "walk_interfaces/action/stand.hpp"
+#include "walk_interfaces/action/walk.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
 #include "walk_interfaces/msg/gait.hpp"
 #include "walk_interfaces/msg/step.hpp"
@@ -61,6 +62,9 @@ private:
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_current_twist_;
   rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_ready_to_step_;
 
+  // Action Servers
+  rclcpp_action::Server<walk_interfaces::action::Walk>::SharedPtr action_server_walk_;
+
   // Debug publishers
   rclcpp::Publisher<walk_interfaces::msg::Gait>::SharedPtr pub_gait_;
   rclcpp::Publisher<walk_interfaces::msg::Step>::SharedPtr pub_step_;
@@ -71,6 +75,13 @@ private:
   void generateCommand();
   void phaseCallback(const biped_interfaces::msg::Phase::SharedPtr msg);
   void targetCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
+  rclcpp_action::GoalResponse handleGoalWalk(
+    const rclcpp_action::GoalUUID & uuid,
+    std::shared_ptr<const walk_interfaces::action::Walk::Goal> goal);
+  rclcpp_action::CancelResponse handleCancelWalk(
+    const std::shared_ptr<rclcpp_action::ServerGoalHandle<walk_interfaces::action::Walk>> goal_handle);
+  void handleAcceptedWalk(
+    const std::shared_ptr<rclcpp_action::ServerGoalHandle<walk_interfaces::action::Walk>> goal_handle);
 
   // Parameters
   std::unique_ptr<Params> params_;
@@ -84,6 +95,9 @@ private:
   geometry_msgs::msg::Twist target_twist_;
   std::unique_ptr<walk_interfaces::msg::Step> step_;
   std::unique_ptr<StepState> step_state_;
+
+  bool active_ = false;
+  std::shared_ptr<rclcpp_action::ServerGoalHandle<walk_interfaces::action::Walk>> goal_handle_;
 };
 
 }  // namespace walk
