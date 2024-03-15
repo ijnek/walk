@@ -6,8 +6,6 @@
 
 ROS2 Walking Node to be used across different types of bipeds
 
-## This package is not ready for usage
-
 # Compiling
 
 In your workspace, run:
