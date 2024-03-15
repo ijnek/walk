@@ -1,0 +1,600 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <world name="empty_walk_bot">
+
+    <include>
+      <uri>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Sun</uri>
+    </include>
+
+    <include>
+      <uri>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Ground Plane</uri>
+    </include>
+
+    <model name='walk_bot'>
+      <link name='dummy'>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>1</mass>
+          <inertia>
+            <ixx>0.00167</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.00167</iyy>
+            <iyz>0</iyz>
+            <izz>0.00167</izz>
+          </inertia>
+        </inertial>
+        <collision name='dummy_fixed_joint_lump__base_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.1 0.1 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name='dummy_fixed_joint_lump__base_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.1 0.1 0.1</size>
+            </box>
+          </geometry>
+        </visual>
+      </link>
+      <joint name='l_hip_pitch' type='revolute'>
+        <pose relative_to='dummy'>0 0 0 0 0 0</pose>
+        <parent>dummy</parent>
+        <child>l_hip1</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-3.1400000000000001</lower>
+            <upper>3.1400000000000001</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='l_hip1'>
+        <pose relative_to='l_hip_pitch'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>1.0000000000000001e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.0000000000000001e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1.0000000000000001e-05</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name='l_hip_roll' type='revolute'>
+        <pose relative_to='l_hip1'>0 0 0 0 0 0</pose>
+        <parent>l_hip1</parent>
+        <child>l_hip2</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-3.1400000000000001</lower>
+            <upper>3.1400000000000001</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='l_hip2'>
+        <pose relative_to='l_hip_roll'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>1.0000000000000001e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.0000000000000001e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1.0000000000000001e-05</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name='l_leg_extension' type='prismatic'>
+        <pose relative_to='l_hip2'>0 0 0 0 0 0</pose>
+        <parent>l_hip2</parent>
+        <child>l_ankle1</child>
+        <axis>
+          <xyz>0 0 -1</xyz>
+          <limit>
+            <lower>0.20000000000000001</lower>
+            <upper>0.40000000000000002</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='l_ankle1'>
+        <pose relative_to='l_leg_extension'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>1.0000000000000001e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.0000000000000001e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1.0000000000000001e-05</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name='l_ankle_yaw' type='revolute'>
+        <pose relative_to='l_ankle1'>0 0 0 0 0 0</pose>
+        <parent>l_ankle1</parent>
+        <child>l_ankle2</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-3.1400000000000001</lower>
+            <upper>3.1400000000000001</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='l_ankle2'>
+        <pose relative_to='l_ankle_yaw'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>1.0000000000000001e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.0000000000000001e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1.0000000000000001e-05</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name='l_ankle_pitch' type='revolute'>
+        <pose relative_to='l_ankle2'>0 0 0 0 0 0</pose>
+        <parent>l_ankle2</parent>
+        <child>l_ankle3</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-3.1400000000000001</lower>
+            <upper>3.1400000000000001</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='l_ankle3'>
+        <pose relative_to='l_ankle_pitch'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>1.0000000000000001e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.0000000000000001e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1.0000000000000001e-05</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name='l_ankle_roll' type='revolute'>
+        <pose relative_to='l_ankle3'>0 0 0 0 0 0</pose>
+        <parent>l_ankle3</parent>
+        <child>l_sole</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-3.1400000000000001</lower>
+            <upper>3.1400000000000001</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='l_sole'>
+        <pose relative_to='l_ankle_roll'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.29999999999999999</mass>
+          <inertia>
+            <ixx>0.00072499999999999995</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0062500000000000003</iyy>
+            <iyz>0</iyz>
+            <izz>0.0057250000000000001</izz>
+          </inertia>
+        </inertial>
+        <collision name='l_sole_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.15 0.05 0.02</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='l_sole_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.15 0.05 0.02</size>
+            </box>
+          </geometry>
+        </visual>
+        <sensor name='sensor_contact' type='contact'>
+          <contact>
+            <collision>l_sole_collision</collision>
+            <topic>/l_sole_contact</topic>
+          </contact>
+          <always_on>true</always_on>
+          <update_rate>100</update_rate>
+          <visualize>true</visualize>
+          <plugin name='ignition::gazebo::systems::Contact' filename='ignition-gazebo-contact-system'/>
+        </sensor>
+      </link>
+      <joint name='r_hip_pitch' type='revolute'>
+        <pose relative_to='dummy'>0 0 0 0 0 0</pose>
+        <parent>dummy</parent>
+        <child>r_hip1</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-3.1400000000000001</lower>
+            <upper>3.1400000000000001</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='r_hip1'>
+        <pose relative_to='r_hip_pitch'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>1.0000000000000001e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.0000000000000001e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1.0000000000000001e-05</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name='r_hip_roll' type='revolute'>
+        <pose relative_to='r_hip1'>0 0 0 0 0 0</pose>
+        <parent>r_hip1</parent>
+        <child>r_hip2</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-3.1400000000000001</lower>
+            <upper>3.1400000000000001</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='r_hip2'>
+        <pose relative_to='r_hip_roll'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>1.0000000000000001e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.0000000000000001e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1.0000000000000001e-05</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name='r_leg_extension' type='prismatic'>
+        <pose relative_to='r_hip2'>0 0 0 0 0 0</pose>
+        <parent>r_hip2</parent>
+        <child>r_ankle1</child>
+        <axis>
+          <xyz>0 0 -1</xyz>
+          <limit>
+            <lower>0.20000000000000001</lower>
+            <upper>0.40000000000000002</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='r_ankle1'>
+        <pose relative_to='r_leg_extension'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>1.0000000000000001e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.0000000000000001e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1.0000000000000001e-05</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name='r_ankle_yaw' type='revolute'>
+        <pose relative_to='r_ankle1'>0 0 0 0 0 0</pose>
+        <parent>r_ankle1</parent>
+        <child>r_ankle2</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-3.1400000000000001</lower>
+            <upper>3.1400000000000001</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='r_ankle2'>
+        <pose relative_to='r_ankle_yaw'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>1.0000000000000001e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.0000000000000001e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1.0000000000000001e-05</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name='r_ankle_pitch' type='revolute'>
+        <pose relative_to='r_ankle2'>0 0 0 0 0 0</pose>
+        <parent>r_ankle2</parent>
+        <child>r_ankle3</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-3.1400000000000001</lower>
+            <upper>3.1400000000000001</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='r_ankle3'>
+        <pose relative_to='r_ankle_pitch'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>1.0000000000000001e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1.0000000000000001e-05</iyy>
+            <iyz>0</iyz>
+            <izz>1.0000000000000001e-05</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name='r_ankle_roll' type='revolute'>
+        <pose relative_to='r_ankle3'>0 0 0 0 0 0</pose>
+        <parent>r_ankle3</parent>
+        <child>r_sole</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-3.1400000000000001</lower>
+            <upper>3.1400000000000001</upper>
+            <effort>20</effort>
+            <velocity>2</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='r_sole'>
+        <pose relative_to='r_ankle_roll'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.29999999999999999</mass>
+          <inertia>
+            <ixx>0.00072499999999999995</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0062500000000000003</iyy>
+            <iyz>0</iyz>
+            <izz>0.0057250000000000001</izz>
+          </inertia>
+        </inertial>
+        <collision name='r_sole_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.15 0.05 0.02</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='r_sole_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.15 0.05 0.02</size>
+            </box>
+          </geometry>
+        </visual>
+        <sensor name='sensor_contact' type='contact'>
+          <contact>
+            <collision>r_sole_collision</collision>
+            <topic>/r_sole_contact</topic>
+          </contact>
+          <always_on>true</always_on>
+          <update_rate>100</update_rate>
+          <visualize>true</visualize>
+          <plugin name='ignition::gazebo::systems::Contact' filename='ignition-gazebo-contact-system'/>
+        </sensor>
+      </link>
+      <static>false</static>
+      <plugin name='ignition::gazebo::systems::JointStatePublisher' filename='libignition-gazebo-joint-state-publisher-system.so'>
+        <topic>joint_states</topic>
+        <joint_name>l_hip_pitch</joint_name>
+        <joint_name>r_hip_pitch</joint_name>
+        <joint_name>l_hip_roll</joint_name>
+        <joint_name>r_hip_roll</joint_name>
+        <joint_name>l_leg_extension</joint_name>
+        <joint_name>r_leg_extension</joint_name>
+        <joint_name>l_ankle_yaw</joint_name>
+        <joint_name>r_ankle_yaw</joint_name>
+        <joint_name>l_ankle_pitch</joint_name>
+        <joint_name>r_ankle_pitch</joint_name>
+        <joint_name>l_ankle_roll</joint_name>
+        <joint_name>r_ankle_roll</joint_name>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>l_hip_pitch</joint_name>
+        <p_gain>1000</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>r_hip_pitch</joint_name>
+        <p_gain>1000</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>l_hip_roll</joint_name>
+        <p_gain>1000</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>r_hip_roll</joint_name>
+        <p_gain>1000</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>l_leg_extension</joint_name>
+        <p_gain>1000</p_gain>
+        <i_gain>10</i_gain>
+        <d_gain>10</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>r_leg_extension</joint_name>
+        <p_gain>1000</p_gain>
+        <i_gain>10</i_gain>
+        <d_gain>10</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>l_ankle_yaw</joint_name>
+        <p_gain>100</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>r_ankle_yaw</joint_name>
+        <p_gain>100</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>l_ankle_pitch</joint_name>
+        <p_gain>100</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>r_ankle_pitch</joint_name>
+        <p_gain>100</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>l_ankle_roll</joint_name>
+        <p_gain>100</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+      </plugin>
+      <plugin name='ignition::gazebo::systems::JointPositionController' filename='libignition-gazebo-joint-position-controller-system'>
+        <joint_name>r_ankle_roll</joint_name>
+        <p_gain>100</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+      </plugin>
+    </model>
+
+
+  </world>
+</sdf>
