@@ -3,3 +3,7 @@ repositories:
     type: git
     url: https://github.com/ros-sports/biped_interfaces.git
     version: rolling
+  sole_poses_ims:
+    type: git
+    url: https://github.com/ijnek/sole_poses_ims.git
+    version: rolling
