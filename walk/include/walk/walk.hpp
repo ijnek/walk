@@ -77,7 +77,6 @@ private:
 
   // State variables
   biped_interfaces::msg::Phase phase_;
-  walk_interfaces::msg::FeetTrajectoryPoint ftp_current_;
   geometry_msgs::msg::Twist curr_twist_;
   float filtered_gyro_y_ = 0.0;
 

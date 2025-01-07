@@ -23,6 +23,7 @@ public:
   explicit StepState(const walk_interfaces::msg::Step & step);
   bool done();
   const walk_interfaces::msg::FeetTrajectoryPoint & next();
+  const walk_interfaces::msg::FeetTrajectoryPoint & current();
 
 private:
   const walk_interfaces::msg::Step step;

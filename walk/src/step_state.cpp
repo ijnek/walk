@@ -21,10 +21,16 @@ StepState::StepState(const walk_interfaces::msg::Step & step)
 
 bool StepState::done()
 {
-  return i == step.points.size();
+  return i >= (step.points.size() - 1);
+}
 }
 
 const walk_interfaces::msg::FeetTrajectoryPoint & StepState::next()
 {
-  return step.points.at(i++);
+  return step.points.at(++i);
+}
+
+const walk_interfaces::msg::FeetTrajectoryPoint & StepState::current()
+{
+  return step.points.at(i);
 }

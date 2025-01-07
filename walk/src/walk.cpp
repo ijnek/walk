@@ -128,13 +128,13 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
     get_logger(), "Using %s",
     (phase.phase == phase.LEFT_STANCE) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
+  auto ftp_current =
+    step_state_ ? step_state_->current() : walk_interfaces::msg::FeetTrajectoryPoint{};
   step_ = std::make_unique<walk_interfaces::msg::Step>(
     feet_trajectory::generate(
-      params_->feet_trajectory_, phase, ftp_current_, ftp_next));
+      params_->feet_trajectory_, phase, ftp_current, ftp_next));
   step_state_ = std::make_unique<StepState>(*step_);
   pub_step_->publish(*step_);
-
-  ftp_current_ = std::move(ftp_next);
 }
 
 void Walk::imuCallback(const sensor_msgs::msg::Imu & imu)
