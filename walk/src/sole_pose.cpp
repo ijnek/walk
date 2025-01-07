@@ -14,7 +14,7 @@
 
 #include "sole_pose.hpp"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
-#include "tf2/LinearMath/Quaternion.h"
+#include "tf2/LinearMath/Quaternion.hpp"
 #include "rclcpp/logger.hpp"
 #include "walk_interfaces/msg/feet_trajectory_point.hpp"
 
