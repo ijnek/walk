@@ -111,6 +111,12 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
     return;
   }
 
+  if (step_state_ && step_state_->progressRatio() < 0.5) {
+    RCLCPP_DEBUG(get_logger(),
+        "Notified of a phase change, but the step is still in its early stages. Ignoring.");
+    return;
+  }
+
   RCLCPP_DEBUG(get_logger(), "Calculating new step!");
 
   phase_ = phase;

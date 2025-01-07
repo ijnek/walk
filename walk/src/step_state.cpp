@@ -23,6 +23,10 @@ bool StepState::done()
 {
   return i >= (step.points.size() - 1);
 }
+
+double StepState::progressRatio()
+{
+  return static_cast<double>(i) / (step.points.size() - 1);
 }
 
 const walk_interfaces::msg::FeetTrajectoryPoint & StepState::next()
