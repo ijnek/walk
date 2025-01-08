@@ -100,6 +100,14 @@ void Walk::walk(const geometry_msgs::msg::Twist & commanded_twist)
     commanded_twist.angular.x, commanded_twist.angular.y, commanded_twist.angular.z);
 
   target_twist_ = twist_limiter::limit(params_->twist_limiter_, commanded_twist);
+
+  if (!step_)
+  {
+    RCLCPP_DEBUG(get_logger(), "Calculating first step!");
+    biped_interfaces::msg::Phase phase;
+    phase.phase = phase.RIGHT_SWING;
+    calculateNewStep(phase);
+  }
 }
 
 void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
@@ -117,6 +125,11 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
     return;
   }
 
+  calculateNewStep(phase);
+}
+
+void Walk::calculateNewStep(const biped_interfaces::msg::Phase& phase)
+{
   RCLCPP_DEBUG(get_logger(), "Calculating new step!");
 
   phase_ = phase;
