@@ -68,6 +68,7 @@ private:
   void walk(const geometry_msgs::msg::Twist & commanded_twist);
   void notifyPhase(const biped_interfaces::msg::Phase & phase);
   void imuCallback(const sensor_msgs::msg::Imu & imu);
+  void calculateNewStep(const biped_interfaces::msg::Phase& phase);
   void generateCommand();
   void phaseCallback(const biped_interfaces::msg::Phase::SharedPtr msg);
   void targetCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
@@ -77,7 +78,6 @@ private:
 
   // State variables
   biped_interfaces::msg::Phase phase_;
-  walk_interfaces::msg::FeetTrajectoryPoint ftp_current_;
   geometry_msgs::msg::Twist curr_twist_;
   float filtered_gyro_y_ = 0.0;
 

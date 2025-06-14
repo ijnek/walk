@@ -22,7 +22,9 @@ class StepState
 public:
   explicit StepState(const walk_interfaces::msg::Step & step);
   bool done();
+  double progressRatio();
   const walk_interfaces::msg::FeetTrajectoryPoint & next();
+  const walk_interfaces::msg::FeetTrajectoryPoint & current();
 
 private:
   const walk_interfaces::msg::Step step;

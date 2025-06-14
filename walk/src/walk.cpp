@@ -100,6 +100,14 @@ void Walk::walk(const geometry_msgs::msg::Twist & commanded_twist)
     commanded_twist.angular.x, commanded_twist.angular.y, commanded_twist.angular.z);
 
   target_twist_ = twist_limiter::limit(params_->twist_limiter_, commanded_twist);
+
+  if (!step_)
+  {
+    RCLCPP_DEBUG(get_logger(), "Calculating first step!");
+    biped_interfaces::msg::Phase phase;
+    phase.phase = phase.RIGHT_SWING;
+    calculateNewStep(phase);
+  }
 }
 
 void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
@@ -111,6 +119,17 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
     return;
   }
 
+  if (step_state_ && step_state_->progressRatio() < 0.5) {
+    RCLCPP_DEBUG(get_logger(),
+        "Notified of a phase change, but the step is still in its early stages. Ignoring.");
+    return;
+  }
+
+  calculateNewStep(phase);
+}
+
+void Walk::calculateNewStep(const biped_interfaces::msg::Phase& phase)
+{
   RCLCPP_DEBUG(get_logger(), "Calculating new step!");
 
   phase_ = phase;
@@ -128,13 +147,13 @@ void Walk::notifyPhase(const biped_interfaces::msg::Phase & phase)
     get_logger(), "Using %s",
     (phase.phase == phase.LEFT_STANCE) ? "LSP (Left Stance Phase)" : "RSP (Right Stance Phase)");
 
+  auto ftp_current =
+    step_state_ ? step_state_->current() : walk_interfaces::msg::FeetTrajectoryPoint{};
   step_ = std::make_unique<walk_interfaces::msg::Step>(
     feet_trajectory::generate(
-      params_->feet_trajectory_, phase, ftp_current_, ftp_next));
+      params_->feet_trajectory_, phase, ftp_current, ftp_next));
   step_state_ = std::make_unique<StepState>(*step_);
   pub_step_->publish(*step_);
-
-  ftp_current_ = std::move(ftp_next);
 }
 
 void Walk::imuCallback(const sensor_msgs::msg::Imu & imu)
