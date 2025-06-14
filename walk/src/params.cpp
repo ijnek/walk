@@ -20,7 +20,7 @@ namespace walk
 
 using rclcpp::ParameterValue;
 
-Params::Params(rclcpp::Node & node)
+Params::Params(rclcpp_lifecycle::LifecycleNode & node)
 : node_{node}
 {
   double max_forward = node_.declare_parameter("max_forward", 0.3);  // max forward velocity (m/s)

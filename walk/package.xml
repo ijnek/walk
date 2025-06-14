@@ -16,6 +16,7 @@
   <depend>rclcpp</depend>
   <depend>rclcpp_action</depend>
   <depend>rclcpp_components</depend>
+  <depend>rclcpp_lifecycle</depend>
   <depend>walk_interfaces</depend>
   <depend>biped_interfaces</depend>
   <depend>sensor_msgs</depend>

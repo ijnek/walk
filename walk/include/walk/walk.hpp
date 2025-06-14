@@ -23,6 +23,7 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
+#include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "sensor_msgs/msg/imu.hpp"
 #include "std_msgs/msg/bool.hpp"
 #include "walk_interfaces/action/crouch.hpp"
@@ -38,7 +39,7 @@ class StepState;
 namespace walk
 {
 
-class Walk : public rclcpp::Node
+class Walk : public rclcpp_lifecycle::LifecycleNode
 {
 public:
   using WalkGoal = walk_interfaces::action::Crouch::Goal;

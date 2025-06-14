@@ -19,6 +19,7 @@
 
 #include "feet_trajectory.hpp"
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
+#include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "sole_pose.hpp"
 #include "target_gait_calculator.hpp"
 #include "twist_change_limiter.hpp"
@@ -30,7 +31,7 @@ namespace walk
 class Params
 {
 public:
-  explicit Params(rclcpp::Node & node);
+  explicit Params(rclcpp_lifecycle::LifecycleNode & node);
 
   feet_trajectory::Params feet_trajectory_;
   sole_pose::Params sole_pose_;
@@ -39,7 +40,7 @@ public:
   twist_limiter::Params twist_limiter_;
 
 private:
-  rclcpp::Node & node_;
+  rclcpp_lifecycle::LifecycleNode & node_;
   rclcpp::Logger logger = rclcpp::get_logger("walk::Params");
   rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr
     on_set_parameters_callback_handle_;
