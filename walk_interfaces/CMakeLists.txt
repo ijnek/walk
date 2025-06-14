@@ -7,14 +7,17 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "action/Stand.action"
   "action/Crouch.action"
+  "action/Walk.action"
   "msg/FeetTrajectoryPoint.msg"
   "msg/Gait.msg"
   "msg/Step.msg"
+  DEPENDENCIES geometry_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)
