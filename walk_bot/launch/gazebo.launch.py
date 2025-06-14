@@ -45,7 +45,7 @@ def generate_launch_description():
         name='world',
         description='Path to the world file to open.',
         default_value=PathJoinSubstitution(
-            [FindPackageShare('walk_bot'), 'world', 'empty.sdf']))
+            [FindPackageShare('walk_bot'), 'world', 'empty_walk_bot.sdf']))
 
     gui_config_arg = DeclareLaunchArgument(
         name='gui_config',
@@ -73,8 +73,8 @@ def generate_launch_description():
             'gz_args': [
                 '-r ',  # Run simulation on start.
                 LaunchConfiguration('world'),
-                ' --gui-config ',
-                LaunchConfiguration('gui_config'),
+                ' --gui-config ', LaunchConfiguration('gui_config'),
+                ' -v', '4',  # Increase log level to debug
             ]
         }.items())
 
@@ -96,6 +96,9 @@ def generate_launch_description():
                 '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
                 # Joint states (GZ -> ROS2)
                 'joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
+                # Contact sensor (GZ -> ROS2)
+                'l_sole_contact@ros_gz_interfaces/msg/Contacts[gz.msgs.Contacts',
+                'r_sole_contact@ros_gz_interfaces/msg/Contacts[gz.msgs.Contacts',
                 ],
     )
 
@@ -108,7 +111,7 @@ def generate_launch_description():
         xacro_path_arg,
         z_arg,
         gazebo,
-        create_node,
+        # create_node,
         bridge,
         joint_command_bridge,
     ])
